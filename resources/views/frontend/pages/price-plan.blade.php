@@ -80,7 +80,6 @@
           </div>
           @endif
           <p class="price-sub bill-desc" data-monthly="{{$data->monthly_bill_text}}" data-annual="{{$data->annual_bill_text}}">{{$data->annual_bill_text}}</p>
-          <div class="trial-badge">Trial : 0 Days</div>
         </div>
         
         <hr class="card-divider">
