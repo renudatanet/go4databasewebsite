@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Faq;
+use App\FaqCategory;
 use App\Language;
 use Illuminate\Http\Request;
 
@@ -15,7 +16,8 @@ class FaqController extends Controller
     public function index(){
         $all_faqs = Faq::all()->groupBy('lang');
         $all_language = Language::all();
-        return view('backend.pages.faqs')->with(['all_faqs' => $all_faqs,'all_languages' => $all_language]);
+        $all_category = FaqCategory::where('status', 'publish')->orderBy('sr_order')->get();
+        return view('backend.pages.faqs')->with(['all_faqs' => $all_faqs,'all_languages' => $all_language,'all_category' => $all_category]);
     }
     public function store(Request $request){
         $this->validate($request,[
@@ -23,6 +25,7 @@ class FaqController extends Controller
             'description' => 'required|string',
             'lang' => 'required|string',
             'status' => 'nullable|string|max:191',
+            'category_id' => 'nullable|integer',
         ]);
 
         Faq::create([
@@ -31,6 +34,7 @@ class FaqController extends Controller
             'lang' => $request->lang,
             'status' => $request->status,
             'is_open' => !empty($request->is_open) ? 'on' : '',
+            'category_id' => $request->category_id,
         ]);
 
 
@@ -44,6 +48,7 @@ class FaqController extends Controller
             'description' => 'required|string',
             'lang' => 'required|string',
             'status' => 'nullable|string|max:191',
+            'category_id' => 'nullable|integer',
         ]);
 
         Faq::find($request->id)->update([
@@ -52,6 +57,7 @@ class FaqController extends Controller
             'status' => $request->status,
             'lang' => $request->lang,
             'is_open' => !empty($request->is_open) ? 'on' : '',
+            'category_id' => $request->category_id,
         ]);
 
         return redirect()->back()->with(['msg' => __('Faq Updated...'),'type' => 'success']);
@@ -70,6 +76,7 @@ class FaqController extends Controller
             'status' => 'draft',
             'lang' => $faq_item->lang,
             'is_open' => !empty($faq_item->is_open) ? 'on' : '',
+            'category_id' => $faq_item->category_id,
         ]);
         return redirect()->back()->with(['msg' => __('Clone Success...'),'type' => 'success']);
     }
@@ -79,6 +86,68 @@ class FaqController extends Controller
         foreach($all as $item){
             $item->delete();
         }
+        return response()->json(['status' => 'ok']);
+    }
+
+    public function category_index(){
+        $all_languages = Language::all();
+        $all_category = FaqCategory::all()->groupBy('lang');
+        return view('backend.pages.faq-category')->with(['all_languages' => $all_languages,'all_category' => $all_category]);
+    }
+
+    public function category_store(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required|string|max:191',
+            'lang' => 'required|string|max:191',
+            'status' => 'required|string|max:191'
+        ]);
+
+        FaqCategory::create($request->all());
+
+        return redirect()->back()->with([
+            'msg' => __('New Category Added...'),
+            'type' => 'success'
+        ]);
+    }
+
+    public function category_update(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required|string|max:191',
+            'lang' => 'required|string|max:191',
+            'status' => 'required|string|max:191'
+        ]);
+
+        FaqCategory::find($request->id)->update([
+            'name' => $request->name,
+            'status' => $request->status,
+            'lang' => $request->lang,
+        ]);
+
+        return redirect()->back()->with([
+            'msg' => __('Category Update Success...'),
+            'type' => 'success'
+        ]);
+    }
+
+    public function category_delete(Request $request, $id)
+    {
+        if (Faq::where('category_id', $id)->first()) {
+            return redirect()->back()->with([
+                'msg' => __('You Can Not Delete This Category, It Already Has Faqs Assigned To It...'),
+                'type' => 'danger'
+            ]);
+        }
+        FaqCategory::find($id)->delete();
+        return redirect()->back()->with([
+            'msg' => 'Category Delete Success...',
+            'type' => 'danger'
+        ]);
+    }
+
+    public function category_bulk_action(Request $request){
+        FaqCategory::whereIn('id',$request->ids)->delete();
         return response()->json(['status' => 'ok']);
     }
 

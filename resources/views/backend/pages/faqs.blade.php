@@ -73,6 +73,7 @@
                                         </th>
                                         <th>{{__('ID')}}</th>
                                         <th>{{__('Title')}}</th>
+                                        <th>{{__('Section')}}</th>
                                         <th>{{__('Status')}}</th>
                                         <th>{{__('Action')}}</th>
                                         </thead>
@@ -86,6 +87,7 @@
                                                 </td>
                                                 <td>{{$data->id}}</td>
                                                 <td>{{$data->title}}</td>
+                                                <td>{{optional($data->category)->name ?? '—'}}</td>
                                                 <td>@if($data->status == 'publish') <span class="alert alert-success">{{__('Publish')}}</span> @else <span class="alert alert-warning">{{__('Draft')}}</span> @endif</td>
                                                 <td>
                                                     <x-delete-popover :url="route('admin.faq.delete',$data->id)"/>
@@ -99,6 +101,7 @@
                                                        data-is_open="{{$data->is_open}}"
                                                        data-description="{{$data->description}}"
                                                        data-status="{{$data->status}}"
+                                                       data-category_id="{{$data->category_id}}"
                                                     >
                                                         <i class="ti-pencil"></i>
                                                     </a>
@@ -138,6 +141,15 @@
                             <div class="form-group">
                                 <label for="title">{{__('Title')}}</label>
                                 <input type="text" class="form-control"  id="title"  name="title" placeholder="{{__('Title')}}">
+                            </div>
+                            <div class="form-group">
+                                <label for="category_id">{{__('Section')}}</label>
+                                <select name="category_id" id="category_id" class="form-control">
+                                    <option value="">{{__('-- No Section --')}}</option>
+                                    @foreach($all_category as $cat)
+                                        <option value="{{$cat->id}}">{{$cat->name}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="is_open">{{__('Is Open')}}</label>
@@ -189,6 +201,15 @@
                         <div class="form-group">
                             <label for="edit_title">{{__('Title')}}</label>
                             <input type="text" class="form-control"  id="edit_title"  name="title" placeholder="{{__('Title')}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_category_id">{{__('Section')}}</label>
+                            <select name="category_id" id="edit_category_id" class="form-control">
+                                <option value="">{{__('-- No Section --')}}</option>
+                                @foreach($all_category as $cat)
+                                    <option value="{{$cat->id}}">{{$cat->name}}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="edit_is_open">{{__('Is Open')}}</label>
@@ -282,6 +303,7 @@
                 var form = $('#faq_edit_modal_form');
                 form.find('#faq_id').val(id);
                 form.find('#edit_title').val(title);
+                form.find('#edit_category_id').val(el.data('category_id'));
                 form.find('#edit_description').val(el.data('description'));
                 form.find('#edit_status option[value="'+el.data('status')+'"]').attr('selected',true);
                 form.find('#edit_language option[value="'+el.data('lang')+'"]').attr('selected',true);

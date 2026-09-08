@@ -280,9 +280,19 @@
                         </li>
                     @endif
                     @if(check_page_permission_by_string('Faq'))
-                    <li class="main_dropdown {{active_menu('admin-home/faq')}}">
-                        <a href="{{route('admin.faq')}}" aria-expanded="true"><i class="ti-control-forward"></i>
+                    <li class="main_dropdown {{active_menu('admin-home/faq')}}
+                    @if(request()->is('admin-home/faq/*')) active @endif
+                            ">
+                        <a href="javascript:void(0)" aria-expanded="true"><i class="ti-control-forward"></i>
                             <span>{{__('Faq')}}</span></a>
+                        <ul class="collapse">
+                            <li class="{{active_menu('admin-home/faq')}}">
+                                <a href="{{route('admin.faq')}}" >{{__('All Faq')}}</a>
+                            </li>
+                            <li class="{{active_menu('admin-home/faq/category')}}">
+                                <a href="{{route('admin.faq.category')}}" >{{__('Category')}}</a>
+                            </li>
+                        </ul>
                     </li>
                     @endif
                     @if(check_page_permission_by_string('Brand Logos'))

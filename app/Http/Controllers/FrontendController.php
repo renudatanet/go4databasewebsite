@@ -16,6 +16,7 @@ use App\Events;
 use App\EventsCategory;
 use App\Facades\InstagramFeed;
 use App\Faq;
+use App\FaqCategory;
 use App\Feedback;
 use App\Helpers\LanguageHelper;
 use App\Helpers\NexelitHelpers;
@@ -1300,9 +1301,21 @@ $all_testimonial = Testimonial::where('lang', $lang)->orderBy('id', 'desc')->tak
     {
         $default_lang = Language::where('default', 1)->first();
         $lang = !empty(session()->get('lang')) ? session()->get('lang') : $default_lang->slug;
-        $all_faq = Faq::where(['lang' => $lang, 'status' => 'publish'])->get();
+        $all_categories = FaqCategory::where(['lang' => $lang, 'status' => 'publish'])
+            ->orderBy('sr_order')
+            ->with(['faqs' => function ($q) use ($lang) {
+                $q->where(['lang' => $lang, 'status' => 'publish']);
+            }])
+            ->get()
+            ->filter(function ($category) {
+                return $category->faqs->isNotEmpty();
+            });
+        $uncategorized_faqs = Faq::where(['lang' => $lang, 'status' => 'publish'])
+            ->whereNull('category_id')
+            ->get();
         return view('frontend.pages.faq-page')->with([
-            'all_faqs' => $all_faq
+            'all_categories' => $all_categories,
+            'uncategorized_faqs' => $uncategorized_faqs,
         ]);
     }
         public function author_page()

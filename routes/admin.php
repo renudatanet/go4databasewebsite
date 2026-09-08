@@ -1796,6 +1796,14 @@ Route::prefix('admin-home')->middleware(['setlang:backend'])->group(function () 
         Route::post('/delete/{id}', 'FaqController@delete')->name('admin.faq.delete');
         Route::post('/clone', 'FaqController@clone')->name('admin.faq.clone');
         Route::post('/bulk-action', 'FaqController@bulk_action')->name('admin.faq.bulk.action');
+
+        Route::group(['prefix' => 'category'],function (){
+            Route::get('/', 'FaqController@category_index')->name('admin.faq.category');
+            Route::post('/', 'FaqController@category_store');
+            Route::post('/update', 'FaqController@category_update')->name('admin.faq.category.update');
+            Route::post('/delete/{id}', 'FaqController@category_delete')->name('admin.faq.category.delete');
+            Route::post('/bulk-action', 'FaqController@category_bulk_action')->name('admin.faq.category.bulk.action');
+        });
     });
 
     /*==============================================
