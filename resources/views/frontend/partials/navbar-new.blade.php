@@ -3,7 +3,7 @@
       <nav
         style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;max-width:1440px;margin:0 auto;position:relative;z-index:100;overflow:visible">
         <a href="#top" style="display:flex;align-items:center;flex-shrink:0">
-          <img src="assets/logo.png" alt="Go4Database Logo" style="height:34px;width:auto;display:block">
+          <img src="{{ asset('assets/frontend/images/logo.png') }}" alt="Go4Database Logo" style="height:34px;width:auto;display:block">
         </a>
 
         <!-- Middle Centered Menu Links -->
@@ -11,7 +11,7 @@
           style="display:flex;align-items:center;gap:28px;position:absolute;left:50%;transform:translateX(-50%);overflow:visible">
 
           <!-- Pricings -->
-          <a href="https://www.go4database.com/pricing" class="nav-link-item">Pricings</a>
+          <a href="{{ route('frontend.price.plan') }}" class="nav-link-item">Pricings</a>
 
           <!-- Success Stories Dropdown -->
           <div class="nav-dropdown-wrapper">
