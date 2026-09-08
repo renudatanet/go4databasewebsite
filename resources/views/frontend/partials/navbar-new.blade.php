@@ -23,7 +23,7 @@
               </svg>
             </a>
             <div class="nav-dropdown-menu">
-              <a href="https://www.go4database.com/case-study" class="simple-dropdown-item">Success Stories</a>
+              <a href="{{ route('frontend.case-study') }}" class="simple-dropdown-item">Success Stories</a>
               <a href="https://www.go4database.com/our-testimonial" class="simple-dropdown-item">Our Testimonial</a>
               <div class="dropdown-green-bar"></div>
             </div>
@@ -57,9 +57,9 @@
               </svg>
             </a>
             <div class="nav-dropdown-menu">
-              <a href="https://www.go4database.com/blog" class="simple-dropdown-item">Blog</a>
-              <a href="https://www.go4database.com/faq" class="simple-dropdown-item">Faq</a>
-              <a href="https://www.go4database.com/about" class="simple-dropdown-item">About</a>
+              <a href="{{ route('frontend.blog') }}" class="simple-dropdown-item">Blog</a>
+              <a href="{{ route('frontend.faq') }}" class="simple-dropdown-item">Faq</a>
+              <a href="{{ route('frontend.about') }}" class="simple-dropdown-item">About</a>
               <div class="dropdown-green-bar"></div>
             </div>
           </div>

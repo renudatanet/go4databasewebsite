@@ -36,7 +36,7 @@
             <a href="#features" class="g4d-footlink"
               style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Lookalike Audience
               Builder</a>
-            <a href="https://www.go4database.com/career" class="g4d-footlink"
+            <a href="{{ route('frontend.jobs') }}" class="g4d-footlink"
               style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Career
               Opportunities</a>
           </div>
@@ -120,28 +120,28 @@
         <div>
           <div style="font-size:17px;font-weight:800;color:#111;margin-bottom:22px">Compliances</div>
           <div style="display:flex;flex-direction:column;gap:16px">
-            <a href="https://www.go4database.com/privacy-policy" class="g4d-footlink"
+            <a href="{{ route('frontend.dynamic.page', ['slug' => 'privacy-policy']) }}" class="g4d-footlink"
               style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Privacy Policy</a>
-            <a href="https://www.go4database.com/terms-of-services" class="g4d-footlink"
+            <a href="{{ route('frontend.dynamic.page', ['slug' => 'terms-of-services']) }}" class="g4d-footlink"
               style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Terms of Services</a>
-            <a href="https://www.go4database.com/gdpr-ccpa" class="g4d-footlink"
+            <a href="{{ route('frontend.dynamic.page', ['slug' => 'gdpr-ccpa']) }}" class="g4d-footlink"
               style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; GDPR - CCPA</a>
-            <a href="https://www.go4database.com/iso" class="g4d-footlink"
+            <a href="{{ route('frontend.dynamic.page', ['slug' => 'iso']) }}" class="g4d-footlink"
               style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; ISO &amp; SO2</a>
-            <a href="https://www.go4database.com/reseller" class="g4d-footlink"
+            <a href="{{ route('frontend.dynamic.page', ['slug' => 'reseller']) }}" class="g4d-footlink"
               style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Reseller</a>
-            <a href="https://www.go4database.com/vendor-code-of-conduct" class="g4d-footlink"
+            <a href="{{ route('frontend.dynamic.page', ['slug' => 'vendor-code-of-conduct']) }}" class="g4d-footlink"
               style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Vendor Code of
               Conduct</a>
-            <a href="https://www.go4database.com/database-affiliate" class="g4d-footlink"
+            <a href="{{ route('frontend.dynamic.page', ['slug' => 'database-affiliate']) }}" class="g4d-footlink"
               style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Database
               Affiliate</a>
-            <a href="https://www.go4database.com/pricing" class="g4d-footlink"
+            <a href="{{ route('frontend.price.plan') }}" class="g4d-footlink"
               style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Pricing</a>
             <a href="https://paypal.com/" class="g4d-footlink"
               style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Customized
               Payment</a>
-            <a href="https://www.go4database.com/contact" class="g4d-footlink"
+            <a href="{{ route('frontend.contact') }}" class="g4d-footlink"
               style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Contact</a>
           </div>
         </div>
