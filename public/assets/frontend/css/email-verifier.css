@@ -281,8 +281,12 @@
 .ev-faq-item.open .ev-faq-q{color:var(--green-ink);}
 .ev-faq-item.open .ev-faq-ico{transform:rotate(180deg);background:var(--green);border-color:var(--green);color:#06300a;}
 .ev-faq-a{max-height:0;overflow:hidden;transition:max-height .38s var(--ease-io);}
-.ev-faq-item.open .ev-faq-a{max-height:260px;}
-.ev-faq-a p{padding:0 60px 26px 4px;font-size:15px;line-height:1.65;color:var(--tx-2);}
+.ev-faq-item.open .ev-faq-a{max-height:600px;}
+.ev-faq-body{padding:0 60px 26px 4px;font-size:15px;line-height:1.65;color:var(--tx-2);}
+.ev-faq-body :where(p){margin:0 0 10px;}
+.ev-faq-body :where(p:last-child){margin-bottom:0;}
+.ev-faq-body :where(ul,ol){margin:0 0 10px;padding-left:20px;list-style:revert;}
+.ev-faq-body :where(a){color:var(--green-deep);font-weight:600;}
 
 /* ==========================================================================
    Closing CTA
@@ -293,6 +297,13 @@
 .ev-cta :where(p){font-size:17px;color:rgba(255,255,255,.9);max-width:500px;margin:0 auto 34px;line-height:1.6;}
 .ev-cta-note{margin-top:20px;font-size:13px;color:rgba(255,255,255,.72);}
 .ev-cta .ev-btn--light{color:var(--green-ink);}
+
+/* Focus, no ring on mouse click, clear green ring for keyboard users ------ */
+.ev button:focus,.ev a:focus,.ev input:focus{outline:none;}
+.ev button:focus-visible,.ev a:focus-visible,.ev input:focus-visible{
+  outline:2px solid var(--green-deep);outline-offset:2px;border-radius:8px;
+}
+.ev-faq-q:focus-visible{outline-offset:-2px;}
 
 /* Scroll reveal ---------------------------------------------------------- */
 .ev-rv{opacity:0;transform:translateY(18px);transition:opacity .7s var(--ease),transform .7s var(--ease);}
@@ -314,5 +325,5 @@
   .ev-tool-input{width:100%;padding:8px 4px;}
   .ev-tool-btn{width:100%;}
   .ev-strip{gap:12px 22px;}
-  .ev-faq-a p{padding-right:4px;}
+  .ev-faq-body{padding-right:4px;}
 }

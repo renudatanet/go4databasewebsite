@@ -22,11 +22,11 @@
   <section class="ev-hero">
     <div class="ev-hero-inner">
       <span class="ev-eyebrow">
-        <span class="ev-eyebrow-dot"></span> Live checker, results in seconds
+        <span class="ev-eyebrow-dot"></span> {{ $ev['hero_badge'] }}
       </span>
 
-      <h1 class="ev-h1">Know if an email is real<br>before you <em>hit send</em></h1>
-      <p class="ev-hero-sub">We check the syntax, the domain, and the live mailbox itself, then tell you plainly whether it's safe to send. No test email is ever delivered.</p>
+      <h1 class="ev-h1">{{ $ev['hero_title'] }} <em>{{ $ev['hero_title_highlight'] }}</em></h1>
+      <p class="ev-hero-sub">{{ $ev['hero_subtitle'] }}</p>
 
       <div class="ev-tool">
         <div class="ev-tool-inner">
@@ -51,120 +51,105 @@
           <div id="ev-error" class="ev-alert" hidden></div>
 
           <div class="ev-tool-foot">
-            <span><i data-lucide="check"></i> Free to use</span>
-            <span><i data-lucide="check"></i> No signup needed</span>
-            <span><i data-lucide="check"></i> Nothing is stored</span>
+            @foreach(array_filter(array_map('trim', explode(',', $ev['tool_foot']))) as $foot)
+              <span><i data-lucide="check"></i> {{ $foot }}</span>
+            @endforeach
           </div>
         </div>
       </div>
 
+      @if(($ev_items['trust'] ?? collect())->isNotEmpty())
       <div class="ev-strip">
-        <div class="ev-strip-item"><i data-lucide="mail-x"></i> No email ever delivered</div>
-        <div class="ev-strip-item"><i data-lucide="server"></i> Live mail server check</div>
-        <div class="ev-strip-item"><i data-lucide="shield-check"></i> GDPR-aware</div>
-        <div class="ev-strip-item"><i data-lucide="lock"></i> SSL secured</div>
+        @foreach($ev_items['trust'] as $trust)
+          <div class="ev-strip-item"><i data-lucide="{{ $trust->icon ?: 'check' }}"></i> {{ $trust->title }}</div>
+        @endforeach
       </div>
+      @endif
     </div>
   </section>
 
   {{-- ===================== WHAT WE CHECK ===================== --}}
+  @if(($ev_items['check'] ?? collect())->isNotEmpty())
   <section class="ev-band">
     <div class="ev-shell">
       <div class="ev-head ev-head--center ev-rv">
-        <span class="ev-kicker">How it works</span>
-        <h2 class="ev-h2">Nine checks on every address</h2>
-        <p class="ev-lead">Each address runs through the same layered scan, from a simple format check all the way to a live conversation with the receiving mail server.</p>
+        <span class="ev-kicker">{{ $ev['checks_kicker'] }}</span>
+        <h2 class="ev-h2">{{ $ev['checks_title'] }}</h2>
+        <p class="ev-lead">{{ $ev['checks_lead'] }}</p>
       </div>
 
       <div class="ev-grid-3">
-        @foreach([
-          ['spell-check','Syntax validation','Catches typos and malformed addresses before they ever cost you a send.'],
-          ['server','MX record lookup','Confirms the domain actually has mail servers configured to receive email.'],
-          ['globe','Domain health','Verifies the domain resolves properly and is set up to accept mail.'],
-          ['trash-2','Disposable detection','Flags throwaway inboxes built to disappear within minutes of signup.'],
-          ['users','Role account detection','Identifies shared inboxes like info@ and support@ that skew engagement.'],
-          ['at-sign','Free provider detection','Tells you when an address is personal rather than a company domain.'],
-          ['layers','Catch-all detection','Spots domains that accept everything, so you know when a result is unconfirmed.'],
-          ['plug-zap','Live mailbox check','Connects to the real mail server and asks whether that mailbox exists.'],
-          ['shield-check','Bounce prediction','Combines every signal above into one clear verdict you can act on.'],
-        ] as $c)
+        @foreach($ev_items['check'] as $check)
           <div class="ev-card ev-rv">
-            <div class="ev-card-ico"><i data-lucide="{{$c[0]}}"></i></div>
-            <h4>{{$c[1]}}</h4>
-            <p>{{$c[2]}}</p>
+            <div class="ev-card-ico"><i data-lucide="{{ $check->icon ?: 'check-circle-2' }}"></i></div>
+            <h4>{{ $check->title }}</h4>
+            <p>{{ $check->description }}</p>
           </div>
         @endforeach
       </div>
     </div>
   </section>
+  @endif
 
   {{-- ===================== RESULT GLOSSARY ===================== --}}
+  @if(($ev_items['glossary'] ?? collect())->isNotEmpty())
   <section class="ev-band ev-band--soft ev-band--tight">
     <div class="ev-shell">
       <div class="ev-head ev-head--center ev-rv">
-        <span class="ev-kicker">Reading your result</span>
-        <h2 class="ev-h2">What each status means</h2>
+        <span class="ev-kicker">{{ $ev['glossary_kicker'] }}</span>
+        <h2 class="ev-h2">{{ $ev['glossary_title'] }}</h2>
       </div>
 
       <div class="ev-outcomes">
-        @foreach([
-          ['valid','Valid','check-circle-2','The mailbox exists and is safe to send to.'],
-          ['invalid','Invalid','x-circle',"The address doesn't exist, or the domain can't receive mail at all."],
-          ['catch_all','Catch-All','layers','The domain accepts mail for any address, so this one mailbox stays unconfirmed.'],
-          ['disposable','Disposable','trash-2','A known temporary or throwaway email provider.'],
-          ['role_based','Role-Based','users','A shared inbox like info@ or support@ rather than a named person.'],
-          ['unknown','Unknown','help-circle','Format and domain look fine, but the mailbox itself could not be confirmed right now.'],
-        ] as $o)
-          <div class="ev-outcome ev-rv" data-s="{{$o[0]}}">
-            <span class="ev-pill status-{{$o[0]}}"><i data-lucide="{{$o[2]}}"></i> {{$o[1]}}</span>
-            <p>{{$o[3]}}</p>
+        @foreach($ev_items['glossary'] as $outcome)
+          <div class="ev-outcome ev-rv" data-s="{{ $outcome->badge_key ?: 'unknown' }}">
+            <span class="ev-pill status-{{ $outcome->badge_key ?: 'unknown' }}">
+              <i data-lucide="{{ $outcome->icon ?: 'help-circle' }}"></i> {{ $outcome->title }}
+            </span>
+            <p>{{ $outcome->description }}</p>
           </div>
         @endforeach
       </div>
     </div>
   </section>
+  @endif
 
   {{-- ===================== WHY IT MATTERS ===================== --}}
+  @if(($ev_items['step'] ?? collect())->isNotEmpty())
   <section class="ev-band">
     <div class="ev-shell">
       <div class="ev-head ev-head--center ev-rv">
-        <span class="ev-kicker">Why it matters</span>
-        <h2 class="ev-h2">One bad list can cost you months</h2>
-        <p class="ev-lead">Sender reputation is slow to build and fast to lose. Here's the chain reaction a dirty list sets off.</p>
+        <span class="ev-kicker">{{ $ev['why_kicker'] }}</span>
+        <h2 class="ev-h2">{{ $ev['why_title'] }}</h2>
+        <p class="ev-lead">{{ $ev['why_lead'] }}</p>
       </div>
 
       <div class="ev-flow">
-        <div class="ev-step ev-rv">
-          <div class="ev-step-n">1</div>
-          <h4>Invalid emails bounce</h4>
-          <p>Every bad address comes straight back as a hard bounce, a wasted send and a wasted opportunity.</p>
-        </div>
-        <div class="ev-step ev-rv">
-          <div class="ev-step-n">2</div>
-          <h4>Bounces trip the filters</h4>
-          <p>Mailbox providers watch your bounce rate closely. A high one marks you as a likely spammer.</p>
-        </div>
-        <div class="ev-step ev-rv">
-          <div class="ev-step-n">3</div>
-          <h4>Reputation blocks delivery</h4>
-          <p>Once your sender reputation drops, even your genuinely good emails stop reaching the inbox.</p>
-        </div>
-        <div class="ev-step ev-step--good ev-rv">
-          <div class="ev-step-n"><i data-lucide="check" style="width:16px;height:16px;stroke-width:3.5"></i></div>
-          <h4>Clean lists fix all three</h4>
-          <p>Verified lists mean better delivery, higher open rates and a lower cost per real lead.</p>
-        </div>
+        @foreach($ev_items['step'] as $step)
+          <div class="ev-step ev-rv @if($step->is_highlight) ev-step--good @endif">
+            <div class="ev-step-n">
+              @if($step->is_highlight)
+                <i data-lucide="check" style="width:16px;height:16px;stroke-width:3.5"></i>
+              @else
+                {{ $loop->iteration }}
+              @endif
+            </div>
+            <h4>{{ $step->title }}</h4>
+            <p>{{ $step->description }}</p>
+          </div>
+        @endforeach
       </div>
     </div>
   </section>
+  @endif
 
   {{-- ===================== TESTIMONIALS ===================== --}}
   @if(($all_testimonial ?? collect())->isNotEmpty())
   <section class="ev-band ev-band--soft ev-band--tight">
     <div class="ev-shell">
       <div class="ev-head ev-head--center ev-rv">
-        <span class="ev-kicker">Customers</span>
-        <h2 class="ev-h2">What our users say</h2>
+        <span class="ev-kicker">{{ $ev['testimonial_kicker'] }}</span>
+        <h2 class="ev-h2">{{ $ev['testimonial_title'] }}</h2>
       </div>
 
       <div class="ev-quotes">
@@ -199,26 +184,38 @@
   <section class="ev-band ev-band--tight">
     <div class="ev-shell-narrow">
       <div class="ev-head ev-head--center ev-rv">
-        <span class="ev-kicker">Questions</span>
-        <h2 class="ev-h2">Frequently asked</h2>
+        <span class="ev-kicker">{{ $ev['faq_kicker'] }}</span>
+        <h2 class="ev-h2">{{ $ev['faq_title'] }}</h2>
       </div>
 
       <div class="ev-faq ev-rv">
-        @foreach([
-          ['Is checking a single email free?','Yes. Single checks on this page are free and need no account. Bulk list verification uses credits from a paid plan.'],
-          ['Do you actually send an email to check it?','No. We open the delivery handshake with the recipient\'s mail server and stop before any message is sent. Nothing lands in their inbox.'],
-          ['Why did I get "Unknown" instead of Valid or Invalid?','Some mail servers block or rate-limit this kind of live check, especially for senders they don\'t recognise. When we can\'t confirm the mailbox, we say Unknown rather than guess.'],
-          ['What does "Catch-All" mean?','Some domains accept mail for any address at all, even ones that don\'t exist. When we detect that, your specific mailbox can\'t be confirmed, so we flag it rather than call it valid.'],
-          ['Is my data stored?','Single checks on this page are processed in real time and are not written to a database.'],
-        ] as $f)
-          <div class="ev-faq-item">
-            <button type="button" class="ev-faq-q">
-              <span>{{$f[0]}}</span>
-              <span class="ev-faq-ico"><i data-lucide="chevron-down"></i></span>
-            </button>
-            <div class="ev-faq-a"><p>{{$f[1]}}</p></div>
-          </div>
-        @endforeach
+        @if(($ev_faqs ?? collect())->isNotEmpty())
+          @foreach($ev_faqs as $faq)
+            <div class="ev-faq-item @if($faq->is_open == 'on') open @endif">
+              <button type="button" class="ev-faq-q">
+                <span>{{ $faq->title }}</span>
+                <span class="ev-faq-ico"><i data-lucide="chevron-down"></i></span>
+              </button>
+              <div class="ev-faq-a"><div class="ev-faq-body">{!! $faq->description !!}</div></div>
+            </div>
+          @endforeach
+        @else
+          @foreach([
+            ['Is checking a single email free?','Yes. Single checks on this page are free and need no account. Bulk list verification uses credits from a paid plan.'],
+            ['Do you actually send an email to check it?','No. We open the delivery handshake with the recipient\'s mail server and stop before any message is sent. Nothing lands in their inbox.'],
+            ['Why did I get "Unknown" instead of Valid or Invalid?','Some mail servers block or rate-limit this kind of live check, especially for senders they don\'t recognise. When we can\'t confirm the mailbox, we say Unknown rather than guess.'],
+            ['What does "Catch-All" mean?','Some domains accept mail for any address at all, even ones that don\'t exist. When we detect that, your specific mailbox can\'t be confirmed, so we flag it rather than call it valid.'],
+            ['Is my data stored?','Single checks on this page are processed in real time and are not written to a database.'],
+          ] as $f)
+            <div class="ev-faq-item">
+              <button type="button" class="ev-faq-q">
+                <span>{{$f[0]}}</span>
+                <span class="ev-faq-ico"><i data-lucide="chevron-down"></i></span>
+              </button>
+              <div class="ev-faq-a"><div class="ev-faq-body">{{$f[1]}}</div></div>
+            </div>
+          @endforeach
+        @endif
       </div>
     </div>
   </section>
@@ -226,12 +223,12 @@
   {{-- ===================== CLOSING CTA ===================== --}}
   <section class="ev-cta">
     <div class="ev-shell">
-      <h2>Ready to clean your whole list?</h2>
-      <p>Verify thousands of addresses at once and send with confidence.</p>
-      <a href="https://app.go4database.com/register" target="_blank" rel="noopener" class="ev-btn ev-btn--light ev-btn--inline">
-        <i data-lucide="sparkles"></i> Try 100 free credits
+      <h2>{{ $ev['cta_title'] }}</h2>
+      <p>{{ $ev['cta_text'] }}</p>
+      <a href="{{ $ev['cta_url'] }}" target="_blank" rel="noopener" class="ev-btn ev-btn--light ev-btn--inline">
+        <i data-lucide="sparkles"></i> {{ $ev['cta_btn'] }}
       </a>
-      <p class="ev-cta-note">No credit card required</p>
+      <p class="ev-cta-note">{{ $ev['cta_note'] }}</p>
     </div>
   </section>
 

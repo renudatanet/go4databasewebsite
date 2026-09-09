@@ -2228,6 +2228,12 @@ Route::prefix('admin-home')->middleware(['setlang:backend'])->group(function () 
         Route::get('/email-verifier-settings', 'EmailVerifierSettingsController@index')->name('admin.email.verifier.settings');
         Route::post('/email-verifier-settings', 'EmailVerifierSettingsController@update');
 
+        Route::get('/email-verifier-content', 'EmailVerifierSettingsController@content')->name('admin.email.verifier.content');
+        Route::post('/email-verifier-content', 'EmailVerifierSettingsController@update_content');
+        Route::post('/email-verifier-content/item', 'EmailVerifierSettingsController@item_store')->name('admin.email.verifier.item.store');
+        Route::post('/email-verifier-content/item/update', 'EmailVerifierSettingsController@item_update')->name('admin.email.verifier.item.update');
+        Route::get('/email-verifier-content/item/delete/{id}', 'EmailVerifierSettingsController@item_delete')->name('admin.email.verifier.item.delete');
+
         /*----------------------------------------------------
           PAYMENT SETTINGS
          ----------------------------------------------------*/
