@@ -47,7 +47,10 @@
                             @csrf
                             <div class="tab-content mt-4">
                                 @foreach($all_languages as $key => $lang)
-                                    @php $p = 'ev_'.$lang->slug.'_'; @endphp
+                                    @php
+                                        $p = 'ev_'.$lang->slug.'_';
+                                        $val = fn($f) => \App\Http\Controllers\EmailVerifierSettingsController::text_value($lang->slug, $f);
+                                    @endphp
                                     <div class="tab-pane fade @if($key == 0) show active @endif" id="txt_{{$lang->slug}}" role="tabpanel">
 
                                         <div class="ev-admin-sec">
@@ -55,29 +58,29 @@
                                             <div class="form-group">
                                                 <label>{{__('Badge Text')}}</label>
                                                 <input type="text" name="{{$p}}hero_badge" class="form-control"
-                                                       value="{{get_static_option($p.'hero_badge')}}" placeholder="Live checker, results in seconds">
+                                                       value="{{ $val('hero_badge') }}" placeholder="Live checker, results in seconds">
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-8 form-group">
                                                     <label>{{__('Headline')}}</label>
                                                     <input type="text" name="{{$p}}hero_title" class="form-control"
-                                                           value="{{get_static_option($p.'hero_title')}}" placeholder="Know if an email is real before you">
+                                                           value="{{ $val('hero_title') }}" placeholder="Know if an email is real before you">
                                                 </div>
                                                 <div class="col-md-4 form-group">
                                                     <label>{{__('Highlighted Words')}}</label>
                                                     <input type="text" name="{{$p}}hero_title_highlight" class="form-control"
-                                                           value="{{get_static_option($p.'hero_title_highlight')}}" placeholder="hit send">
+                                                           value="{{ $val('hero_title_highlight') }}" placeholder="hit send">
                                                     <span class="ev-admin-hint">{{__('Shown in green at the end of the headline.')}}</span>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label>{{__('Sub Heading')}}</label>
-                                                <textarea name="{{$p}}hero_subtitle" rows="2" class="form-control">{{get_static_option($p.'hero_subtitle')}}</textarea>
+                                                <textarea name="{{$p}}hero_subtitle" rows="2" class="form-control">{{ $val('hero_subtitle') }}</textarea>
                                             </div>
                                             <div class="form-group">
                                                 <label>{{__('Reassurance Line (inside the checker box)')}}</label>
                                                 <input type="text" name="{{$p}}tool_foot" class="form-control"
-                                                       value="{{get_static_option($p.'tool_foot')}}" placeholder="Free to use, No signup needed, Nothing is stored">
+                                                       value="{{ $val('tool_foot') }}" placeholder="Free to use, No signup needed, Nothing is stored">
                                                 <span class="ev-admin-hint">{{__('Separate each item with a comma.')}}</span>
                                             </div>
                                         </div>
@@ -95,18 +98,18 @@
                                                     <div class="col-md-3 form-group">
                                                         <label>{{__($sec[1].' Kicker')}}</label>
                                                         <input type="text" name="{{$p}}{{$sec[0]}}_kicker" class="form-control"
-                                                               value="{{get_static_option($p.$sec[0].'_kicker')}}">
+                                                               value="{{ $val($sec[0].'_kicker') }}">
                                                     </div>
                                                     <div class="col-md-4 form-group">
                                                         <label>{{__($sec[1].' Title')}}</label>
                                                         <input type="text" name="{{$p}}{{$sec[0]}}_title" class="form-control"
-                                                               value="{{get_static_option($p.$sec[0].'_title')}}">
+                                                               value="{{ $val($sec[0].'_title') }}">
                                                     </div>
                                                     @if(in_array($sec[0], ['checks','why']))
                                                         <div class="col-md-5 form-group">
                                                             <label>{{__($sec[1].' Description')}}</label>
                                                             <input type="text" name="{{$p}}{{$sec[0]}}_lead" class="form-control"
-                                                                   value="{{get_static_option($p.$sec[0].'_lead')}}">
+                                                                   value="{{ $val($sec[0].'_lead') }}">
                                                         </div>
                                                     @endif
                                                 </div>
@@ -131,25 +134,25 @@
                                             <h5>{{__('Bottom Call To Action')}}</h5>
                                             <div class="form-group">
                                                 <label>{{__('Title')}}</label>
-                                                <input type="text" name="{{$p}}cta_title" class="form-control" value="{{get_static_option($p.'cta_title')}}">
+                                                <input type="text" name="{{$p}}cta_title" class="form-control" value="{{ $val('cta_title') }}">
                                             </div>
                                             <div class="form-group">
                                                 <label>{{__('Text')}}</label>
-                                                <textarea name="{{$p}}cta_text" rows="2" class="form-control">{{get_static_option($p.'cta_text')}}</textarea>
+                                                <textarea name="{{$p}}cta_text" rows="2" class="form-control">{{ $val('cta_text') }}</textarea>
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-4 form-group">
                                                     <label>{{__('Button Label')}}</label>
-                                                    <input type="text" name="{{$p}}cta_btn" class="form-control" value="{{get_static_option($p.'cta_btn')}}">
+                                                    <input type="text" name="{{$p}}cta_btn" class="form-control" value="{{ $val('cta_btn') }}">
                                                 </div>
                                                 <div class="col-md-5 form-group">
                                                     <label>{{__('Button Link')}}</label>
-                                                    <input type="text" name="{{$p}}cta_url" class="form-control" value="{{get_static_option($p.'cta_url')}}"
+                                                    <input type="text" name="{{$p}}cta_url" class="form-control" value="{{ $val('cta_url') }}"
                                                            placeholder="https://app.go4database.com/register">
                                                 </div>
                                                 <div class="col-md-3 form-group">
                                                     <label>{{__('Small Note')}}</label>
-                                                    <input type="text" name="{{$p}}cta_note" class="form-control" value="{{get_static_option($p.'cta_note')}}">
+                                                    <input type="text" name="{{$p}}cta_note" class="form-control" value="{{ $val('cta_note') }}">
                                                 </div>
                                             </div>
                                         </div>

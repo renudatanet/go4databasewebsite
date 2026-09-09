@@ -43,18 +43,52 @@ class EmailVerifierSettingsController extends Controller
       PAGE CONTENT, everything the visitor reads on /email-verifier
     ------------------------------------------------------------------*/
 
-    /** static_option keys, per language, that hold this page's copy. */
-    public static function text_fields()
+    /**
+     * This page's copy: the static_option key (minus the ev_{lang}_ prefix)
+     * and the value the page falls back to when the admin leaves it blank.
+     * Shared with FrontendController so both sides agree on the defaults.
+     */
+    public static function default_text()
     {
         return [
-            'hero_badge', 'hero_title', 'hero_title_highlight', 'hero_subtitle', 'tool_foot',
-            'checks_kicker', 'checks_title', 'checks_lead',
-            'glossary_kicker', 'glossary_title',
-            'why_kicker', 'why_title', 'why_lead',
-            'testimonial_kicker', 'testimonial_title',
-            'faq_kicker', 'faq_title', 'faq_category_id',
-            'cta_title', 'cta_text', 'cta_btn', 'cta_note', 'cta_url',
+            'hero_badge' => 'Live checker, results in seconds',
+            'hero_title' => 'Know if an email is real before you',
+            'hero_title_highlight' => 'hit send',
+            'hero_subtitle' => "We check the syntax, the domain, and the live mailbox itself, then tell you plainly whether it's safe to send. No test email is ever delivered.",
+            'tool_foot' => 'Free to use, No signup needed, Nothing is stored',
+            'checks_kicker' => 'How it works',
+            'checks_title' => 'Nine checks on every address',
+            'checks_lead' => 'Each address runs through the same layered scan, from a simple format check all the way to a live conversation with the receiving mail server.',
+            'glossary_kicker' => 'Reading your result',
+            'glossary_title' => 'What each status means',
+            'why_kicker' => 'Why it matters',
+            'why_title' => 'One bad list can cost you months',
+            'why_lead' => "Sender reputation is slow to build and fast to lose. Here's the chain reaction a dirty list sets off.",
+            'testimonial_kicker' => 'Customers',
+            'testimonial_title' => 'What our users say',
+            'faq_kicker' => 'Questions',
+            'faq_title' => 'Frequently asked',
+            'cta_title' => 'Ready to clean your whole list?',
+            'cta_text' => 'Verify thousands of addresses at once and send with confidence.',
+            'cta_btn' => 'Try 100 free credits',
+            'cta_note' => 'No credit card required',
+            'cta_url' => 'https://app.go4database.com/register',
         ];
+    }
+
+    /** Value shown in the admin form / on the page: saved value, else default. */
+    public static function text_value($lang, $field)
+    {
+        $saved = get_static_option('ev_' . $lang . '_' . $field);
+
+        return ($saved === null || $saved === '')
+            ? (self::default_text()[$field] ?? '')
+            : $saved;
+    }
+
+    public static function text_fields()
+    {
+        return array_merge(array_keys(self::default_text()), ['faq_category_id']);
     }
 
     public function content()

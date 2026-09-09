@@ -82,6 +82,7 @@ use Symfony\Component\Process\Process;
 use App\Helpers\HomePageStaticSettings;
 use App\Helpers\EmailVerifierHelper;
 use App\EmailVerifierItem;
+use App\Http\Controllers\EmailVerifierSettingsController;
 
 class FrontendController extends Controller
 {
@@ -1431,35 +1432,9 @@ $all_testimonial = Testimonial::where('lang', $lang)->orderBy('id', 'desc')->tak
      */
     private function email_verifier_content($lang)
     {
-        $defaults = [
-            'hero_badge' => 'Live checker, results in seconds',
-            'hero_title' => 'Know if an email is real before you',
-            'hero_title_highlight' => 'hit send',
-            'hero_subtitle' => "We check the syntax, the domain, and the live mailbox itself, then tell you plainly whether it's safe to send. No test email is ever delivered.",
-            'tool_foot' => 'Free to use, No signup needed, Nothing is stored',
-            'checks_kicker' => 'How it works',
-            'checks_title' => 'Nine checks on every address',
-            'checks_lead' => 'Each address runs through the same layered scan, from a simple format check all the way to a live conversation with the receiving mail server.',
-            'glossary_kicker' => 'Reading your result',
-            'glossary_title' => 'What each status means',
-            'why_kicker' => 'Why it matters',
-            'why_title' => 'One bad list can cost you months',
-            'why_lead' => "Sender reputation is slow to build and fast to lose. Here's the chain reaction a dirty list sets off.",
-            'testimonial_kicker' => 'Customers',
-            'testimonial_title' => 'What our users say',
-            'faq_kicker' => 'Questions',
-            'faq_title' => 'Frequently asked',
-            'cta_title' => 'Ready to clean your whole list?',
-            'cta_text' => 'Verify thousands of addresses at once and send with confidence.',
-            'cta_btn' => 'Try 100 free credits',
-            'cta_note' => 'No credit card required',
-            'cta_url' => 'https://app.go4database.com/register',
-        ];
-
         $content = [];
-        foreach ($defaults as $key => $default) {
-            $value = get_static_option('ev_' . $lang . '_' . $key);
-            $content[$key] = ($value === null || $value === '') ? $default : $value;
+        foreach (array_keys(EmailVerifierSettingsController::default_text()) as $field) {
+            $content[$field] = EmailVerifierSettingsController::text_value($lang, $field);
         }
 
         return $content;
