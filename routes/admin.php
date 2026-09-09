@@ -2235,6 +2235,13 @@ Route::prefix('admin-home')->middleware(['setlang:backend'])->group(function () 
         Route::get('/email-verifier-content/item/delete/{id}', 'EmailVerifierSettingsController@item_delete')->name('admin.email.verifier.item.delete');
 
         /*----------------------------------------------------
+          CHAT WIDGET SETTINGS
+         ----------------------------------------------------*/
+        Route::get('/chat-widget-settings', 'ChatWidgetSettingsController@index')->name('admin.chat.widget.settings');
+        Route::post('/chat-widget-settings', 'ChatWidgetSettingsController@update');
+        Route::post('/chat-widget-settings/test', 'ChatWidgetSettingsController@test')->name('admin.chat.widget.settings.test');
+
+        /*----------------------------------------------------
           PAYMENT SETTINGS
          ----------------------------------------------------*/
         Route::get('/payment-settings', 'GeneralSettingsController@payment_settings')->name('admin.general.payment.settings');

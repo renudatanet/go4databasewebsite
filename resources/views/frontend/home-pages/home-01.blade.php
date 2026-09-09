@@ -1,5 +1,5 @@
 @include('frontend.partials.homesupportbar')
-@include('frontend.partials.navbar') 
+@include('frontend.partials.navbar-new') 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/home.css?v=123') }}">
 @endpush
@@ -1716,3 +1716,4 @@
     </div>
   <script src="{{ asset('assets/frontend/js/home-01.js') }}" defer></script>
 @include('frontend.partials.contact-section')
+@include('frontend.partials.chat-widget')

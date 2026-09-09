@@ -510,6 +510,7 @@ Route::group(['middleware' => ['setlang:frontend', 'globalVariable', 'maintains_
     Route::get('/' . $price_plan_page_slug, 'FrontendController@price_plan_page')->name('frontend.price.plan');
     Route::get('/email-verifier', 'FrontendController@email_verifier_page')->name('frontend.email.verifier');
     Route::post('/email-verifier/check', 'FrontendController@email_verifier_check')->name('frontend.email.verifier.check')->middleware('throttle:20,1');
+    Route::post('/chat/send', 'ChatWidgetController@send')->name('frontend.chat.send')->middleware('throttle:30,1');
     Route::get('/' . $contact_page_slug, 'FrontendController@contact_page')->name('frontend.contact');
     Route::get('/' . $quote_page_slug, 'FrontendController@request_quote')->name('frontend.request.quote');
 
