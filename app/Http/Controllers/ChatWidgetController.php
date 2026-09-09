@@ -55,7 +55,9 @@ class ChatWidgetController extends Controller
 
         $body = [
             ChatWidgetSettingsController::value('message_field') => $request->input('message'),
-            ChatWidgetSettingsController::value('session_field') => $request->input('session_id'),
+            // Conversation ids are capped at 64 characters by the chat API,
+            // which rejects anything longer outright.
+            ChatWidgetSettingsController::value('session_field') => mb_substr((string) $request->input('session_id'), 0, 64) ?: null,
         ];
 
         if (ChatWidgetSettingsController::value('send_page_url') === '1') {
@@ -75,7 +77,10 @@ class ChatWidgetController extends Controller
 
         try {
             $response = Http::withHeaders($headers)
-                ->timeout((int) ChatWidgetSettingsController::value('timeout') ?: 20)
+                ->timeout((int) ChatWidgetSettingsController::value('timeout') ?: 30)
+                // Following a redirect would turn this POST into a GET and drop
+                // the message. Better to fail loudly than to send an empty body.
+                ->withOptions(['allow_redirects' => false])
                 ->asJson()
                 ->post($endpoint, $body);
         } catch (\Throwable $e) {
@@ -84,10 +89,26 @@ class ChatWidgetController extends Controller
             return $this->offline('Could not reach the chat API.');
         }
 
+        if ($response->redirect()) {
+            Log::warning('Chat widget: ' . $endpoint . ' redirected to ' . $response->header('Location') . '. Save the final URL in the admin panel.');
+
+            return $this->offline('The chat API URL redirects. Save the final address instead.');
+        }
+
+        // The visitor is rate limited per conversation, not per site, so this
+        // means this one person is going too fast. Say so instead of claiming
+        // the whole service is down.
+        if ($response->status() === 429) {
+            return response()->json([
+                'ok' => false,
+                'reply' => ChatWidgetSettingsController::value('busy_text'),
+            ]);
+        }
+
         if ($response->failed()) {
             Log::warning('Chat widget got HTTP ' . $response->status() . ' from ' . $endpoint . ' : ' . mb_substr($response->body(), 0, 500));
 
-            return $this->offline('Chat API returned HTTP ' . $response->status());
+            return $this->offline($this->explain_status($response->status()));
         }
 
         $reply = $this->extract_reply($response, ChatWidgetSettingsController::value('reply_path'));
@@ -102,7 +123,24 @@ class ChatWidgetController extends Controller
             'ok' => true,
             'reply' => $reply,
             'session_id' => $this->extract_session($response) ?: $request->input('session_id'),
+            // Set when the bot could not answer and a person has been alerted.
+            // The widget adds a short note so the visitor knows a human is coming.
+            'needs_human' => (bool) data_get($response->json(), 'needs_human', false),
         ]);
+    }
+
+    /** Turns a status code into something worth reading in the log. */
+    private function explain_status($status)
+    {
+        $known = [
+            401 => 'the API key was missing or wrong, check the header name is X-API-Key',
+            403 => 'the API refused the key',
+            404 => 'the API URL is wrong',
+            422 => 'the API rejected the message, it may be blank, too long, or the session id is over 64 characters',
+        ];
+
+        return 'Chat API returned HTTP ' . $status
+            . (isset($known[$status]) ? ' : ' . $known[$status] : '');
     }
 
     /**

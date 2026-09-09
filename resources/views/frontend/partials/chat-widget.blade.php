@@ -202,6 +202,22 @@
 .g4chat-msg.err{align-self:flex-start;background:#fef4f4;border:1px solid #f8d3d3;color:#8f2020;border-bottom-left-radius:5px;}
 .g4chat-msg a{color:inherit;text-decoration:underline;}
 
+/* Shown when the bot has handed the question to a person. */
+.g4chat-note{
+  align-self:flex-start;
+  max-width:82%;
+  display:flex;
+  gap:7px;
+  padding:9px 12px;
+  border-radius:10px;
+  background:#f2fcee;
+  border:1px solid #cdf0b8;
+  color:#2b6b0e;
+  font-size:12.5px;
+  font-weight:600;
+}
+.g4chat-note svg{width:14px;height:14px;flex:none;margin-top:2px;}
+
 .g4chat-typing{align-self:flex-start;display:flex;gap:4px;padding:13px 14px;background:var(--bot-bg);border-radius:14px;border-bottom-left-radius:5px;}
 .g4chat-typing span{width:6px;height:6px;border-radius:50%;background:#9aa5b1;animation:g4chat-bounce 1.3s infinite;}
 .g4chat-typing span:nth-child(2){animation-delay:.16s;}
@@ -338,6 +354,7 @@
         TOKEN    = root.dataset.token,
         GREETING = @json($g4chat('greeting')),
         OFFLINE  = @json($g4chat('offline_text')),
+        HUMAN    = @json($g4chat('human_note')),
         SID_KEY  = 'g4chat_sid',
         LOG_KEY  = 'g4chat_log',
         LOG_MAX  = 40;
@@ -380,6 +397,21 @@
         log.scrollTop = log.scrollHeight;
         if (!skipSave) { saveTranscript(); }
         return el;
+    }
+
+    /* Not part of the saved transcript on purpose: it describes something that
+       is happening now, not something that was said. */
+    function humanNote() {
+        var el = document.createElement('div');
+        el.className = 'g4chat-note';
+        el.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"'
+            + ' stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+            + '<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>'
+            + '<path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>'
+            + '<span></span>';
+        el.querySelector('span').textContent = HUMAN;
+        log.appendChild(el);
+        log.scrollTop = log.scrollHeight;
     }
 
     function restore() {
@@ -468,6 +500,8 @@
             if (data && data.session_id) { store(SID_KEY, data.session_id); }
 
             bubble(data && data.ok ? 'bot' : 'err', (data && data.reply) || OFFLINE);
+
+            if (data && data.needs_human && HUMAN) { humanNote(); }
         })
         .catch(function () {
             typing.remove();

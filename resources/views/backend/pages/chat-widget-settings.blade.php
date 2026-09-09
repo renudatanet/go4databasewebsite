@@ -39,7 +39,7 @@
                                 <input type="text" name="chat_widget_api_url" id="chat_widget_api_url" class="form-control"
                                        placeholder="https://your-server.in/api/chat/message"
                                        value="{{$cw('api_url')}}">
-                                <small class="text-muted">{{__('The full address on your other server that receives a visitor message and returns the reply. It is called with a POST request carrying JSON.')}}</small>
+                                <small class="text-muted">{{__('The full address on your other server that receives a visitor message and returns the reply. It is called with a POST request carrying JSON. It must start with https, a plain http address redirects and the message is lost on the way.')}}</small>
                             </div>
 
                             <div class="row">
@@ -47,8 +47,8 @@
                                     <div class="form-group">
                                         <label for="chat_widget_auth_header">{{__('Auth Header Name')}}</label>
                                         <input type="text" name="chat_widget_auth_header" class="form-control"
-                                               placeholder="Authorization" value="{{$cw('auth_header')}}">
-                                        <small class="text-muted">{{__('Usually Authorization. Some APIs use X-API-KEY.')}}</small>
+                                               placeholder="X-API-Key" value="{{$cw('auth_header')}}">
+                                        <small class="text-muted">{{__('Leave as X-API-Key. Do not use Authorization, the chat API reads that header as a customer login.')}}</small>
                                     </div>
                                 </div>
                                 <div class="col-md-7">
@@ -154,6 +154,18 @@
                                 <label for="chat_widget_offline_text">{{__('Message When Chat Is Unreachable')}}</label>
                                 <textarea name="chat_widget_offline_text" class="form-control" rows="2">{{$cw('offline_text')}}</textarea>
                                 <small class="text-muted">{{__('Shown if your chat server does not answer, so the visitor is never left staring at nothing.')}}</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="chat_widget_busy_text">{{__('Message When Sending Too Fast')}}</label>
+                                <textarea name="chat_widget_busy_text" class="form-control" rows="2">{{$cw('busy_text')}}</textarea>
+                                <small class="text-muted">{{__('The chat API allows 10 messages a minute per conversation. This is shown when one visitor goes past that.')}}</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="chat_widget_human_note">{{__('Note When A Person Takes Over')}}</label>
+                                <textarea name="chat_widget_human_note" class="form-control" rows="2">{{$cw('human_note')}}</textarea>
+                                <small class="text-muted">{{__('Added under the reply when the chat API reports that the bot could not answer and your team has been alerted. Leave blank to show nothing.')}}</small>
                             </div>
 
                             <div class="row">

@@ -23,16 +23,24 @@ class ChatWidgetSettingsController extends Controller
     public static function defaults()
     {
         return [
-            /* --- where the conversation actually runs ------------------- */
+            /* --- where the conversation actually runs -------------------
+               auth_header defaults to X-API-Key rather than Authorization:
+               the chat API treats Authorization as a logged-in customer's
+               token, so a key placed there is read as an identity and
+               quietly attaches a junk user id to every conversation.
+
+               timeout defaults to 30s because the chat API caps its own
+               generation at 25s. A shorter cut-off would abandon answers
+               that were about to arrive. */
             'api_url' => '',
-            'auth_header' => 'Authorization',
+            'auth_header' => 'X-API-Key',
             'auth_value' => '',
             'message_field' => 'message',
             'session_field' => 'session_id',
             'reply_path' => '',
             'extra_payload' => '',
             'send_page_url' => '1',
-            'timeout' => '20',
+            'timeout' => '30',
 
             /* --- what the visitor sees --------------------------------- */
             'status' => '0',
@@ -42,6 +50,10 @@ class ChatWidgetSettingsController extends Controller
             'placeholder' => 'Type your message...',
             'launcher_label' => 'Chat with us',
             'offline_text' => "We can't reach the chat service right now. Please email info@go4database.com and we'll come straight back to you.",
+            'busy_text' => "You're sending messages faster than we can answer. Give it a few seconds and try again.",
+            // The chat API's own fallback already says a person has been
+            // alerted, so this adds a second route rather than repeating it.
+            'human_note' => "If you'd rather not wait, email info@go4database.com and we'll pick it up from there.",
             'color' => '#6fd943',
         ];
     }
@@ -84,8 +96,20 @@ class ChatWidgetSettingsController extends Controller
             'chat_widget_placeholder' => 'nullable|string|max:100',
             'chat_widget_launcher_label' => 'nullable|string|max:100',
             'chat_widget_offline_text' => 'nullable|string|max:500',
+            'chat_widget_busy_text' => 'nullable|string|max:500',
+            'chat_widget_human_note' => 'nullable|string|max:500',
             'chat_widget_color' => 'nullable|string|max:30',
         ]);
+
+        // The chat API answers plain http:// with a 301, and most HTTP clients
+        // drop the POST body when they follow a redirect. Catch it here rather
+        // than letting it fail silently at send time.
+        if (str_starts_with(strtolower(trim((string) $request->chat_widget_api_url)), 'http://')) {
+            return redirect()->back()->with([
+                'msg' => __('Use the https:// address. A plain http:// URL redirects, and the message body is lost on the way.'),
+                'type' => 'danger',
+            ]);
+        }
 
         // Extra payload is merged into every outgoing request, so it has to be
         // a JSON object. Reject anything else here rather than silently
@@ -152,13 +176,24 @@ class ChatWidgetSettingsController extends Controller
 
         try {
             $response = Http::withHeaders($headers)
-                ->timeout((int) self::value('timeout') ?: 20)
+                ->timeout((int) self::value('timeout') ?: 30)
+                ->withOptions(['allow_redirects' => false])
                 ->asJson()
                 ->post($endpoint, $body);
         } catch (\Throwable $e) {
             return response()->json([
                 'ok' => false,
                 'summary' => __('Could not reach the API: ') . $e->getMessage(),
+                'sent' => $body,
+            ]);
+        }
+
+        if ($response->redirect()) {
+            return response()->json([
+                'ok' => false,
+                'summary' => __('The URL redirected to ') . $response->header('Location')
+                    . __('. Save that address instead, a redirect loses the message body.'),
+                'http_status' => $response->status(),
                 'sent' => $body,
             ]);
         }
