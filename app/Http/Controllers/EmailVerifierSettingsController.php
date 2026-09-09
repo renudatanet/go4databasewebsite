@@ -70,7 +70,7 @@ class EmailVerifierSettingsController extends Controller
             'faq_title' => 'Frequently asked',
             'cta_title' => 'Ready to clean your whole list?',
             'cta_text' => 'Verify thousands of addresses at once and send with confidence.',
-            'cta_btn' => 'Try 100 free credits',
+            'cta_btn' => 'Try 1200 free credits',
             'cta_note' => 'No credit card required',
             'cta_url' => 'https://app.go4database.com/register',
         ];
