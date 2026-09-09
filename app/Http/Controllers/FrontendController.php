@@ -80,6 +80,7 @@ use Illuminate\Support\Str;
 use Svg\Tag\Image;
 use Symfony\Component\Process\Process;
 use App\Helpers\HomePageStaticSettings;
+use App\Helpers\EmailVerifierHelper;
 
 class FrontendController extends Controller
 {
@@ -1398,6 +1399,25 @@ $all_testimonial = Testimonial::where('lang', $lang)->orderBy('id', 'desc')->tak
     'categories_id' => 9,
 ])->get()->groupBy('categories_id');
         return view('frontend.pages.price-plan')->with(['all_price_plan' => $all_price_plan]);
+    }
+
+    public function email_verifier_page()
+    {
+        $default_lang = Language::where('default', 1)->first();
+        $lang = !empty(session()->get('lang')) ? session()->get('lang') : $default_lang->slug;
+        $all_testimonial = Testimonial::where(['lang' => $lang, 'status' => 'publish'])->orderBy('id', 'desc')->take(4)->get();
+        return view('frontend.pages.email-verifier')->with(['all_testimonial' => $all_testimonial]);
+    }
+
+    public function email_verifier_check(Request $request)
+    {
+        $this->validate($request, [
+            'email' => 'required|string|max:190',
+        ]);
+
+        $result = EmailVerifierHelper::verify($request->input('email'));
+
+        return response()->json($result);
     }
 
     public function order_confirm($id)

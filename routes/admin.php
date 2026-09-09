@@ -2223,6 +2223,12 @@ Route::prefix('admin-home')->middleware(['setlang:backend'])->group(function () 
         Route::post('/smtp-settings/test', 'GeneralSettingsController@test_smtp_settings')->name('admin.general.smtp.settings.test');
 
         /*----------------------------------------------------
+          EMAIL VERIFIER SETTINGS
+         ----------------------------------------------------*/
+        Route::get('/email-verifier-settings', 'EmailVerifierSettingsController@index')->name('admin.email.verifier.settings');
+        Route::post('/email-verifier-settings', 'EmailVerifierSettingsController@update');
+
+        /*----------------------------------------------------
           PAYMENT SETTINGS
          ----------------------------------------------------*/
         Route::get('/payment-settings', 'GeneralSettingsController@payment_settings')->name('admin.general.payment.settings');

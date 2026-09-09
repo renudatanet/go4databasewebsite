@@ -1760,6 +1760,9 @@
                             <li class="{{active_menu('admin-home/general-settings/smtp-settings')}}"><a
                                         href="{{route('admin.general.smtp.settings')}}">{{__('SMTP Settings')}}</a>
                             </li>
+                            <li class="{{active_menu('admin-home/general-settings/email-verifier-settings')}}"><a
+                                        href="{{route('admin.email.verifier.settings')}}">{{__('Email Verifier Settings')}}</a>
+                            </li>
 {{--                            <li class="{{active_menu('admin-home/general-settings/regenerate-image')}}"><a--}}
 {{--                                        href="{{route('admin.general.regenerate.thumbnail')}}">{{__('Regenerate Media Image')}}</a>--}}
 {{--                            </li>--}}

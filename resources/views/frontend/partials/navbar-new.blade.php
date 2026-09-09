@@ -42,7 +42,7 @@
               </svg>
             </a>
             <div class="nav-dropdown-menu">
-              <a href="https://www.go4database.com/email-verifier" class="simple-dropdown-item">Email Verifier</a>
+              <a href="{{ route('frontend.email.verifier') }}" class="simple-dropdown-item">Email Verifier</a>
               <div class="dropdown-green-bar"></div>
             </div>
           </div>
