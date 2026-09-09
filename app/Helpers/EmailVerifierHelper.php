@@ -34,18 +34,20 @@ class EmailVerifierHelper
             'email' => $rawEmail,
             'status' => 'invalid',
             'reason' => '',
+            // 'skipped' means the check never ran, which is different from failing it.
             'checks' => [
-                'syntax' => false,
-                'mx_record' => false,
-                'disposable' => false,
-                'free_provider' => false,
-                'role_based' => false,
+                'syntax' => 'skipped',
+                'mx_record' => 'skipped',
+                'disposable' => 'skipped',
+                'free_provider' => 'skipped',
+                'role_based' => 'skipped',
                 'smtp' => 'skipped',
                 'catch_all' => 'unknown',
             ],
         ];
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL) || substr_count($email, '@') !== 1) {
+            $result['checks']['syntax'] = false;
             $result['reason'] = 'This is not a valid email address format.';
             return $result;
         }
@@ -53,26 +55,16 @@ class EmailVerifierHelper
 
         [$local, $domain] = explode('@', $email, 2);
 
-        if (in_array($domain, self::$disposableDomains, true)) {
-            $result['checks']['disposable'] = true;
-            $result['status'] = 'disposable';
-            $result['reason'] = 'This domain is a known disposable/temporary email provider.';
-            return $result;
-        }
-
-        if (in_array($local, self::$roleLocalParts, true)) {
-            $result['checks']['role_based'] = true;
-        }
-
-        if (in_array($domain, self::$freeProviders, true)) {
-            $result['checks']['free_provider'] = true;
-        }
+        $result['checks']['role_based'] = in_array($local, self::$roleLocalParts, true);
+        $result['checks']['free_provider'] = in_array($domain, self::$freeProviders, true);
+        $result['checks']['disposable'] = in_array($domain, self::$disposableDomains, true);
 
         $mxHosts = [];
         $mxWeights = [];
         $hasMx = @getmxrr($domain, $mxHosts, $mxWeights);
         if (!$hasMx || empty($mxHosts)) {
             if (!checkdnsrr($domain, 'A')) {
+                $result['checks']['mx_record'] = false;
                 $result['reason'] = 'This domain has no mail server (MX/A record) and cannot receive email.';
                 return $result;
             }
@@ -80,6 +72,12 @@ class EmailVerifierHelper
             $mxWeights = [0];
         }
         $result['checks']['mx_record'] = true;
+
+        if ($result['checks']['disposable']) {
+            $result['status'] = 'disposable';
+            $result['reason'] = 'This domain is a known disposable/temporary email provider.';
+            return $result;
+        }
 
         array_multisort($mxWeights, $mxHosts);
         $mxHost = rtrim($mxHosts[0], '.');
