@@ -241,25 +241,8 @@
 .ev-step p{font-size:14px;line-height:1.6;color:var(--tx-2);}
 
 /* ==========================================================================
-   Pricing
+   Buttons
    ========================================================================== */
-.ev-plans{display:grid;grid-template-columns:1fr;gap:22px;align-items:stretch;}
-@media (min-width:820px){.ev-plans{grid-template-columns:repeat(3,1fr);gap:24px;}}
-.ev-plan{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);padding:32px 28px;display:flex;flex-direction:column;transition:transform .3s var(--ease),box-shadow .3s var(--ease),border-color .3s var(--ease);}
-.ev-plan:hover{transform:translateY(-4px);box-shadow:var(--e3);border-color:var(--green-line);}
-.ev-plan--hero{background:var(--surface);border:2px solid var(--green);box-shadow:0 10px 24px -12px rgba(111,217,67,.45),0 24px 56px -28px rgba(12,20,32,.22);}
-.ev-plan--hero:hover{border-color:var(--green);}
-@media (min-width:820px){.ev-plan--hero{transform:scale(1.035);}.ev-plan--hero:hover{transform:scale(1.035) translateY(-4px);}}
-.ev-plan-tag{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:linear-gradient(180deg,var(--green-bright),var(--green));color:#06300a;font-size:10.5px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;padding:5px 14px;border-radius:9999px;white-space:nowrap;box-shadow:0 6px 16px -6px rgba(111,217,67,.8);}
-.ev-plan-name{font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green-deep);margin-bottom:14px;}
-.ev-plan-price{display:flex;align-items:baseline;gap:3px;margin-bottom:6px;}
-.ev-plan-cur{font-size:20px;font-weight:700;color:var(--tx-2);}
-.ev-plan-num{font-size:46px;font-weight:800;letter-spacing:-.035em;line-height:1;}
-.ev-plan-vol{font-size:14px;color:var(--tx-2);margin-bottom:26px;}
-.ev-plan-sep{height:1px;background:var(--line);margin-bottom:22px;}
-.ev-plan-feats{display:flex;flex-direction:column;gap:13px;margin-bottom:28px;flex-grow:1;}
-.ev-plan-feats li{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--tx);}
-.ev-plan-feats svg{width:15px;height:15px;flex-shrink:0;margin-top:2.5px;color:var(--green-deep);stroke-width:3;}
 .ev-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px 24px;border-radius:12px;font-size:14.5px;font-weight:700;transition:transform .16s var(--ease),box-shadow .16s var(--ease),background .16s var(--ease-io),color .16s var(--ease-io);}
 .ev-btn svg{width:16px;height:16px;}
 .ev-btn--ghost{background:var(--surface);color:var(--tx);border:1.5px solid var(--line);}
@@ -269,9 +252,6 @@
 .ev-btn--light{background:#fff;color:var(--ink);box-shadow:0 8px 24px -8px rgba(0,0,0,.5);}
 .ev-btn--light:hover{transform:translateY(-2px);background:var(--green-tint);}
 .ev-btn--inline{width:auto;}
-.ev-plan-note{text-align:center;font-size:14px;color:var(--tx-2);margin-top:32px;}
-.ev-plan-note a{color:var(--green-deep);font-weight:600;border-bottom:1px solid var(--green-line);}
-.ev-plan-note a:hover{border-bottom-color:var(--green);}
 
 /* ==========================================================================
    Testimonials
@@ -310,7 +290,7 @@
 .ev-cta{position:relative;background:linear-gradient(140deg,var(--green-deep),var(--green) 62%,#8ee863);color:#fff;padding:104px 0;overflow:hidden;isolation:isolate;text-align:center;}
 .ev-cta::before{content:'';position:absolute;inset:0;z-index:-1;background:radial-gradient(700px 340px at 50% -20%,rgba(255,255,255,.22),transparent 68%);}
 .ev-cta h2{font-size:clamp(28px,3.8vw,44px);letter-spacing:-.03em;margin-bottom:16px;color:#fff;}
-.ev-cta p{font-size:17px;color:rgba(255,255,255,.9);max-width:500px;margin:0 auto 34px;line-height:1.6;}
+.ev-cta :where(p){font-size:17px;color:rgba(255,255,255,.9);max-width:500px;margin:0 auto 34px;line-height:1.6;}
 .ev-cta-note{margin-top:20px;font-size:13px;color:rgba(255,255,255,.72);}
 .ev-cta .ev-btn--light{color:var(--green-ink);}
 

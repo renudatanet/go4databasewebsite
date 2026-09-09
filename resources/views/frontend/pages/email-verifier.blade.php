@@ -158,67 +158,9 @@
     </div>
   </section>
 
-  {{-- ===================== PRICING ===================== --}}
-  <section class="ev-band ev-band--soft">
-    <div class="ev-shell">
-      <div class="ev-head ev-head--center ev-rv">
-        <span class="ev-kicker">Pricing</span>
-        <h2 class="ev-h2">Pay only for what you verify</h2>
-        <p class="ev-lead">No subscription. Buy credits once and use them whenever a list needs cleaning.</p>
-      </div>
-
-      <div class="ev-plans">
-        <div class="ev-plan ev-rv">
-          <div class="ev-plan-name">Free Trial</div>
-          <div class="ev-plan-price"><span class="ev-plan-cur">$</span><span class="ev-plan-num">0</span></div>
-          <div class="ev-plan-vol">1,000 contacts</div>
-          <div class="ev-plan-sep"></div>
-          <ul class="ev-plan-feats">
-            <li><i data-lucide="check"></i> Domain filtration</li>
-            <li><i data-lucide="check"></i> Real-time verification</li>
-            <li><i data-lucide="check"></i> Unlimited downloads</li>
-            <li><i data-lucide="check"></i> 1 user / organization</li>
-          </ul>
-          <a href="https://app.go4database.com/register" target="_blank" rel="noopener" class="ev-btn ev-btn--ghost">Start free</a>
-        </div>
-
-        <div class="ev-plan ev-plan--hero ev-rv">
-          <span class="ev-plan-tag">Most popular</span>
-          <div class="ev-plan-name">Nano</div>
-          <div class="ev-plan-price"><span class="ev-plan-cur">$</span><span class="ev-plan-num">49</span></div>
-          <div class="ev-plan-vol">100,000 contacts</div>
-          <div class="ev-plan-sep"></div>
-          <ul class="ev-plan-feats">
-            <li><i data-lucide="check"></i> Domain filtration</li>
-            <li><i data-lucide="check"></i> Real-time verification</li>
-            <li><i data-lucide="check"></i> Unlimited downloads</li>
-            <li><i data-lucide="check"></i> 1 user / organization</li>
-          </ul>
-          <a href="https://app.go4database.com/register?plan=nano" target="_blank" rel="noopener" class="ev-btn ev-btn--solid">Get started <i data-lucide="arrow-right"></i></a>
-        </div>
-
-        <div class="ev-plan ev-rv">
-          <div class="ev-plan-name">Micro</div>
-          <div class="ev-plan-price"><span class="ev-plan-cur">$</span><span class="ev-plan-num">200</span></div>
-          <div class="ev-plan-vol">1,000,000 contacts</div>
-          <div class="ev-plan-sep"></div>
-          <ul class="ev-plan-feats">
-            <li><i data-lucide="check"></i> Domain filtration</li>
-            <li><i data-lucide="check"></i> Real-time verification</li>
-            <li><i data-lucide="check"></i> Unlimited downloads</li>
-            <li><i data-lucide="check"></i> 1 user / organization</li>
-          </ul>
-          <a href="https://app.go4database.com/register?plan=micro" target="_blank" rel="noopener" class="ev-btn ev-btn--ghost">Get started</a>
-        </div>
-      </div>
-
-      <p class="ev-plan-note ev-rv">Need more than a million contacts? <a href="{{route('frontend.contact')}}">Talk to sales</a> about a custom volume.</p>
-    </div>
-  </section>
-
   {{-- ===================== TESTIMONIALS ===================== --}}
   @if(($all_testimonial ?? collect())->isNotEmpty())
-  <section class="ev-band ev-band--tight">
+  <section class="ev-band ev-band--soft ev-band--tight">
     <div class="ev-shell">
       <div class="ev-head ev-head--center ev-rv">
         <span class="ev-kicker">Customers</span>
@@ -254,7 +196,7 @@
   @endif
 
   {{-- ===================== FAQ ===================== --}}
-  <section class="ev-band ev-band--soft ev-band--tight">
+  <section class="ev-band ev-band--tight">
     <div class="ev-shell-narrow">
       <div class="ev-head ev-head--center ev-rv">
         <span class="ev-kicker">Questions</span>
