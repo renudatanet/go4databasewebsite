@@ -101,6 +101,15 @@
     <script>var siteurl = "{{url('/')}}"</script>
 
     {!! filter_static_option_value('site_third_party_tracking_code',$global_static_field_data) !!}
+
+    {{-- Mobile navigation. Loaded here rather than per page because both the
+         home layout and the inner-page layout include this partial, and the
+         desktop mega-menu has no small-screen handling of its own outside
+         home.css. The script reads the existing navbar, so the navbar file
+         itself is never touched. --}}
+    <link rel="stylesheet" href="{{asset('assets/frontend/css/mobile-nav.css?v=1')}}">
+    <script src="{{asset('assets/frontend/js/mobile-nav.js?v=1')}}" defer></script>
+
     @stack('styles')
 </head>
 

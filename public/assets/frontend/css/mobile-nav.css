@@ -1,0 +1,217 @@
+/* ==========================================================================
+   Mobile navigation.
+
+   The site's desktop menu is a wide mega-menu with no small-screen handling.
+   The rule that hides it below 992px lives only in home.css, which only the
+   homepage loads, so every other page rendered an 811px menu inside a 390px
+   screen with all the links printed on top of one another.
+
+   This file hides that menu on small screens everywhere, and styles a drawer
+   that mobile-nav.js builds by reading the existing navigation. Nothing here
+   depends on the navbar markup, which is hand-edited on the live server and
+   must not be replaced.
+   ========================================================================== */
+
+:root{
+  --g4m-green:#6fd943;
+  --g4m-green-bright:#7ff04d;
+  --g4m-green-ink:#2b6b0e;
+  --g4m-green-tint:#f2fcee;
+  --g4m-green-line:#cdf0b8;
+  --g4m-ink:#0b132a;
+  --g4m-tx:#0c1420;
+  --g4m-tx-2:#586374;
+  --g4m-line:#e7ecf1;
+  --g4m-ease:cubic-bezier(.32,.72,0,1);
+}
+
+/* --- burger --------------------------------------------------------------- */
+.g4m-burger{
+  display:none;
+  flex:none;
+  align-items:center;
+  justify-content:center;
+  width:44px;
+  height:44px;
+  margin-left:6px;
+  padding:0;
+  border:1px solid var(--g4m-line);
+  border-radius:11px;
+  background:#fff;
+  cursor:pointer;
+  color:var(--g4m-ink);
+  -webkit-tap-highlight-color:transparent;
+}
+.g4m-burger:focus{outline:none;}
+.g4m-burger:focus-visible{outline:2px solid var(--g4m-green);outline-offset:2px;}
+.g4m-burger-box{position:relative;width:20px;height:14px;}
+.g4m-burger-box span{
+  position:absolute;
+  left:0;
+  width:100%;
+  height:2px;
+  border-radius:2px;
+  background:currentColor;
+  transition:transform .28s var(--g4m-ease),opacity .18s var(--g4m-ease);
+}
+.g4m-burger-box span:nth-child(1){top:0;}
+.g4m-burger-box span:nth-child(2){top:6px;}
+.g4m-burger-box span:nth-child(3){top:12px;}
+.g4m-open .g4m-burger-box span:nth-child(1){transform:translateY(6px) rotate(45deg);}
+.g4m-open .g4m-burger-box span:nth-child(2){opacity:0;}
+.g4m-open .g4m-burger-box span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+
+/* --- drawer --------------------------------------------------------------- */
+.g4m-backdrop{
+  position:fixed;
+  inset:0;
+  z-index:10000;
+  background:rgba(11,19,42,.45);
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .26s var(--g4m-ease),visibility .26s;
+}
+.g4m-open .g4m-backdrop{opacity:1;visibility:visible;}
+
+.g4m-drawer{
+  position:fixed;
+  top:0;
+  right:0;
+  bottom:0;
+  z-index:10001;
+  width:min(360px,88vw);
+  display:flex;
+  flex-direction:column;
+  background:#fff;
+  box-shadow:-18px 0 48px rgba(11,19,42,.22);
+  transform:translateX(100%);
+  transition:transform .3s var(--g4m-ease);
+  overscroll-behavior:contain;
+}
+.g4m-open .g4m-drawer{transform:translateX(0);}
+
+.g4m-head{
+  flex:none;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:16px 18px;
+  border-bottom:1px solid var(--g4m-line);
+}
+.g4m-head-label{font-size:12px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--g4m-tx-2);}
+.g4m-close{
+  width:36px;
+  height:36px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:0;
+  border-radius:9px;
+  background:#f4f7f9;
+  color:var(--g4m-tx);
+  cursor:pointer;
+}
+.g4m-close:hover{background:var(--g4m-green-tint);color:var(--g4m-green-ink);}
+.g4m-close:focus{outline:none;}
+.g4m-close:focus-visible{outline:2px solid var(--g4m-green);outline-offset:2px;}
+.g4m-close svg{width:16px;height:16px;}
+
+.g4m-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 12px 18px;}
+
+.g4m-link,
+.g4m-trigger{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  width:100%;
+  padding:14px 14px;
+  border:0;
+  border-radius:10px;
+  background:transparent;
+  font-family:inherit;
+  font-size:15.5px;
+  font-weight:600;
+  color:var(--g4m-tx);
+  text-align:left;
+  text-decoration:none;
+  cursor:pointer;
+  transition:background .15s var(--g4m-ease),color .15s var(--g4m-ease);
+}
+.g4m-link:hover,.g4m-trigger:hover{background:#f4f7f9;color:var(--g4m-tx);text-decoration:none;}
+.g4m-link:focus,.g4m-trigger:focus{outline:none;}
+.g4m-link:focus-visible,.g4m-trigger:focus-visible{outline:2px solid var(--g4m-green);outline-offset:-2px;}
+
+.g4m-caret{
+  flex:none;
+  width:9px;
+  height:9px;
+  border-right:2px solid var(--g4m-tx-2);
+  border-bottom:2px solid var(--g4m-tx-2);
+  transform:rotate(45deg) translate(-2px,-2px);
+  transition:transform .26s var(--g4m-ease);
+}
+.g4m-group.is-open > .g4m-trigger{color:var(--g4m-green-ink);background:var(--g4m-green-tint);}
+.g4m-group.is-open .g4m-caret{border-color:var(--g4m-green-ink);transform:rotate(225deg) translate(-3px,-3px);}
+
+.g4m-sub{max-height:0;overflow:hidden;transition:max-height .3s var(--g4m-ease);}
+.g4m-sub-inner{padding:4px 0 10px 14px;margin-left:12px;border-left:2px solid var(--g4m-green-line);}
+.g4m-sub a{
+  display:block;
+  padding:10px 12px;
+  border-radius:8px;
+  font-size:14.5px;
+  font-weight:500;
+  color:var(--g4m-tx-2);
+  text-decoration:none;
+  transition:background .15s var(--g4m-ease),color .15s var(--g4m-ease);
+}
+.g4m-sub a:hover{background:var(--g4m-green-tint);color:var(--g4m-green-ink);text-decoration:none;}
+
+.g4m-actions{
+  flex:none;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  border-top:1px solid var(--g4m-line);
+  background:#fff;
+}
+.g4m-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:14px 20px;
+  border-radius:11px;
+  font-size:15px;
+  font-weight:700;
+  text-decoration:none;
+  transition:transform .16s var(--g4m-ease),filter .16s var(--g4m-ease);
+}
+.g4m-btn:hover{text-decoration:none;transform:translateY(-1px);}
+.g4m-btn--ghost{border:1.5px solid var(--g4m-line);color:var(--g4m-tx);background:#fff;}
+.g4m-btn--ghost:hover{border-color:var(--g4m-green);color:var(--g4m-green-ink);background:var(--g4m-green-tint);}
+.g4m-btn--solid{
+  background:linear-gradient(180deg,var(--g4m-green-bright),var(--g4m-green));
+  color:#06300a;
+  box-shadow:0 8px 20px -8px rgba(111,217,67,.7);
+}
+
+body.g4m-locked{overflow:hidden !important;}
+
+/* --- what shows at which width -------------------------------------------- */
+@media (max-width:992px){
+  /* The overlapping desktop menu. home.css does this for the homepage only. */
+  .g4d-nav{display:none !important;}
+  .g4m-burger{display:inline-flex;}
+  /* The header's own log in link doubles up with the drawer's, and it is the
+     first thing to crowd the logo on a narrow screen. */
+  .g4m-hide-sm{display:none !important;}
+}
+@media (min-width:993px){
+  .g4m-backdrop,.g4m-drawer{display:none;}
+}
+@media (prefers-reduced-motion:reduce){
+  .g4m-backdrop,.g4m-drawer,.g4m-sub,.g4m-caret,.g4m-burger-box span{transition-duration:.01ms !important;}
+}
