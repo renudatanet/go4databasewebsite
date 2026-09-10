@@ -211,8 +211,8 @@
 
         <!-- Right Corner CTA Buttons -->
         <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;margin-left:auto;">
-          <a href="https://app.go4database.com/login" class="nav-login-btn">Log in</a>
+          <a href="https://app.go4database.com/login?utm_source=homepage&amp;utm_medium=internal&amp;utm_campaign=app_login&amp;_gl=1*1jpv6ui*_ga*MzgwOTc0MjEuMTc4MTUzNDYyNQ..*_ga_0JCTQKZJCC*czE3ODkwMzcxODQkbzExNSRnMSR0MTc4OTAzNzQ0MiRqMTIkbDAkaDA." class="nav-login-btn">Log in</a>
           <a href="https://app.go4database.com/register" class="nav-signup-btn">Sign up for free</a>
         </div>
       </nav>
-    </header>
+    </header> 
