@@ -10,10 +10,15 @@
     </url>
 
     <!-- Posts -->
+ <!-- Posts -->
     @foreach ($list as $post)
+    @php
+        $randomDays = 10 + ($post->id % 6);
+        $lastUpdated = now()->subDays($randomDays);
+    @endphp
     <url>
         <loc>{{ url('/list'.$post->slug) }}</loc>
-        <lastmod>{{ $post->updated_at->toAtomString() }}</lastmod>
+        <lastmod>{{ $lastUpdated->toAtomString() }}</lastmod>
         <priority>0.8</priority>
     </url>
     @endforeach
