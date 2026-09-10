@@ -56,6 +56,13 @@ class EmailVerifierSettingsController extends Controller
             'hero_title_highlight' => 'hit send',
             'hero_subtitle' => "We check the syntax, the domain, and the live mailbox itself, then tell you plainly whether it's safe to send. No test email is ever delivered.",
             'tool_foot' => 'Free to use, No signup needed, Nothing is stored',
+            // Offer bar directly under the checker, catching people at the
+            // moment they have just verified one address by hand.
+            'offer_title' => 'Get 1200 free credits, instantly',
+            'offer_text' => 'Checking one address at a time? Verify your whole list in one go.',
+            'offer_btn' => 'Get Free Credits',
+            'offer_url' => 'https://app.go4database.com/register',
+            'offer_note' => 'No credit card required',
             'checks_kicker' => 'How it works',
             'checks_title' => 'Nine checks on every address',
             'checks_lead' => 'Each address runs through the same layered scan, from a simple format check all the way to a live conversation with the receiving mail server.',

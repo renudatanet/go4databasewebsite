@@ -131,6 +131,36 @@
                                         </div>
 
                                         <div class="ev-admin-sec">
+                                            <h5>{{__('Free Credits Offer')}}</h5>
+                                            <span class="ev-admin-hint">{{__('The green bar sitting directly under the email checker. Clear the Title and Button Label to remove it from the page.')}}</span>
+                                            <div class="row">
+                                                <div class="col-md-6 form-group">
+                                                    <label>{{__('Title')}}</label>
+                                                    <input type="text" name="{{$p}}offer_title" class="form-control" value="{{ $val('offer_title') }}">
+                                                </div>
+                                                <div class="col-md-6 form-group">
+                                                    <label>{{__('Text')}}</label>
+                                                    <input type="text" name="{{$p}}offer_text" class="form-control" value="{{ $val('offer_text') }}">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4 form-group">
+                                                    <label>{{__('Button Label')}}</label>
+                                                    <input type="text" name="{{$p}}offer_btn" class="form-control" value="{{ $val('offer_btn') }}">
+                                                </div>
+                                                <div class="col-md-5 form-group">
+                                                    <label>{{__('Button Link')}}</label>
+                                                    <input type="text" name="{{$p}}offer_url" class="form-control" value="{{ $val('offer_url') }}"
+                                                           placeholder="https://app.go4database.com/register">
+                                                </div>
+                                                <div class="col-md-3 form-group">
+                                                    <label>{{__('Small Note')}}</label>
+                                                    <input type="text" name="{{$p}}offer_note" class="form-control" value="{{ $val('offer_note') }}">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="ev-admin-sec">
                                             <h5>{{__('Bottom Call To Action')}}</h5>
                                             <div class="form-group">
                                                 <label>{{__('Title')}}</label>

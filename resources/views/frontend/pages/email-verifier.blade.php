@@ -68,6 +68,30 @@
     </div>
   </section>
 
+  {{-- ===================== FREE CREDITS OFFER ===================== --}}
+  @if(trim($ev['offer_title']) !== '' || trim($ev['offer_btn']) !== '')
+  <section class="ev-offer">
+    <div class="ev-shell">
+      <div class="ev-offer-card ev-rv">
+        <div class="ev-offer-tx">
+          <h2 class="ev-offer-title">{{ $ev['offer_title'] }}</h2>
+          @if(trim($ev['offer_text']) !== '')
+            <p class="ev-offer-sub">{{ $ev['offer_text'] }}</p>
+          @endif
+        </div>
+        <div class="ev-offer-act">
+          <a href="{{ $ev['offer_url'] }}" target="_blank" rel="noopener" class="ev-btn ev-btn--solid ev-btn--inline">
+            <i data-lucide="sparkles"></i> {{ $ev['offer_btn'] }}
+          </a>
+          @if(trim($ev['offer_note']) !== '')
+            <span class="ev-offer-note">{{ $ev['offer_note'] }}</span>
+          @endif
+        </div>
+      </div>
+    </div>
+  </section>
+  @endif
+
   {{-- ===================== WHAT WE CHECK ===================== --}}
   @if(($ev_items['check'] ?? collect())->isNotEmpty())
   <section class="ev-band">
