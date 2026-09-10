@@ -1170,7 +1170,7 @@
 <div class="fav-section-wrapper">
         <div style="text-align:center">
 
-          <h2 class="fav-title">Most Active Users Mailing List</h2>
+          <h3 class="fav-title">Most Active Users Mailing List</h3>
           <p class="fav-subtitle">High-converting, 95%+ accurate verified contact directories curated for outbound sales
             and marketing teams.</p>
         </div>
@@ -1178,9 +1178,9 @@
         <!-- Modern Pill Category Tabs -->
         <div class="fav-tabs-pill-wrap">
           <div class="fav-tabs-nav" id="favTabs">
-            <button class="fav-tab-btn active" onclick="filterFavCards('all', this)">Hot List</button>
+            <h3 class="fav-tab-btn active" onclick="filterFavCards('all', this)">Hot List</h3>
              @foreach($all_work_category as $data)
-            <button class="fav-tab-btn" onclick="filterFavCards('{{Str::slug($data->name)}}', this)">{{$data->name}}</button>
+            <h3 class="fav-tab-btn" onclick="filterFavCards('{{Str::slug($data->name)}}', this)">{{$data->name}}</h3>
             @endforeach
             </div>
         </div>
@@ -1336,14 +1336,14 @@
         <div
           style="display:flex;align-items:flex-end;justify-content:space-between;gap:30px;margin-bottom:44px;flex-wrap:wrap">
           <div>
-            <div
+            <h2
               style="display:inline-flex;align-items:center;gap:6px;background:#e8f7ea;color:#15803d;font-size:12px;font-weight:800;padding:6px 14px;border-radius:99px;margin-bottom:14px;border:1px solid rgba(34,197,94,0.25)">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
                 <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
               </svg>
               {{filter_static_option_value('home_page_01_'.$user_select_lang_slug.'_latest_news_title',$static_field_data)}}
-            </div>
+</h2>
             <div style="font-size:40px;font-weight:800;letter-spacing:-1.3px;color:#0f172a;line-height:1.15">
              {{filter_static_option_value('home_page_01_'.$user_select_lang_slug.'_latest_news_description',$static_field_data)}} 
             </div>
@@ -1627,10 +1627,10 @@
     <div class="g4d-section-texture"
       style="padding:72px 40px;background:linear-gradient(135deg,#f0fdf4,#dcfce7 60%,#e6f7e9);color:#0b132a;text-align:center;border-top:1px solid #d1fae5;border-bottom:1px solid #d1fae5">
       <div style="max-width:800px;margin:0 auto">
-        <div
+        <h2
           style="font-size:46px;font-weight:900;letter-spacing:-1.5px;line-height:1.1;margin-bottom:18px;color:#0b132a">
           Ready to
-          Build a High-Converting Pipeline?</div>
+          Build a High-Converting Pipeline?</h2>
         <div style="font-size:18px;color:#475569;margin-bottom:36px;font-weight:500;line-height:1.7">Start your 1-Month
           free trial today</div>
         <div style="display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap">
