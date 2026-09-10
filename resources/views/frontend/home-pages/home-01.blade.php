@@ -1170,7 +1170,7 @@
 <div class="fav-section-wrapper">
         <div style="text-align:center">
 
-          <h3 class="fav-title">Most Active Users Mailing List</h3>
+          <h2 class="fav-title">Most Active Users Mailing List</h2>
           <p class="fav-subtitle">High-converting, 95%+ accurate verified contact directories curated for outbound sales
             and marketing teams.</p>
         </div>
@@ -1178,9 +1178,9 @@
         <!-- Modern Pill Category Tabs -->
         <div class="fav-tabs-pill-wrap">
           <div class="fav-tabs-nav" id="favTabs">
-            <h3 class="fav-tab-btn active" onclick="filterFavCards('all', this)">Hot List</h3>
+            <div  class="fav-tab-btn active" onclick="filterFavCards('all', this)">Hot List</div>
              @foreach($all_work_category as $data)
-            <h3 class="fav-tab-btn" onclick="filterFavCards('{{Str::slug($data->name)}}', this)">{{$data->name}}</h3>
+            <div class="fav-tab-btn" onclick="filterFavCards('{{Str::slug($data->name)}}', this)">{{$data->name}}</div>
             @endforeach
             </div>
         </div>
@@ -1269,14 +1269,14 @@
 
         </div>
 
-        <div style="
+        <h3 style="
             font-size:24px;
             font-weight:900;
             color:#0b132a;
             line-height:1.2;
         ">
             {{ $data->title }}
-        </div>
+</h3>
 
         <div style="
             font-size:13.5px;
@@ -1336,17 +1336,17 @@
         <div
           style="display:flex;align-items:flex-end;justify-content:space-between;gap:30px;margin-bottom:44px;flex-wrap:wrap">
           <div>
-            <h2
+            <div
               style="display:inline-flex;align-items:center;gap:6px;background:#e8f7ea;color:#15803d;font-size:12px;font-weight:800;padding:6px 14px;border-radius:99px;margin-bottom:14px;border:1px solid rgba(34,197,94,0.25)">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
                 <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
               </svg>
               {{filter_static_option_value('home_page_01_'.$user_select_lang_slug.'_latest_news_title',$static_field_data)}}
-</h2>
-            <div style="font-size:40px;font-weight:800;letter-spacing:-1.3px;color:#0f172a;line-height:1.15">
+</div>
+            <h2 style="font-size:40px;font-weight:800;letter-spacing:-1.3px;color:#0f172a;line-height:1.15">
              {{filter_static_option_value('home_page_01_'.$user_select_lang_slug.'_latest_news_description',$static_field_data)}} 
-            </div>
+            </h2>
           </div>
         </div>
 
