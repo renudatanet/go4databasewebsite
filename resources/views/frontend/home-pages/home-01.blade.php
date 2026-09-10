@@ -657,9 +657,9 @@
 
         <!-- Header -->
         <div style="text-align:center;max-width:720px;margin:0 auto 52px">
-          <div style="font-size:44px;font-weight:800;letter-spacing:-1.5px;color:#0f172a;line-height:1.12">
+          <h2 style="font-size:44px;font-weight:800;letter-spacing:-1.5px;color:#0f172a;line-height:1.12">
             High-Quality
-            Data Drives Better Outreach Results</div>
+            Data Drives Better Outreach Results</h2>
           <div style="font-size:17px;color:#64748b;margin-top:16px;line-height:1.7;font-weight:500">Why leading sales,
             growth, and
             marketing teams choose Go4Database to power their outbound pipeline</div>
@@ -800,9 +800,9 @@
     <div id="comparison" style="padding:72px 40px;background:#ffffff">
       <div style="max-width:1200px;margin:0 auto">
         <div style="text-align:center;max-width:700px;margin:0 auto 52px">
-          <div style="font-size:40px;font-weight:800;letter-spacing:-1.5px;color:#0f172a;line-height:1.12">Why Sales
+          <h2 style="font-size:40px;font-weight:800;letter-spacing:-1.5px;color:#0f172a;line-height:1.12">Why Sales
             Teams
-            Switch to Us</div>
+            Switch to Us</h2>
           <div style="font-size:17px;color:#64748b;margin-top:14px;line-height:1.7;font-weight:500">Compare what you
             get with Go4Database versus
             traditional lead providers</div>
@@ -812,7 +812,7 @@
           <div
             style="background:linear-gradient(135deg, #f0fdf4 0%, #dcfce7 45%, #bbf7d0 100%);border:1.5px solid rgba(34, 197, 94, 0.35);border-radius:20px;padding:36px">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
-              <div style="font-size:22px;font-weight:800;color:#1f7a2e">With Go4Database</div>
+              <h3 style="font-size:22px;font-weight:800;color:#1f7a2e">With Go4Database</h3>
               <span
                 style="background:#1f7a2e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px">95%+
                 ACCURACY</span>
@@ -844,7 +844,7 @@
 
           <div style="background:#fafafa;border:1px solid rgba(0,0,0,0.1);border-radius:20px;padding:36px">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
-              <div style="font-size:22px;font-weight:800;color:#777">With Others</div>
+              <h3 style="font-size:22px;font-weight:800;color:#777">With Others</h3>
               <span
                 style="background:#e5e7eb;color:#666;font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px">80-90%
                 ACCURACY</span>
@@ -889,8 +889,8 @@
             </svg>
             PLATFORM CAPABILITIES
           </div>
-          <div style="font-size:44px;font-weight:800;letter-spacing:-1.5px;color:#0f172a;line-height:1.15">Everything
-            You Need to Find Your Next Customer</div>
+          <h2 style="font-size:44px;font-weight:800;letter-spacing:-1.5px;color:#0f172a;line-height:1.15">Everything
+            You Need to Find Your Next Customer</h2>
           <div style="font-size:18px;color:#64748b;line-height:1.7;margin-top:14px;font-weight:500">From B2B data and
             advanced search to AI-powered ICP targeting.</div>
         </div>
@@ -909,9 +909,9 @@
                   style="display:inline-block;background:#ffe4e6;color:#e11d48;font-size:11.5px;font-weight:800;letter-spacing:1px;padding:6px 14px;border-radius:999px">
                   AI LEAD GENERATION TOOL</div>
               </div>
-              <div
+              <h3
                 style="font-size:34px;font-weight:800;letter-spacing:-1px;color:#111;line-height:1.2;margin-bottom:16px">
-                Get data from the most complete B2B Marketplace</div>
+                Get data from the most complete B2B Marketplace</h3>
               <div style="font-size:16px;color:#555;line-height:1.65;margin-bottom:24px">Access 400M+ decision makers
                 with 50+ granular search filters. Filter by job title, company revenue, location, and real-time
                 verified
@@ -953,9 +953,9 @@
                   style="display:inline-block;background:#f3e8ff;color:#7c3aed;font-size:11.5px;font-weight:800;letter-spacing:1px;padding:6px 14px;border-radius:999px">
                   ADVANCED SEARCH &amp; FILTERS</div>
               </div>
-              <div
+              <h3
                 style="font-size:34px;font-weight:800;letter-spacing:-1px;color:#111;line-height:1.2;margin-bottom:16px">
-                Advanced filter section for targeted search</div>
+                Advanced filter section for targeted search</h3>
               <div style="font-size:16px;color:#555;line-height:1.65;margin-bottom:24px">Filter decision makers across
                 50+ granular search criteria including job title, industry, company turnover, location,
                 technographics,
@@ -999,9 +999,9 @@
                   style="display:inline-block;background:#e0f2fe;color:#0284c7;font-size:11.5px;font-weight:800;letter-spacing:1px;padding:6px 14px;border-radius:999px">
                   AI LEAD GENERATION SOFTWARE</div>
               </div>
-              <div
+              <h3
                 style="font-size:34px;font-weight:800;letter-spacing:-1.2px;color:#111;line-height:1.2;margin-bottom:16px">
-                AI search with website URL &amp; location to generate your ICP</div>
+                AI search with website URL &amp; location to generate your ICP</h3>
               <div style="font-size:16px;color:#555;line-height:1.65;margin-bottom:24px">Input your company website
                 URL
                 and target location. Our AI engine automatically analyzes your domain to generate your exact Ideal
