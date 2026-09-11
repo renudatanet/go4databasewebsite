@@ -110,6 +110,17 @@
     <link rel="stylesheet" href="{{asset('assets/frontend/css/mobile-nav.css?v=1')}}">
     <script src="{{asset('assets/frontend/js/mobile-nav.js?v=1')}}" defer></script>
 
+    {{-- The theme sets overflow-x:hidden on body. That makes body a scroll
+         container, which silently disables position:sticky everywhere on the
+         site: the sticky header never sticks, and the homepage's stacking
+         cards never stack. `clip` hides horizontal overflow exactly the same
+         way without creating that container.
+
+         Inline rather than in a stylesheet on purpose. It has to load after
+         the theme CSS to win, and keeping it here means there is no separate
+         asset to copy into the live assets folder and fall out of step. --}}
+    <style>html,body{overflow-x:clip;}body{overflow-y:visible;}</style>
+
     @stack('styles')
 </head>
 
