@@ -204,7 +204,7 @@ use App\Services;
     </div>
 @php
     $randomDays = 10 + ($service_item->id % 6); // 10-15 days
-    $lastUpdated = $service_item->updated_at->copy()->subDays($randomDays);
+   $lastUpdated = now()->subDays($randomDays);
 @endphp
 
 
