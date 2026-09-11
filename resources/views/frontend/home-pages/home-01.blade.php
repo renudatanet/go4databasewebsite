@@ -185,21 +185,32 @@
         <div class="search-controls-row"
           style="display:flex;align-items:center;gap:12px;padding:18px 26px;flex-wrap:wrap">
           <input id="filter-title" placeholder="Title"
-            style="flex:1;min-width:130px;background:#f8fafc;border:1.5px solid #cbd5e1;border-radius:10px;padding:11px 16px;font-size:14px;color:#0f172a;font-family:inherit;box-shadow:inset 0 2px 4px rgba(0,0,0,0.02)">
-          <input id="filter-industry" placeholder="Industry"
-            style="flex:1;min-width:130px;background:#f8fafc;border:1.5px solid #cbd5e1;border-radius:10px;padding:11px 16px;font-size:14px;color:#0f172a;font-family:inherit;box-shadow:inset 0 2px 4px rgba(0,0,0,0.02)">
-          <input id="filter-business" placeholder="Business"
-            style="flex:1;min-width:130px;background:#f8fafc;border:1.5px solid #cbd5e1;border-radius:10px;padding:11px 16px;font-size:14px;color:#0f172a;font-family:inherit;box-shadow:inset 0 2px 4px rgba(0,0,0,0.02)">
+            style="flex:1;min-width:120px;background:#fff;border:1.5px solid #d9e1ea;border-radius:10px;padding:11px 16px;font-size:14px;color:#0f172a;font-family:inherit;outline:none">
+          <input id="filter-industry" placeholder="Industry / Business"
+            style="flex:1.35;min-width:160px;background:#fff;border:1.5px solid #d9e1ea;border-radius:10px;padding:11px 16px;font-size:14px;color:#0f172a;font-family:inherit;outline:none">
           <input id="filter-location" placeholder="Location"
-            style="flex:1;min-width:130px;background:#f8fafc;border:1.5px solid #cbd5e1;border-radius:10px;padding:11px 16px;font-size:14px;color:#0f172a;font-family:inherit;box-shadow:inset 0 2px 4px rgba(0,0,0,0.02)">
-          <button id="search-action-btn"
-            style="border:none;cursor:pointer;background:#6fd943;color:#0b132a;font-size:14px;font-weight:800;padding:11px 26px;border-radius:99px;display:flex;align-items:center;gap:7px;box-shadow:0 8px 22px rgba(111,217,67,0.45);flex-shrink:0">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <circle cx="11" cy="11" r="7" stroke="#0b132a" stroke-width="2.5" />
-              <path d="M16 16l4.5 4.5" stroke="#0b132a" stroke-width="2.5" stroke-linecap="round" />
+            style="flex:1;min-width:120px;background:#fff;border:1.5px solid #d9e1ea;border-radius:10px;padding:11px 16px;font-size:14px;color:#0f172a;font-family:inherit;outline:none">
+
+          <button id="open-filter-btn" type="button"
+            style="cursor:pointer;background:#f2fcee;color:#2b6b0e;border:1.5px solid #cdf0b8;font-size:14px;font-weight:700;padding:10px 20px;border-radius:99px;display:flex;align-items:center;gap:8px;font-family:inherit;flex-shrink:0">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M3 5h18l-7 8.2V20l-4 2v-8.8L3 5z" />
             </svg>
-            Search
+            Advanced Filter
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
           </button>
+
+          <a id="download-leads-btn" href="https://app.go4database.com/register" target="_blank" rel="noopener"
+            style="cursor:pointer;background:#3b8e15;color:#fff;font-size:14px;font-weight:700;padding:11px 24px;border-radius:99px;display:flex;align-items:center;gap:8px;text-decoration:none;box-shadow:0 8px 20px rgba(59,142,21,0.3);flex-shrink:0">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 3v11m0 0l-4.2-4.2M12 14l4.2-4.2M4 19h16" stroke="currentColor" stroke-width="2.3"
+                stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            Download
+          </a>
         </div>
 
         <!-- Results Table -->
