@@ -324,66 +324,80 @@ function escapeHtml(value) {
   })[ch]);
 }
 
-  // Render Leads in the original grid-row layout
-function renderLeads(leadsArr) {
+const REGISTER_URL = 'https://app.go4database.com/register?utm_source=Homepage&utm_medium=Internal&utm_campaign=';
+
+const STATUS_ICON = {
+  yes: '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  no: '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg>',
+};
+
+function setLeadsSummary(html) {
+  const summary = document.getElementById('leads-summary');
+  if (!summary) return;
+  summary.innerHTML = html || '';
+  summary.classList.toggle('hidden', !html);
+}
+
+// "Showing 5 of 28,697 matching leads" - the total is the best argument for
+// signing up, so say it and link to Register when there are more to see.
+function leadsSummaryHtml(shown, total) {
+  const count = Number(total);
+  if (!Number.isFinite(count) || count <= shown) {
+    return `<span><strong>${shown}</strong> matching lead${shown === 1 ? '' : 's'}</span>`;
+  }
+  return `<span>Showing <strong>${shown}</strong> of <strong>${count.toLocaleString('en-US')}</strong> matching leads</span>
+    <a href="${REGISTER_URL}see_all_leads" data-track="see_all_leads">Sign up free to see all &rarr;</a>`;
+}
+
+function renderLeads(leadsArr, total) {
   const container = document.getElementById('results-container');
   const rowsContainer = document.getElementById('leads-rows');
   if (!container || !rowsContainer) return;
 
+  container.classList.remove('hidden');
+
   if (!leadsArr || leadsArr.length === 0) {
+    setLeadsSummary('');
     rowsContainer.innerHTML = `
       <div style="padding:32px;text-align:center;color:#64748b;font-size:14px">
         No results found.
       </div>`;
-    container.classList.remove('hidden');
     return;
   }
 
-  container.classList.remove('hidden');
+  setLeadsSummary(leadsSummaryHtml(leadsArr.length, total));
+
+  const statusBadge = (available, what) => available
+    ? `<span class="g4d-lead-status is-yes" title="${what} available">${STATUS_ICON.yes}</span>`
+    : `<span class="g4d-lead-status is-no" title="No ${what.toLowerCase()} on file">${STATUS_ICON.no}</span>`;
 
   rowsContainer.innerHTML = leadsArr.map(lead => {
     const hasEmail = !!lead.has_email;
     const hasPhone = !!lead.has_phone;
     // Opaque, per-search, 30 minute token; the reveal API swaps it for the email or phone.
     const token = escapeHtml(lead.contact_token);
-    // The data uses "0000" and "" for unknown values, so show N/A for those too.
-    const founded = lead.founded_year && lead.founded_year !== '0000' ? lead.founded_year : 'N/A';
+    // The data uses "0000" and "" for unknown values; leave those out entirely.
+    const meta = [
+      lead.founded_year && lead.founded_year !== '0000' ? `Founded ${escapeHtml(lead.founded_year)}` : '',
+      lead.turnover ? `Turnover ${escapeHtml(lead.turnover)}` : '',
+    ].filter(Boolean).join(' &middot; ');
+    const title = escapeHtml(lead.title);
     return `
-    <div style="display:grid;grid-template-columns:36px 1.7fr 1.3fr 1.4fr 1.1fr 1.1fr;align-items:center;padding:16px 20px;border-bottom:1px solid #f1f5f9;font-size:13.5px;color:#333;min-width:860px;background:#fff">
-      <span style="width:16px;height:16px;border:1.5px solid #cbd5e1;border-radius:3px;display:inline-block"></span>
-
-      <div style="overflow:hidden;padding-right:12px">
-        <div style="font-weight:700;color:#1e293b;font-size:14px;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(lead.company)}</div>
-        <div style="display:flex;align-items:center;gap:6px;margin:4px 0 2px">
-          <span style="color:#1f7a2e;font-size:12px">🌐</span>
-          <span style="background:#1f7a2e;color:#fff;font-size:9px;font-weight:800;padding:1px 4px;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;line-height:1">in</span>
-          <span style="background:#1f7a2e;color:#fff;font-size:9px;font-weight:800;width:14px;height:14px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;line-height:1">f</span>
-        </div>
-        <div style="font-size:11.5px;color:#64748b">Founded: ${escapeHtml(founded)}, Turnover: ${escapeHtml(lead.turnover || 'N/A')}</div>
+    <div class="g4d-lead g4d-leads-grid">
+      <div class="g4d-lead-company-cell">
+        <div class="g4d-lead-company">${escapeHtml(lead.company)}</div>
+        ${meta ? `<div class="g4d-lead-meta">${meta}</div>` : ''}
       </div>
-
-      <div style="overflow:hidden;padding-right:12px">
-        <div style="font-weight:700;color:#1e293b;font-size:14px">${escapeHtml(lead.person_name)}</div>
-        <div style="margin-top:3px">
-          <span style="background:#1f7a2e;color:#fff;font-size:9px;font-weight:800;padding:1px 4px;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;line-height:1">in</span>
-        </div>
-      </div>
-
-      <div style="color:#475569;font-size:13.5px;font-weight:500;padding-right:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
-        ${escapeHtml(lead.title)}
-      </div>
-
-      <div>
-        <button class="verify-email-btn view-btn" data-type="email" data-token="${token}" data-available="${hasEmail ? 1 : 0}"
-          style="border:1px solid #cbd5e1;background:#fff;border-radius:6px;padding:7px 12px;font-size:12.5px;font-weight:600;color:#334155;display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.04)">
-          View email
-          <span style="display:inline-flex;align-items:center;justify-content:center;background:${hasEmail ? '#10b981' : '#ef4444'};color:#fff;width:16px;height:14px;border-radius:3px;font-size:10px">${hasEmail ? '✉✓' : '✉✕'}</span>
+      <div class="g4d-lead-person">${escapeHtml(lead.person_name)}</div>
+      <div class="g4d-lead-title" title="${title}">${title}</div>
+      <div class="g4d-lead-email">
+        <button type="button" class="g4d-lead-btn verify-email-btn view-btn" data-type="email" data-token="${token}" data-available="${hasEmail ? 1 : 0}">
+          View Email ${statusBadge(hasEmail, 'Email')}
         </button>
       </div>
-
-      <div>
-        <button class="view-btn" data-type="contact" data-token="${token}" data-available="${hasPhone ? 1 : 0}" style="border:1px solid #cbd5e1;background:#fff;border-radius:6px;padding:7px 12px;font-size:12.5px;font-weight:600;color:#334155;display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.04)">
-          View Contact <span style="color:#10b981;font-size:13px">📞</span>
+      <div class="g4d-lead-phone">
+        <button type="button" class="g4d-lead-btn view-btn" data-type="contact" data-token="${token}" data-available="${hasPhone ? 1 : 0}">
+          View Phone ${statusBadge(hasPhone, 'Phone')}
         </button>
       </div>
     </div>
@@ -396,6 +410,7 @@ function hideResults() {
   const rowsContainer = document.getElementById('leads-rows');
   if (container) container.classList.add('hidden');
   if (rowsContainer) rowsContainer.innerHTML = '';
+  setLeadsSummary('');
 }
 
 function showLoadingRow() {
@@ -403,6 +418,7 @@ function showLoadingRow() {
   const rowsContainer = document.getElementById('leads-rows');
   if (!container || !rowsContainer) return;
   container.classList.remove('hidden');
+  setLeadsSummary('');
   rowsContainer.innerHTML = `
     <div style="padding:32px;text-align:center;color:#64748b;font-size:14px">
       Loading...
@@ -434,11 +450,12 @@ function fetchLeads(params) {
       } else if (Array.isArray(json.data)) {
         leadsArr = json.data;
       }
-      renderLeads(leadsArr);
+      renderLeads(leadsArr, json && json.total);
     })
     .catch(err => {
       if (requestId !== latestLeadsRequest) return;
       console.error('Lead fetch failed:', err);
+      setLeadsSummary('');
       const rowsContainer = document.getElementById('leads-rows');
       if (rowsContainer) {
         rowsContainer.innerHTML = `
@@ -610,8 +627,6 @@ function buildParamsAndFetch() {
 // The reveal API allows 10 per minute and 100 per day per visitor, answers 429
 // past that, and 404 once the search's tokens are older than 30 minutes.
 const CONTACT_API = window.G4D_LEADS_CONTACT_API || 'https://app.go4database.com/api/website/leads/contact';
-const REGISTER_URL = 'https://app.go4database.com/register?utm_source=Homepage&utm_medium=Internal&utm_campaign=';
-
 document.addEventListener('click', function (e) {
   const btn = e.target.closest('#leads-rows .view-btn');
   if (!btn || btn.disabled) return;
@@ -624,7 +639,7 @@ document.addEventListener('click', function (e) {
   // Always textContent, never innerHTML: lead data comes from uploaded files.
   const show = (text) => {
     const span = document.createElement('span');
-    span.style.cssText = 'font-size:13px;font-weight:600;color:#1e293b;word-break:break-all';
+    span.className = 'g4d-lead-value';
     span.textContent = text;
     btn.replaceWith(span);
   };
@@ -651,7 +666,7 @@ document.addEventListener('click', function (e) {
         const link = document.createElement('a');
         link.href = REGISTER_URL + action + '_limit';
         link.textContent = 'Sign up free to see more';
-        link.style.cssText = 'font-size:13px;font-weight:600;color:#3b8e15';
+        link.className = 'g4d-lead-limit';
         btn.replaceWith(link);
         if (typeof gtag === 'function') gtag('event', 'reveal_limit_reached', { location: 'homepage_search' });
       } else if (status === 404) {
@@ -662,4 +677,9 @@ document.addEventListener('click', function (e) {
     })
     .catch(() => setBusy(false));
 });
-    
+
+// "Sign up free to see all" in the results summary
+document.addEventListener('click', function (e) {
+  const link = e.target.closest('#leads-summary a[data-track]');
+  if (link && typeof gtag === 'function') gtag('event', link.dataset.track, { location: 'homepage_search' });
+});

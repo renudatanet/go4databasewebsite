@@ -147,14 +147,20 @@ search stalls the whole page.
   per-lead `contact_token`, but no email, phone, LinkedIn or id. With all three
   boxes empty the JS skips the request and hides the results table; "No results
   found." is only for a real search with no matches.
-- **Reveal** (same file): "View email"/"View Contact" call
+  Above the rows a summary reads "Showing 5 of 28,697 matching leads" with a
+  "Sign up free to see all" link (`utm_campaign=see_all_leads`, GA4 event of the
+  same name). The table's CSS is a `<style>` block next to `#results-container`
+  in `home-01.blade.php`, not `home.css`, so it deploys without copying assets;
+  below 900px the rows turn into cards.
+- **Reveal** (same file): "View Email"/"View Phone" call
   `GET /api/website/leads/contact?token=…&type=email|contact` for that one lead
   and show the value as text (never innerHTML). 404 means the search's tokens
   are older than 30 minutes, so the page re-runs the search; 429 means the
   visitor passed 10/minute or 100/day, so the button becomes a "Sign up free to
   see more" link to Register (`utm_campaign=view_email_limit|view_contact_limit`).
   Leads flagged without an email/phone show "No … available" without a call.
-  GA4 events: `view_email`, `view_contact`, `reveal_limit_reached`.
+  GA4 events: `view_email`, `view_contact`, `reveal_limit_reached`,
+  `see_all_leads`.
 - **List pages** (`list/list-single.blade.php`): still on the old
   `/api/getleads`, which returns full records including emails, and "View
   Email" reveals the address. Scheduled to move to the new API once the
