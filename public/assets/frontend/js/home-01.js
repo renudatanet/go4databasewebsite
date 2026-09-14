@@ -592,14 +592,9 @@ function buildParamsAndFetch() {
   setupStickyNav();
   setupNavDropdowns();
 
-  // Auto-fill "CEO" in the title filter since CEO tab is active by default
-  const titleInput = document.getElementById('filter-title');
-  if (titleInput) {
-    titleInput.value = 'CEO';
-  }
-
-  showLoadingRow();          // show "Loading..." immediately
-  buildParamsAndFetch();     // fetch leads filtered by "CEO" (uses the pre-filled input)
+  // The boxes start empty, so this normally just keeps the results table hidden.
+  // It only searches when the browser restored typed values (e.g. Back button).
+  buildParamsAndFetch();
 
   setupFilterListeners();
   setupModal();
