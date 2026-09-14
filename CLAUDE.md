@@ -136,19 +136,25 @@ Both call the app (`app.go4database.com`) straight from the browser; the app's
 CORS list only allows `https://www.go4database.com`, so local origins are
 blocked. To test the homepage search locally, set `WEBSITE_LEADS_LOCAL_PROXY=true`
 in `.env` (only honoured when `APP_ENV=local`): the page then searches through
-`/local-dev/website-leads` (`WebsiteLeadsLocalProxyController`), which forwards
-to the API server-side. Run the dev server with `PHP_CLI_SERVER_WORKERS=4`,
+`/local-dev/website-leads` and `/local-dev/website-leads/contact`
+(`WebsiteLeadsLocalProxyController`), which forward to the API server-side. Run the dev server with `PHP_CLI_SERVER_WORKERS=4`,
 since the built-in server is otherwise single-threaded and a 5-8s uncached
 search stalls the whole page.
 
 - **Homepage** (`home-01.js`): `GET /api/website/leads` with `title`,
   `industry_business`, `location` (comma separated values, e.g. `CEO, CTO`).
-  Returns `{data: [...max 5], total}` with `has_email`/`has_phone` flags and
-  no email, phone, LinkedIn or id. With all three boxes empty the JS skips the
-  request and hides the results table; "No results found." is only for a real
-  search with no matches. "View email"/"View Contact" go to the app's Register page
-  with `utm_campaign=view_email|view_contact` and fire a GA4 event of the same
-  name.
+  Returns `{data: [...max 5], total}` with `has_email`/`has_phone` flags and a
+  per-lead `contact_token`, but no email, phone, LinkedIn or id. With all three
+  boxes empty the JS skips the request and hides the results table; "No results
+  found." is only for a real search with no matches.
+- **Reveal** (same file): "View email"/"View Contact" call
+  `GET /api/website/leads/contact?token=…&type=email|contact` for that one lead
+  and show the value as text (never innerHTML). 404 means the search's tokens
+  are older than 30 minutes, so the page re-runs the search; 429 means the
+  visitor passed 10/minute or 100/day, so the button becomes a "Sign up free to
+  see more" link to Register (`utm_campaign=view_email_limit|view_contact_limit`).
+  Leads flagged without an email/phone show "No … available" without a call.
+  GA4 events: `view_email`, `view_contact`, `reveal_limit_reached`.
 - **List pages** (`list/list-single.blade.php`): still on the old
   `/api/getleads`, which returns full records including emails, and "View
   Email" reveals the address. Scheduled to move to the new API once the

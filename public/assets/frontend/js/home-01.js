@@ -312,7 +312,7 @@
 
 // Website-only search endpoint. It uses the app's Normal filter rules, returns
 // at most 5 leads plus a total, and never sends emails or phone numbers, only
-// has_email / has_phone flags.
+// has_email / has_phone flags and a contact_token for the reveal API below.
 // A local copy of the site sets G4D_LEADS_API to its own proxy route, because
 // the API only accepts calls from www.go4database.com.
 const API_BASE = window.G4D_LEADS_API || 'https://app.go4database.com/api/website/leads';
@@ -343,6 +343,9 @@ function renderLeads(leadsArr) {
 
   rowsContainer.innerHTML = leadsArr.map(lead => {
     const hasEmail = !!lead.has_email;
+    const hasPhone = !!lead.has_phone;
+    // Opaque, per-search, 30 minute token; the reveal API swaps it for the email or phone.
+    const token = escapeHtml(lead.contact_token);
     // The data uses "0000" and "" for unknown values, so show N/A for those too.
     const founded = lead.founded_year && lead.founded_year !== '0000' ? lead.founded_year : 'N/A';
     return `
@@ -371,7 +374,7 @@ function renderLeads(leadsArr) {
       </div>
 
       <div>
-        <button class="verify-email-btn view-btn" data-type="email"
+        <button class="verify-email-btn view-btn" data-type="email" data-token="${token}" data-available="${hasEmail ? 1 : 0}"
           style="border:1px solid #cbd5e1;background:#fff;border-radius:6px;padding:7px 12px;font-size:12.5px;font-weight:600;color:#334155;display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.04)">
           View email
           <span style="display:inline-flex;align-items:center;justify-content:center;background:${hasEmail ? '#10b981' : '#ef4444'};color:#fff;width:16px;height:14px;border-radius:3px;font-size:10px">${hasEmail ? '✉✓' : '✉✕'}</span>
@@ -379,7 +382,7 @@ function renderLeads(leadsArr) {
       </div>
 
       <div>
-        <button class="view-btn" data-type="contact" style="border:1px solid #cbd5e1;background:#fff;border-radius:6px;padding:7px 12px;font-size:12.5px;font-weight:600;color:#334155;display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.04)">
+        <button class="view-btn" data-type="contact" data-token="${token}" data-available="${hasPhone ? 1 : 0}" style="border:1px solid #cbd5e1;background:#fff;border-radius:6px;padding:7px 12px;font-size:12.5px;font-weight:600;color:#334155;display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.04)">
           View Contact <span style="color:#10b981;font-size:13px">📞</span>
         </button>
       </div>
@@ -608,28 +611,60 @@ function buildParamsAndFetch() {
   setupScrollTop();
 });
 
-// View email / View Contact -> Register, with tracking
+// View email / View Contact -> reveal that one lead's email or phone.
+// The reveal API allows 10 per minute and 100 per day per visitor, answers 429
+// past that, and 404 once the search's tokens are older than 30 minutes.
+const CONTACT_API = window.G4D_LEADS_CONTACT_API || 'https://app.go4database.com/api/website/leads/contact';
+const REGISTER_URL = 'https://app.go4database.com/register?utm_source=Homepage&utm_medium=Internal&utm_campaign=';
+
 document.addEventListener('click', function (e) {
   const btn = e.target.closest('#leads-rows .view-btn');
-  if (!btn) return;
+  if (!btn || btn.disabled) return;
 
-  const action = btn.dataset.type === 'contact' ? 'view_contact' : 'view_email';
-  const registerUrl = 'https://app.go4database.com/register?utm_source=Homepage&utm_medium=Internal&utm_campaign=' + action;
+  const type = btn.dataset.type === 'contact' ? 'contact' : 'email';
+  const action = type === 'contact' ? 'view_contact' : 'view_email';
+  const unavailable = type === 'contact' ? 'No phone available' : 'No email available';
+  if (typeof gtag === 'function') gtag('event', action, { location: 'homepage_search' });
 
-  // Leaving the page straight away can drop the GA4 hit, so wait for gtag to
-  // confirm it, but never longer than 800ms (ad blockers stop the callback).
-  let navigated = false;
-  const go = () => {
-    if (navigated) return;
-    navigated = true;
-    window.location.href = registerUrl;
+  // Always textContent, never innerHTML: lead data comes from uploaded files.
+  const show = (text) => {
+    const span = document.createElement('span');
+    span.style.cssText = 'font-size:13px;font-weight:600;color:#1e293b;word-break:break-all';
+    span.textContent = text;
+    btn.replaceWith(span);
   };
 
-  if (typeof gtag === 'function') {
-    gtag('event', action, { location: 'homepage_search', event_callback: go });
-    setTimeout(go, 800);
-  } else {
-    go();
+  // Known to be missing: say so without spending one of the visitor's reveals.
+  if (btn.dataset.available !== '1') {
+    show(unavailable);
+    return;
   }
+
+  const setBusy = (busy) => {
+    btn.disabled = busy;
+    btn.style.opacity = busy ? '0.6' : '';
+    btn.style.cursor = busy ? 'progress' : 'pointer';
+  };
+
+  setBusy(true);
+  fetch(`${CONTACT_API}?token=${encodeURIComponent(btn.dataset.token)}&type=${type}`, { headers: { Accept: 'application/json' } })
+    .then(res => res.json().then(body => ({ status: res.status, body })))
+    .then(({ status, body }) => {
+      if (status === 200) {
+        show((type === 'contact' ? body.phone : body.email) || unavailable);
+      } else if (status === 429) {
+        const link = document.createElement('a');
+        link.href = REGISTER_URL + action + '_limit';
+        link.textContent = 'Sign up free to see more';
+        link.style.cssText = 'font-size:13px;font-weight:600;color:#3b8e15';
+        btn.replaceWith(link);
+        if (typeof gtag === 'function') gtag('event', 'reveal_limit_reached', { location: 'homepage_search' });
+      } else if (status === 404) {
+        buildParamsAndFetch(); // results expired: fetch fresh ones (and fresh tokens)
+      } else {
+        setBusy(false);
+      }
+    })
+    .catch(() => setBusy(false));
 });
     
