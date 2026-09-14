@@ -24,104 +24,15 @@
               });
             }
     
-    // --- Script Section 2 ---
-    // Sample Leads Data matc 1
-        const leads = [
-          { company: "Citi", founded_year: "0000", turnover: "1 Billion and Over", person_name: "Lisa M Neis", title: "Mortgage Loan Consultant", email: false },
-             ];
-    
-       // Render Leads in the original grid-row layout
-function renderLeads(leadsArr) {
-  const container = document.getElementById('results-container');
-  const rowsContainer = document.getElementById('leads-rows');
-  if (!container || !rowsContainer) return;
-
-  if (!leadsArr || leadsArr.length === 0) {
-    rowsContainer.innerHTML = `
-      <div style="padding:32px;text-align:center;color:#64748b;font-size:14px">
-        No results found.
-      </div>`;
-    container.classList.remove('hidden');
-    return;
-  }
-
-  container.classList.remove('hidden');
-
-  rowsContainer.innerHTML = leadsArr.map(lead => {
-    const hasEmail = !!lead.email; // treat presence of email as "valid"
-    return `
-    <div style="display:grid;grid-template-columns:36px 1.7fr 1.3fr 1.4fr 1.1fr 1.1fr;align-items:center;padding:16px 20px;border-bottom:1px solid #f1f5f9;font-size:13.5px;color:#333;min-width:860px;background:#fff">
-      <span style="width:16px;height:16px;border:1.5px solid #cbd5e1;border-radius:3px;display:inline-block"></span>
-
-      <div style="overflow:hidden;padding-right:12px">
-        <div style="font-weight:700;color:#1e293b;font-size:14px;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${lead.company ?? ''}</div>
-        <div style="display:flex;align-items:center;gap:6px;margin:4px 0 2px">
-          <span style="color:#1f7a2e;font-size:12px">🌐</span>
-          <span style="background:#1f7a2e;color:#fff;font-size:9px;font-weight:800;padding:1px 4px;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;line-height:1">in</span>
-          <span style="background:#1f7a2e;color:#fff;font-size:9px;font-weight:800;width:14px;height:14px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;line-height:1">f</span>
-        </div>
-        <div style="font-size:11.5px;color:#64748b">Founded: ${lead.founded_year ?? 'N/A'}, Turnover: ${lead.turnover ?? 'N/A'}</div>
-      </div>
-
-      <div style="overflow:hidden;padding-right:12px">
-        <div style="font-weight:700;color:#1e293b;font-size:14px">${lead.person_name ?? ''}</div>
-        <div style="margin-top:3px">
-          <span style="background:#1f7a2e;color:#fff;font-size:9px;font-weight:800;padding:1px 4px;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;line-height:1">in</span>
-        </div>
-      </div>
-
-      <div style="color:#475569;font-size:13.5px;font-weight:500;padding-right:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
-        ${lead.title ?? ''}
-      </div>
-
-      <div>
-        <button class="verify-email-btn view-btn" data-email="${lead.email ?? ''}" data-id="${lead.id ?? ''}" data-type="email"
-          style="border:1px solid #cbd5e1;background:#fff;border-radius:6px;padding:7px 12px;font-size:12.5px;font-weight:600;color:#334155;display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.04)">
-          View email
-          <span style="display:inline-flex;align-items:center;justify-content:center;background:${hasEmail ? '#10b981' : '#ef4444'};color:#fff;width:16px;height:14px;border-radius:3px;font-size:10px">${hasEmail ? '✉✓' : '✉✕'}</span>
-        </button>
-      </div>
-
-      <div>
-        <button style="border:1px solid #cbd5e1;background:#fff;border-radius:6px;padding:7px 12px;font-size:12.5px;font-weight:600;color:#334155;display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.04)">
-          View Contact <span style="color:#10b981;font-size:13px">📞</span>
-        </button>
-      </div>
-    </div>
-    `;
-  }).join('');
-}
-
     
         // Input Filtering
         function setupFilterListeners() {
           const inputs = ['filter-title', 'filter-industry', 'filter-location'];
-          const handler = () => {
-            const titleVal = document.getElementById('filter-title')?.value.toLowerCase().trim() || '';
-            const indVal = document.getElementById('filter-industry')?.value.toLowerCase().trim() || '';
-            const locVal = document.getElementById('filter-location')?.value.toLowerCase().trim() || '';
 
-            if (!titleVal && !indVal && !locVal) {
-              renderLeads([]);
-              return;
-            }
-
-            const filtered = leads.filter(l => {
-              const mTitle = !titleVal || l.role.toLowerCase().includes(titleVal);
-              const mInd = !indVal || l.company.toLowerCase().includes(indVal);
-              const mLoc = !locVal || l.company.toLowerCase().includes(locVal);
-              return mTitle && mInd && mLoc;
-            });
-
-            renderLeads(filtered.length ? filtered : leads);
-          };
-
-          // There is no Search button any more, so typing has to fetch. Filter
-          // what is already on screen instantly, then ask the API once the
-          // visitor stops typing rather than on every keystroke.
+          // There is no Search button any more, so typing has to fetch. Ask the
+          // API once the visitor stops typing rather than on every keystroke.
           let fetchTimer;
           const onType = () => {
-            handler();
             clearTimeout(fetchTimer);
             fetchTimer = setTimeout(buildParamsAndFetch, 550);
           };
@@ -137,29 +48,6 @@ function renderLeads(leadsArr) {
                 buildParamsAndFetch();
               }
             });
-          });
-
-          const viewAllBtn = document.getElementById('view-all-searches');
-          if (viewAllBtn) viewAllBtn.addEventListener('click', () => renderLeads(leads));
-        }
-    
-        // Filter Modal
-        function setupModal() {
-          const modal = document.getElementById('filter-modal');
-          const openBtn = document.getElementById('open-filter-btn');
-          const closeBtn = document.getElementById('close-modal-x');
-          const applyBtn = document.getElementById('apply-modal-btn');
-          const resetBtn = document.getElementById('reset-modal-btn');
-    
-          if (openBtn && modal) openBtn.addEventListener('click', (e) => { e.preventDefault(); modal.classList.remove('hidden'); });
-          if (closeBtn && modal) closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
-          if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.add('hidden'); });
-          if (resetBtn && modal) resetBtn.addEventListener('click', () => {
-            modal.querySelectorAll('input').forEach(i => i.value = '');
-          });
-          if (applyBtn && modal) applyBtn.addEventListener('click', () => {
-            modal.classList.add('hidden');
-            renderLeads(leads);
           });
         }
     
@@ -400,63 +288,94 @@ function renderLeads(leadsArr) {
    Go4Database - Leads Fetch + Render + Filter
    ========================================================================== */
 
-const API_BASE = 'https://app.go4database.com/api/getleads';
-let filterDebounce = null;
-  // Render Leads in the original grid-row layout
-function renderLeads(leadsArr) {
+// Website-only search endpoint. It uses the app's Normal filter rules, returns
+// at most 5 leads plus a total, and never sends emails or phone numbers, only
+// has_email / has_phone flags and a contact_token for the reveal API below.
+// A local copy of the site sets G4D_LEADS_API to its own proxy route, because
+// the API only accepts calls from www.go4database.com.
+const API_BASE = window.G4D_LEADS_API || 'https://app.go4database.com/api/website/leads';
+
+// Lead fields go into innerHTML, so escape them rather than trusting the data.
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[ch]);
+}
+
+const REGISTER_URL = 'https://app.go4database.com/register?utm_source=Homepage&utm_medium=Internal&utm_campaign=';
+
+const STATUS_ICON = {
+  yes: '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  no: '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg>',
+};
+
+function setLeadsSummary(html) {
+  const summary = document.getElementById('leads-summary');
+  if (!summary) return;
+  summary.innerHTML = html || '';
+  summary.classList.toggle('hidden', !html);
+}
+
+// "Showing 5 of 28,697 matching leads" - the total is the best argument for
+// signing up, so say it and link to Register when there are more to see.
+function leadsSummaryHtml(shown, total) {
+  const count = Number(total);
+  if (!Number.isFinite(count) || count <= shown) {
+    return `<span><strong>${shown}</strong> matching lead${shown === 1 ? '' : 's'}</span>`;
+  }
+  return `<span>Showing <strong>${shown}</strong> of <strong>${count.toLocaleString('en-US')}</strong> matching leads</span>
+    <a href="${REGISTER_URL}see_all_leads" data-track="see_all_leads">Sign up free to see all &rarr;</a>`;
+}
+
+function renderLeads(leadsArr, total) {
   const container = document.getElementById('results-container');
   const rowsContainer = document.getElementById('leads-rows');
   if (!container || !rowsContainer) return;
 
+  container.classList.remove('hidden');
+
   if (!leadsArr || leadsArr.length === 0) {
+    setLeadsSummary('');
     rowsContainer.innerHTML = `
       <div style="padding:32px;text-align:center;color:#64748b;font-size:14px">
         No results found.
       </div>`;
-    container.classList.remove('hidden');
     return;
   }
 
-  container.classList.remove('hidden');
+  setLeadsSummary(leadsSummaryHtml(leadsArr.length, total));
+
+  const statusBadge = (available, what) => available
+    ? `<span class="g4d-lead-status is-yes" title="${what} available">${STATUS_ICON.yes}</span>`
+    : `<span class="g4d-lead-status is-no" title="No ${what.toLowerCase()} on file">${STATUS_ICON.no}</span>`;
 
   rowsContainer.innerHTML = leadsArr.map(lead => {
-    const hasEmail = !!lead.email; // treat presence of email as "valid"
+    const hasEmail = !!lead.has_email;
+    const hasPhone = !!lead.has_phone;
+    // Opaque, per-search, 30 minute token; the reveal API swaps it for the email or phone.
+    const token = escapeHtml(lead.contact_token);
+    // The data uses "0000" and "" for unknown values; leave those out entirely.
+    const meta = [
+      lead.founded_year && lead.founded_year !== '0000' ? `Founded ${escapeHtml(lead.founded_year)}` : '',
+      lead.turnover ? `Turnover ${escapeHtml(lead.turnover)}` : '',
+    ].filter(Boolean).join(' &middot; ');
+    const title = escapeHtml(lead.title);
     return `
-    <div style="display:grid;grid-template-columns:36px 1.7fr 1.3fr 1.4fr 1.1fr 1.1fr;align-items:center;padding:16px 20px;border-bottom:1px solid #f1f5f9;font-size:13.5px;color:#333;min-width:860px;background:#fff">
-      <span style="width:16px;height:16px;border:1.5px solid #cbd5e1;border-radius:3px;display:inline-block"></span>
-
-      <div style="overflow:hidden;padding-right:12px">
-        <div style="font-weight:700;color:#1e293b;font-size:14px;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${lead.company ?? ''}</div>
-        <div style="display:flex;align-items:center;gap:6px;margin:4px 0 2px">
-          <span style="color:#1f7a2e;font-size:12px">🌐</span>
-          <span style="background:#1f7a2e;color:#fff;font-size:9px;font-weight:800;padding:1px 4px;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;line-height:1">in</span>
-          <span style="background:#1f7a2e;color:#fff;font-size:9px;font-weight:800;width:14px;height:14px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;line-height:1">f</span>
-        </div>
-        <div style="font-size:11.5px;color:#64748b">Founded: ${lead.founded_year ?? 'N/A'}, Turnover: ${lead.turnover ?? 'N/A'}</div>
+    <div class="g4d-lead g4d-leads-grid">
+      <div class="g4d-lead-company-cell">
+        <div class="g4d-lead-company">${escapeHtml(lead.company)}</div>
+        ${meta ? `<div class="g4d-lead-meta">${meta}</div>` : ''}
       </div>
-
-      <div style="overflow:hidden;padding-right:12px">
-        <div style="font-weight:700;color:#1e293b;font-size:14px">${lead.person_name ?? ''}</div>
-        <div style="margin-top:3px">
-          <span style="background:#1f7a2e;color:#fff;font-size:9px;font-weight:800;padding:1px 4px;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;line-height:1">in</span>
-        </div>
-      </div>
-
-      <div style="color:#475569;font-size:13.5px;font-weight:500;padding-right:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
-        ${lead.title ?? ''}
-      </div>
-
-      <div>
-        <button class="verify-email-btn view-btn" data-email="${lead.email ?? ''}" data-id="${lead.id ?? ''}" data-type="email"
-          style="border:1px solid #cbd5e1;background:#fff;border-radius:6px;padding:7px 12px;font-size:12.5px;font-weight:600;color:#334155;display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.04)">
-          View email
-          <span style="display:inline-flex;align-items:center;justify-content:center;background:${hasEmail ? '#10b981' : '#ef4444'};color:#fff;width:16px;height:14px;border-radius:3px;font-size:10px">${hasEmail ? '✉✓' : '✉✕'}</span>
+      <div class="g4d-lead-person">${escapeHtml(lead.person_name)}</div>
+      <div class="g4d-lead-title" title="${title}">${title}</div>
+      <div class="g4d-lead-email">
+        <button type="button" class="g4d-lead-btn verify-email-btn view-btn" data-type="email" data-token="${token}" data-available="${hasEmail ? 1 : 0}">
+          View Email ${statusBadge(hasEmail, 'Email')}
         </button>
       </div>
-
-      <div>
-        <button style="border:1px solid #cbd5e1;background:#fff;border-radius:6px;padding:7px 12px;font-size:12.5px;font-weight:600;color:#334155;display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.04)">
-          View Contact <span style="color:#10b981;font-size:13px">📞</span>
+      <div class="g4d-lead-phone">
+        <button type="button" class="g4d-lead-btn view-btn" data-type="contact" data-token="${token}" data-available="${hasPhone ? 1 : 0}">
+          View Phone ${statusBadge(hasPhone, 'Phone')}
         </button>
       </div>
     </div>
@@ -464,18 +383,32 @@ function renderLeads(leadsArr) {
   }).join('');
 }
 
+function hideResults() {
+  const container = document.getElementById('results-container');
+  const rowsContainer = document.getElementById('leads-rows');
+  if (container) container.classList.add('hidden');
+  if (rowsContainer) rowsContainer.innerHTML = '';
+  setLeadsSummary('');
+}
+
 function showLoadingRow() {
   const container = document.getElementById('results-container');
   const rowsContainer = document.getElementById('leads-rows');
   if (!container || !rowsContainer) return;
   container.classList.remove('hidden');
+  setLeadsSummary('');
   rowsContainer.innerHTML = `
     <div style="padding:32px;text-align:center;color:#64748b;font-size:14px">
       Loading...
     </div>`;
 }
 
+// Typing and tab clicks can overlap requests; only the newest one may render,
+// so a slow earlier response can't overwrite the results of a later search.
+let latestLeadsRequest = 0;
+
 function fetchLeads(params) {
+  const requestId = ++latestLeadsRequest;
   const query = new URLSearchParams(params).toString();
   showLoadingRow();
 
@@ -488,16 +421,19 @@ function fetchLeads(params) {
       return res.json();
     })
     .then(json => {
+      if (requestId !== latestLeadsRequest) return;
       let leadsArr = [];
       if (Array.isArray(json)) {
         leadsArr = json;
       } else if (Array.isArray(json.data)) {
         leadsArr = json.data;
       }
-      renderLeads(leadsArr);
+      renderLeads(leadsArr, json && json.total);
     })
     .catch(err => {
+      if (requestId !== latestLeadsRequest) return;
       console.error('Lead fetch failed:', err);
+      setLeadsSummary('');
       const rowsContainer = document.getElementById('leads-rows');
       if (rowsContainer) {
         rowsContainer.innerHTML = `
@@ -509,18 +445,25 @@ function fetchLeads(params) {
 }
 
 function buildParamsAndFetch() {
-  // Industry and Business are one field now. The API treats them as separate
-  // filters and lets business win when both are sent, so the typed value goes
-  // to industry, which returns companies in that sector rather than only
-  // companies with the word in their name.
+  // Same three boxes as the app's Normal filter. Each box takes comma separated
+  // values, e.g. "CEO, CTO".
   const params = {
     title: document.getElementById('filter-title')?.value.trim() || '',
-    industry: document.getElementById('filter-industry')?.value.trim() || '',
+    industry_business: document.getElementById('filter-industry')?.value.trim() || '',
     location: document.getElementById('filter-location')?.value.trim() || '',
   };
 
   // drop empty params
   Object.keys(params).forEach(k => !params[k] && delete params[k]);
+
+  // Nothing to search for: hide the results table rather than showing an empty
+  // "No results found." (the API would return nothing anyway).
+  if (!Object.keys(params).length) {
+    latestLeadsRequest++; // discard any request still in flight
+    hideResults();
+    return;
+  }
+
   fetchLeads(params);
 }
 
@@ -531,12 +474,14 @@ function buildParamsAndFetch() {
     
           const titleInput = document.getElementById('filter-title');
           if (titleInput) {
-            if (presetKey === 'CEO') titleInput.value = '';
-            else if (presetKey === 'VP') titleInput.value = 'VP / Director';
-            else if (presetKey === 'TECH') titleInput.value = 'CTO / IT Head';
+            // Comma separated, matching the API. The CEO tab must search "CEO"
+            // because an empty search returns nothing.
+            if (presetKey === 'CEO') titleInput.value = 'CEO';
+            else if (presetKey === 'VP') titleInput.value = 'VP, Director';
+            else if (presetKey === 'TECH') titleInput.value = 'CTO, IT Head';
             else if (presetKey === 'HEALTH') titleInput.value = 'Healthcare Executive';
-            else if (presetKey === 'SALES') titleInput.value = 'VP Sales / CMO';
-            else if (presetKey === 'FINANCE') titleInput.value = 'CFO / Finance';
+            else if (presetKey === 'SALES') titleInput.value = 'VP Sales, CMO';
+            else if (presetKey === 'FINANCE') titleInput.value = 'CFO';
           }
           buildParamsAndFetch();
         }
@@ -642,17 +587,11 @@ function buildParamsAndFetch() {
   setupStickyNav();
   setupNavDropdowns();
 
-  // Auto-fill "CEO" in the title filter since CEO tab is active by default
-  const titleInput = document.getElementById('filter-title');
-  if (titleInput) {
-    titleInput.value = 'CEO';
-  }
-
-  showLoadingRow();          // show "Loading..." immediately
-  buildParamsAndFetch();     // fetch leads filtered by "CEO" (uses the pre-filled input)
+  // The boxes start empty, so this normally just keeps the results table hidden.
+  // It only searches when the browser restored typed values (e.g. Back button).
+  buildParamsAndFetch();
 
   setupFilterListeners();
-  setupModal();
   setupCardStackingEffect();
   setupFAQ();
   setupSimpleAnimatedTestimonials();
@@ -660,4 +599,64 @@ function buildParamsAndFetch() {
   setupContactForm();
   setupScrollTop();
 });
-    
+
+// View email / View Contact -> reveal that one lead's email or phone.
+// The reveal API allows 10 per minute and 100 per day per visitor, answers 429
+// past that, and 404 once the search's tokens are older than 30 minutes.
+const CONTACT_API = window.G4D_LEADS_CONTACT_API || 'https://app.go4database.com/api/website/leads/contact';
+document.addEventListener('click', function (e) {
+  const btn = e.target.closest('#leads-rows .view-btn');
+  if (!btn || btn.disabled) return;
+
+  const type = btn.dataset.type === 'contact' ? 'contact' : 'email';
+  const action = type === 'contact' ? 'view_contact' : 'view_email';
+  const unavailable = type === 'contact' ? 'No phone available' : 'No email available';
+  if (typeof gtag === 'function') gtag('event', action, { location: 'homepage_search' });
+
+  // Always textContent, never innerHTML: lead data comes from uploaded files.
+  const show = (text) => {
+    const span = document.createElement('span');
+    span.className = 'g4d-lead-value';
+    span.textContent = text;
+    btn.replaceWith(span);
+  };
+
+  // Known to be missing: say so without spending one of the visitor's reveals.
+  if (btn.dataset.available !== '1') {
+    show(unavailable);
+    return;
+  }
+
+  const setBusy = (busy) => {
+    btn.disabled = busy;
+    btn.style.opacity = busy ? '0.6' : '';
+    btn.style.cursor = busy ? 'progress' : 'pointer';
+  };
+
+  setBusy(true);
+  fetch(`${CONTACT_API}?token=${encodeURIComponent(btn.dataset.token)}&type=${type}`, { headers: { Accept: 'application/json' } })
+    .then(res => res.json().then(body => ({ status: res.status, body })))
+    .then(({ status, body }) => {
+      if (status === 200) {
+        show((type === 'contact' ? body.phone : body.email) || unavailable);
+      } else if (status === 429) {
+        const link = document.createElement('a');
+        link.href = REGISTER_URL + action + '_limit';
+        link.textContent = 'Sign up free to see more';
+        link.className = 'g4d-lead-limit';
+        btn.replaceWith(link);
+        if (typeof gtag === 'function') gtag('event', 'reveal_limit_reached', { location: 'homepage_search' });
+      } else if (status === 404) {
+        buildParamsAndFetch(); // results expired: fetch fresh ones (and fresh tokens)
+      } else {
+        setBusy(false);
+      }
+    })
+    .catch(() => setBusy(false));
+});
+
+// "Sign up free to see all" in the results summary
+document.addEventListener('click', function (e) {
+  const link = e.target.closest('#leads-summary a[data-track]');
+  if (link && typeof gtag === 'function') gtag('event', link.dataset.track, { location: 'homepage_search' });
+});

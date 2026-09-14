@@ -647,6 +647,14 @@ Route::group(['middleware' => ['setlang:frontend', 'globalVariable', 'HtmlMinifi
 
 require_once __DIR__.'/admin.php';
 
+// Local testing only, see WebsiteLeadsLocalProxyController.
+if (\App\Http\Controllers\WebsiteLeadsLocalProxyController::enabled()) {
+    Route::get('/local-dev/website-leads', 'WebsiteLeadsLocalProxyController@search')
+        ->name('local.website.leads')->middleware('throttle:60,1');
+    Route::get('/local-dev/website-leads/contact', 'WebsiteLeadsLocalProxyController@contact')
+        ->name('local.website.leads.contact')->middleware('throttle:60,1');
+}
+
 /*------------------------------------
     DYNAMIC PAGE ROUTE
 -------------------------------------*/
