@@ -144,8 +144,9 @@ search stalls the whole page.
 - **Homepage** (`home-01.js`): `GET /api/website/leads` with `title`,
   `industry_business`, `location` (comma separated values, e.g. `CEO, CTO`).
   Returns `{data: [...max 5], total}` with `has_email`/`has_phone` flags and
-  no email, phone, LinkedIn or id. An empty search returns nothing, so the JS
-  skips the request. "View email"/"View Contact" go to the app's Register page
+  no email, phone, LinkedIn or id. With all three boxes empty the JS skips the
+  request and hides the results table; "No results found." is only for a real
+  search with no matches. "View email"/"View Contact" go to the app's Register page
   with `utm_campaign=view_email|view_contact` and fire a GA4 event of the same
   name.
 - **List pages** (`list/list-single.blade.php`): still on the old

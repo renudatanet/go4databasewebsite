@@ -388,6 +388,13 @@ function renderLeads(leadsArr) {
   }).join('');
 }
 
+function hideResults() {
+  const container = document.getElementById('results-container');
+  const rowsContainer = document.getElementById('leads-rows');
+  if (container) container.classList.add('hidden');
+  if (rowsContainer) rowsContainer.innerHTML = '';
+}
+
 function showLoadingRow() {
   const container = document.getElementById('results-container');
   const rowsContainer = document.getElementById('leads-rows');
@@ -451,10 +458,11 @@ function buildParamsAndFetch() {
   // drop empty params
   Object.keys(params).forEach(k => !params[k] && delete params[k]);
 
-  // The API returns nothing for an empty search, so skip the round trip.
+  // Nothing to search for: hide the results table rather than showing an empty
+  // "No results found." (the API would return nothing anyway).
   if (!Object.keys(params).length) {
     latestLeadsRequest++; // discard any request still in flight
-    renderLeads([]);
+    hideResults();
     return;
   }
 
