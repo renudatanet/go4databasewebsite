@@ -906,7 +906,8 @@
             <!-- Direct Screenshot Image 1 -->
             <div
               style="background:#fff;border-radius:18px;padding:10px;box-shadow:0 20px 50px -15px rgba(0,0,0,0.12);border:1px solid rgba(0,0,0,0.08);overflow:hidden">
-              <img src="{{ asset('assets/frontend/images/prospecting-table.png') }}" alt="B2B Prospecting Leads Data Table Screenshot"
+              <img src="{{ asset('assets/frontend/images/b2b-marketplace-table.png') }}" alt="Go4Database B2B leads table with company, contact name, title and verified email"
+                width="1758" height="1352" loading="lazy"
                 style="width:100%;height:auto;border-radius:12px;display:block;object-fit:cover">
             </div>
           </div>
