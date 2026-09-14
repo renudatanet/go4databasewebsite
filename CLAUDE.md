@@ -134,7 +134,12 @@ drift out of sync again.
 
 Both call the app (`app.go4database.com`) straight from the browser; the app's
 CORS list only allows `https://www.go4database.com`, so local origins are
-blocked unless the app owner adds them temporarily.
+blocked. To test the homepage search locally, set `WEBSITE_LEADS_LOCAL_PROXY=true`
+in `.env` (only honoured when `APP_ENV=local`): the page then searches through
+`/local-dev/website-leads` (`WebsiteLeadsLocalProxyController`), which forwards
+to the API server-side. Run the dev server with `PHP_CLI_SERVER_WORKERS=4`,
+since the built-in server is otherwise single-threaded and a 5-8s uncached
+search stalls the whole page.
 
 - **Homepage** (`home-01.js`): `GET /api/website/leads` with `title`,
   `industry_business`, `location` (comma separated values, e.g. `CEO, CTO`).

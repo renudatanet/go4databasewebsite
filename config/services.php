@@ -47,4 +47,10 @@ return [
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_CALLBACK_URL')
     ],
+    // Homepage lead search. local_proxy routes it through this site for local
+    // testing (only honoured when APP_ENV=local); leave it unset in production.
+    'website_leads' => [
+        'url' => 'https://app.go4database.com/api/website/leads',
+        'local_proxy' => env('WEBSITE_LEADS_LOCAL_PROXY', false),
+    ],
 ];

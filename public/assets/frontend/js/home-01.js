@@ -313,7 +313,9 @@
 // Website-only search endpoint. It uses the app's Normal filter rules, returns
 // at most 5 leads plus a total, and never sends emails or phone numbers, only
 // has_email / has_phone flags.
-const API_BASE = 'https://app.go4database.com/api/website/leads';
+// A local copy of the site sets G4D_LEADS_API to its own proxy route, because
+// the API only accepts calls from www.go4database.com.
+const API_BASE = window.G4D_LEADS_API || 'https://app.go4database.com/api/website/leads';
 
 // Lead fields go into innerHTML, so escape them rather than trusting the data.
 function escapeHtml(value) {
