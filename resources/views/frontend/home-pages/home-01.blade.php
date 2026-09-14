@@ -953,7 +953,8 @@
             <!-- Exact Create Filter Photo uploaded by user -->
             <div
               style="background:#fff;border-radius:18px;padding:10px;box-shadow:0 20px 50px -15px rgba(0,0,0,0.12);border:1px solid rgba(0,0,0,0.08);overflow:hidden">
-              <img src="{{ asset('assets/frontend/images/create-filter-exact.png') }}" alt="Create Filter Advanced Search Photo"
+              <img src="{{ asset('assets/frontend/images/advanced-filters-form.png') }}" alt="Go4Database advanced filters for company, industry, technology, turnover, title and seniority"
+                width="1554" height="1118" loading="lazy"
                 style="width:100%;height:auto;border-radius:12px;display:block;object-fit:cover">
             </div>
           </div>
