@@ -24,104 +24,15 @@
               });
             }
     
-    // --- Script Section 2 ---
-    // Sample Leads Data matc 1
-        const leads = [
-          { company: "Citi", founded_year: "0000", turnover: "1 Billion and Over", person_name: "Lisa M Neis", title: "Mortgage Loan Consultant", email: false },
-             ];
-    
-       // Render Leads in the original grid-row layout
-function renderLeads(leadsArr) {
-  const container = document.getElementById('results-container');
-  const rowsContainer = document.getElementById('leads-rows');
-  if (!container || !rowsContainer) return;
-
-  if (!leadsArr || leadsArr.length === 0) {
-    rowsContainer.innerHTML = `
-      <div style="padding:32px;text-align:center;color:#64748b;font-size:14px">
-        No results found.
-      </div>`;
-    container.classList.remove('hidden');
-    return;
-  }
-
-  container.classList.remove('hidden');
-
-  rowsContainer.innerHTML = leadsArr.map(lead => {
-    const hasEmail = !!lead.email; // treat presence of email as "valid"
-    return `
-    <div style="display:grid;grid-template-columns:36px 1.7fr 1.3fr 1.4fr 1.1fr 1.1fr;align-items:center;padding:16px 20px;border-bottom:1px solid #f1f5f9;font-size:13.5px;color:#333;min-width:860px;background:#fff">
-      <span style="width:16px;height:16px;border:1.5px solid #cbd5e1;border-radius:3px;display:inline-block"></span>
-
-      <div style="overflow:hidden;padding-right:12px">
-        <div style="font-weight:700;color:#1e293b;font-size:14px;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${lead.company ?? ''}</div>
-        <div style="display:flex;align-items:center;gap:6px;margin:4px 0 2px">
-          <span style="color:#1f7a2e;font-size:12px">🌐</span>
-          <span style="background:#1f7a2e;color:#fff;font-size:9px;font-weight:800;padding:1px 4px;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;line-height:1">in</span>
-          <span style="background:#1f7a2e;color:#fff;font-size:9px;font-weight:800;width:14px;height:14px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;line-height:1">f</span>
-        </div>
-        <div style="font-size:11.5px;color:#64748b">Founded: ${lead.founded_year ?? 'N/A'}, Turnover: ${lead.turnover ?? 'N/A'}</div>
-      </div>
-
-      <div style="overflow:hidden;padding-right:12px">
-        <div style="font-weight:700;color:#1e293b;font-size:14px">${lead.person_name ?? ''}</div>
-        <div style="margin-top:3px">
-          <span style="background:#1f7a2e;color:#fff;font-size:9px;font-weight:800;padding:1px 4px;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;line-height:1">in</span>
-        </div>
-      </div>
-
-      <div style="color:#475569;font-size:13.5px;font-weight:500;padding-right:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
-        ${lead.title ?? ''}
-      </div>
-
-      <div>
-        <button class="verify-email-btn view-btn" data-email="${lead.email ?? ''}" data-id="${lead.id ?? ''}" data-type="email"
-          style="border:1px solid #cbd5e1;background:#fff;border-radius:6px;padding:7px 12px;font-size:12.5px;font-weight:600;color:#334155;display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.04)">
-          View email
-          <span style="display:inline-flex;align-items:center;justify-content:center;background:${hasEmail ? '#10b981' : '#ef4444'};color:#fff;width:16px;height:14px;border-radius:3px;font-size:10px">${hasEmail ? '✉✓' : '✉✕'}</span>
-        </button>
-      </div>
-
-      <div>
-        <button style="border:1px solid #cbd5e1;background:#fff;border-radius:6px;padding:7px 12px;font-size:12.5px;font-weight:600;color:#334155;display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.04)">
-          View Contact <span style="color:#10b981;font-size:13px">📞</span>
-        </button>
-      </div>
-    </div>
-    `;
-  }).join('');
-}
-
     
         // Input Filtering
         function setupFilterListeners() {
           const inputs = ['filter-title', 'filter-industry', 'filter-location'];
-          const handler = () => {
-            const titleVal = document.getElementById('filter-title')?.value.toLowerCase().trim() || '';
-            const indVal = document.getElementById('filter-industry')?.value.toLowerCase().trim() || '';
-            const locVal = document.getElementById('filter-location')?.value.toLowerCase().trim() || '';
 
-            if (!titleVal && !indVal && !locVal) {
-              renderLeads([]);
-              return;
-            }
-
-            const filtered = leads.filter(l => {
-              const mTitle = !titleVal || l.role.toLowerCase().includes(titleVal);
-              const mInd = !indVal || l.company.toLowerCase().includes(indVal);
-              const mLoc = !locVal || l.company.toLowerCase().includes(locVal);
-              return mTitle && mInd && mLoc;
-            });
-
-            renderLeads(filtered.length ? filtered : leads);
-          };
-
-          // There is no Search button any more, so typing has to fetch. Filter
-          // what is already on screen instantly, then ask the API once the
-          // visitor stops typing rather than on every keystroke.
+          // There is no Search button any more, so typing has to fetch. Ask the
+          // API once the visitor stops typing rather than on every keystroke.
           let fetchTimer;
           const onType = () => {
-            handler();
             clearTimeout(fetchTimer);
             fetchTimer = setTimeout(buildParamsAndFetch, 550);
           };
@@ -138,9 +49,6 @@ function renderLeads(leadsArr) {
               }
             });
           });
-
-          const viewAllBtn = document.getElementById('view-all-searches');
-          if (viewAllBtn) viewAllBtn.addEventListener('click', () => renderLeads(leads));
         }
     
         // Filter Modal
@@ -157,9 +65,11 @@ function renderLeads(leadsArr) {
           if (resetBtn && modal) resetBtn.addEventListener('click', () => {
             modal.querySelectorAll('input').forEach(i => i.value = '');
           });
+          // The modal's fields aren't sent to the API yet, so Apply re-runs the
+          // current search instead of replacing real results with sample data.
           if (applyBtn && modal) applyBtn.addEventListener('click', () => {
             modal.classList.add('hidden');
-            renderLeads(leads);
+            buildParamsAndFetch();
           });
         }
     
@@ -400,8 +310,18 @@ function renderLeads(leadsArr) {
    Go4Database - Leads Fetch + Render + Filter
    ========================================================================== */
 
-const API_BASE = 'https://app.go4database.com/api/getleads';
-let filterDebounce = null;
+// Website-only search endpoint. It uses the app's Normal filter rules, returns
+// at most 5 leads plus a total, and never sends emails or phone numbers, only
+// has_email / has_phone flags.
+const API_BASE = 'https://app.go4database.com/api/website/leads';
+
+// Lead fields go into innerHTML, so escape them rather than trusting the data.
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[ch]);
+}
+
   // Render Leads in the original grid-row layout
 function renderLeads(leadsArr) {
   const container = document.getElementById('results-container');
@@ -420,34 +340,34 @@ function renderLeads(leadsArr) {
   container.classList.remove('hidden');
 
   rowsContainer.innerHTML = leadsArr.map(lead => {
-    const hasEmail = !!lead.email; // treat presence of email as "valid"
+    const hasEmail = !!lead.has_email;
     return `
     <div style="display:grid;grid-template-columns:36px 1.7fr 1.3fr 1.4fr 1.1fr 1.1fr;align-items:center;padding:16px 20px;border-bottom:1px solid #f1f5f9;font-size:13.5px;color:#333;min-width:860px;background:#fff">
       <span style="width:16px;height:16px;border:1.5px solid #cbd5e1;border-radius:3px;display:inline-block"></span>
 
       <div style="overflow:hidden;padding-right:12px">
-        <div style="font-weight:700;color:#1e293b;font-size:14px;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${lead.company ?? ''}</div>
+        <div style="font-weight:700;color:#1e293b;font-size:14px;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(lead.company)}</div>
         <div style="display:flex;align-items:center;gap:6px;margin:4px 0 2px">
           <span style="color:#1f7a2e;font-size:12px">🌐</span>
           <span style="background:#1f7a2e;color:#fff;font-size:9px;font-weight:800;padding:1px 4px;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;line-height:1">in</span>
           <span style="background:#1f7a2e;color:#fff;font-size:9px;font-weight:800;width:14px;height:14px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;line-height:1">f</span>
         </div>
-        <div style="font-size:11.5px;color:#64748b">Founded: ${lead.founded_year ?? 'N/A'}, Turnover: ${lead.turnover ?? 'N/A'}</div>
+        <div style="font-size:11.5px;color:#64748b">Founded: ${escapeHtml(lead.founded_year ?? 'N/A')}, Turnover: ${escapeHtml(lead.turnover ?? 'N/A')}</div>
       </div>
 
       <div style="overflow:hidden;padding-right:12px">
-        <div style="font-weight:700;color:#1e293b;font-size:14px">${lead.person_name ?? ''}</div>
+        <div style="font-weight:700;color:#1e293b;font-size:14px">${escapeHtml(lead.person_name)}</div>
         <div style="margin-top:3px">
           <span style="background:#1f7a2e;color:#fff;font-size:9px;font-weight:800;padding:1px 4px;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;line-height:1">in</span>
         </div>
       </div>
 
       <div style="color:#475569;font-size:13.5px;font-weight:500;padding-right:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
-        ${lead.title ?? ''}
+        ${escapeHtml(lead.title)}
       </div>
 
       <div>
-        <button class="verify-email-btn view-btn" data-email="${lead.email ?? ''}" data-id="${lead.id ?? ''}" data-type="email"
+        <button class="verify-email-btn view-btn" data-type="email"
           style="border:1px solid #cbd5e1;background:#fff;border-radius:6px;padding:7px 12px;font-size:12.5px;font-weight:600;color:#334155;display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.04)">
           View email
           <span style="display:inline-flex;align-items:center;justify-content:center;background:${hasEmail ? '#10b981' : '#ef4444'};color:#fff;width:16px;height:14px;border-radius:3px;font-size:10px">${hasEmail ? '✉✓' : '✉✕'}</span>
@@ -455,7 +375,7 @@ function renderLeads(leadsArr) {
       </div>
 
       <div>
-        <button style="border:1px solid #cbd5e1;background:#fff;border-radius:6px;padding:7px 12px;font-size:12.5px;font-weight:600;color:#334155;display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.04)">
+        <button class="view-btn" data-type="contact" style="border:1px solid #cbd5e1;background:#fff;border-radius:6px;padding:7px 12px;font-size:12.5px;font-weight:600;color:#334155;display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.04)">
           View Contact <span style="color:#10b981;font-size:13px">📞</span>
         </button>
       </div>
@@ -475,7 +395,12 @@ function showLoadingRow() {
     </div>`;
 }
 
+// Typing and tab clicks can overlap requests; only the newest one may render,
+// so a slow earlier response can't overwrite the results of a later search.
+let latestLeadsRequest = 0;
+
 function fetchLeads(params) {
+  const requestId = ++latestLeadsRequest;
   const query = new URLSearchParams(params).toString();
   showLoadingRow();
 
@@ -488,6 +413,7 @@ function fetchLeads(params) {
       return res.json();
     })
     .then(json => {
+      if (requestId !== latestLeadsRequest) return;
       let leadsArr = [];
       if (Array.isArray(json)) {
         leadsArr = json;
@@ -497,6 +423,7 @@ function fetchLeads(params) {
       renderLeads(leadsArr);
     })
     .catch(err => {
+      if (requestId !== latestLeadsRequest) return;
       console.error('Lead fetch failed:', err);
       const rowsContainer = document.getElementById('leads-rows');
       if (rowsContainer) {
@@ -509,18 +436,24 @@ function fetchLeads(params) {
 }
 
 function buildParamsAndFetch() {
-  // Industry and Business are one field now. The API treats them as separate
-  // filters and lets business win when both are sent, so the typed value goes
-  // to industry, which returns companies in that sector rather than only
-  // companies with the word in their name.
+  // Same three boxes as the app's Normal filter. Each box takes comma separated
+  // values, e.g. "CEO, CTO".
   const params = {
     title: document.getElementById('filter-title')?.value.trim() || '',
-    industry: document.getElementById('filter-industry')?.value.trim() || '',
+    industry_business: document.getElementById('filter-industry')?.value.trim() || '',
     location: document.getElementById('filter-location')?.value.trim() || '',
   };
 
   // drop empty params
   Object.keys(params).forEach(k => !params[k] && delete params[k]);
+
+  // The API returns nothing for an empty search, so skip the round trip.
+  if (!Object.keys(params).length) {
+    latestLeadsRequest++; // discard any request still in flight
+    renderLeads([]);
+    return;
+  }
+
   fetchLeads(params);
 }
 
@@ -531,12 +464,14 @@ function buildParamsAndFetch() {
     
           const titleInput = document.getElementById('filter-title');
           if (titleInput) {
-            if (presetKey === 'CEO') titleInput.value = '';
-            else if (presetKey === 'VP') titleInput.value = 'VP / Director';
-            else if (presetKey === 'TECH') titleInput.value = 'CTO / IT Head';
+            // Comma separated, matching the API. The CEO tab must search "CEO"
+            // because an empty search returns nothing.
+            if (presetKey === 'CEO') titleInput.value = 'CEO';
+            else if (presetKey === 'VP') titleInput.value = 'VP, Director';
+            else if (presetKey === 'TECH') titleInput.value = 'CTO, IT Head';
             else if (presetKey === 'HEALTH') titleInput.value = 'Healthcare Executive';
-            else if (presetKey === 'SALES') titleInput.value = 'VP Sales / CMO';
-            else if (presetKey === 'FINANCE') titleInput.value = 'CFO / Finance';
+            else if (presetKey === 'SALES') titleInput.value = 'VP Sales, CMO';
+            else if (presetKey === 'FINANCE') titleInput.value = 'CFO';
           }
           buildParamsAndFetch();
         }
@@ -659,5 +594,30 @@ function buildParamsAndFetch() {
   setupHeroWordRotation();
   setupContactForm();
   setupScrollTop();
+});
+
+// View email / View Contact -> Register, with tracking
+document.addEventListener('click', function (e) {
+  const btn = e.target.closest('#leads-rows .view-btn');
+  if (!btn) return;
+
+  const action = btn.dataset.type === 'contact' ? 'view_contact' : 'view_email';
+  const registerUrl = 'https://app.go4database.com/register?utm_source=Homepage&utm_medium=Internal&utm_campaign=' + action;
+
+  // Leaving the page straight away can drop the GA4 hit, so wait for gtag to
+  // confirm it, but never longer than 800ms (ad blockers stop the callback).
+  let navigated = false;
+  const go = () => {
+    if (navigated) return;
+    navigated = true;
+    window.location.href = registerUrl;
+  };
+
+  if (typeof gtag === 'function') {
+    gtag('event', action, { location: 'homepage_search', event_callback: go });
+    setTimeout(go, 800);
+  } else {
+    go();
+  }
 });
     
