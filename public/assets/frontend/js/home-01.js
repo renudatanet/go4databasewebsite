@@ -341,6 +341,8 @@ function renderLeads(leadsArr) {
 
   rowsContainer.innerHTML = leadsArr.map(lead => {
     const hasEmail = !!lead.has_email;
+    // The data uses "0000" and "" for unknown values, so show N/A for those too.
+    const founded = lead.founded_year && lead.founded_year !== '0000' ? lead.founded_year : 'N/A';
     return `
     <div style="display:grid;grid-template-columns:36px 1.7fr 1.3fr 1.4fr 1.1fr 1.1fr;align-items:center;padding:16px 20px;border-bottom:1px solid #f1f5f9;font-size:13.5px;color:#333;min-width:860px;background:#fff">
       <span style="width:16px;height:16px;border:1.5px solid #cbd5e1;border-radius:3px;display:inline-block"></span>
@@ -352,7 +354,7 @@ function renderLeads(leadsArr) {
           <span style="background:#1f7a2e;color:#fff;font-size:9px;font-weight:800;padding:1px 4px;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;line-height:1">in</span>
           <span style="background:#1f7a2e;color:#fff;font-size:9px;font-weight:800;width:14px;height:14px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;line-height:1">f</span>
         </div>
-        <div style="font-size:11.5px;color:#64748b">Founded: ${escapeHtml(lead.founded_year ?? 'N/A')}, Turnover: ${escapeHtml(lead.turnover ?? 'N/A')}</div>
+        <div style="font-size:11.5px;color:#64748b">Founded: ${escapeHtml(founded)}, Turnover: ${escapeHtml(lead.turnover || 'N/A')}</div>
       </div>
 
       <div style="overflow:hidden;padding-right:12px">
