@@ -100,7 +100,7 @@ anything visible**. Section order and data source, top to bottom:
 |---|---|---|---|
 | 1 | Top support bar | `frontend.partials.homesupportbar` → `supportbar` partial, gated on `navbar_variant` being empty + `home_page_support_bar_section_status` | Yes — Topbar Settings |
 | 2 | Main nav | `frontend.partials.navbar-new` | **No — fully hardcoded**, see "Navbar" below |
-| 3 | Hero, search/demo card, stats strip, filters modal, trust logos, credits promo, AI-verified tabs, feature grid, comparison table, integration screenshots | plain HTML | **No — hardcoded**, edit the blade file directly |
+| 3 | Hero, search/demo card, stats strip, trust logos, credits promo, AI-verified tabs, feature grid, comparison table, integration screenshots | plain HTML | **No — hardcoded**, edit the blade file directly |
 | 4 | Testimonials (`#case-studies`) | Eloquent `$all_testimonial` | Content via Testimonial CRUD (not this page's admin section); heading text is hardcoded |
 | 5 | "Most Active Users" mailing list (`#favorite-lists`) | Eloquent `$all_work_category` / `$all_work` (Works model) | Content via Works CRUD; heading text hardcoded |
 | 6 | Blog/News grid (`#blog`) | `$static_field_data` gated on `home_page_latest_news_section_status`; title/desc from `home_page_01_{lang}_latest_news_*`; cards from `$all_blog` | **Yes** — admin `/admin-home/home-page-01/latest-news` + Blog CRUD |

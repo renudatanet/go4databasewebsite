@@ -191,18 +191,6 @@
           <input id="filter-location" placeholder="Location"
             style="flex:1;min-width:120px;background:#fff;border:1.5px solid #d9e1ea;border-radius:10px;padding:11px 16px;font-size:14px;color:#0f172a;font-family:inherit;outline:none">
 
-          <button id="open-filter-btn" type="button"
-            style="cursor:pointer;background:#f2fcee;color:#2b6b0e;border:1.5px solid #cdf0b8;font-size:14px;font-weight:700;padding:10px 20px;border-radius:99px;display:flex;align-items:center;gap:8px;font-family:inherit;flex-shrink:0">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M3 5h18l-7 8.2V20l-4 2v-8.8L3 5z" />
-            </svg>
-            Advanced Filter
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"
-                stroke-linejoin="round" />
-            </svg>
-          </button>
-
           <a id="download-leads-btn" href="https://app.go4database.com/register" target="_blank" rel="noopener"
             style="cursor:pointer;background:#3b8e15;color:#fff;font-size:14px;font-weight:700;padding:11px 24px;border-radius:99px;display:flex;align-items:center;gap:8px;text-decoration:none;box-shadow:0 8px 20px rgba(59,142,21,0.3);flex-shrink:0">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -238,6 +226,12 @@
           .g4d-lead-status.is-no { background: #fee2e2; color: #dc2626; }
           .g4d-lead-value { font-size: 13px; font-weight: 600; color: #1e293b; overflow-wrap: anywhere; }
           .g4d-lead-limit { font-size: 13px; font-weight: 700; color: #3b8e15; }
+          /* home.css pairs the buttons on one row below 768px; with only Download left,
+             put it beside Location instead of alone at half width. */
+          @media (max-width: 768px) {
+            .search-controls-row #filter-location { flex: 1 1 calc(50% - 6px) !important; }
+            .search-controls-row #download-leads-btn { flex: 1 1 calc(50% - 6px) !important; margin-top: 0 !important; }
+          }
           @media (max-width: 900px) {
             .g4d-leads-head { display: none; }
             .g4d-lead.g4d-leads-grid { grid-template-columns: 1fr 1fr; column-gap: 10px; row-gap: 2px; padding: 14px 16px; }
@@ -308,74 +302,6 @@
               B2B Category List</div>
           </div>
 
-        </div>
-      </div>
-    </div>
-
-    <!-- Filter Modal -->
-    <div id="filter-modal" class="hidden"
-      style="position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:50;display:flex;align-items:center;justify-content:center;padding:20px">
-      <div
-        style="background:#fff;border-radius:16px;max-width:720px;width:100%;max-height:88vh;overflow-y:auto;padding:32px 36px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:26px">
-          <div style="font-size:22px;font-weight:800;color:#111">50+ Search Filters (UpLead Pattern)</div>
-          <span id="close-modal-x"
-            style="cursor:pointer;color:#999;font-size:24px;line-height:1;padding:4px">&times;</span>
-        </div>
-
-        <div style="font-size:13px;font-weight:800;letter-spacing:0.5px;color:#111;margin-bottom:16px">COMPANY &amp;
-          TECHNOGRAPHICS</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:18px;margin-bottom:28px">
-          <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#555">Company
-              Name</span><input placeholder="e.g. Salesforce"
-              style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit"></label>
-          <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#555">Location /
-              HQ</span><input placeholder="City, State, Country"
-              style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit"></label>
-          <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#555">Industry
-              &amp; SIC</span><input placeholder="Software, Healthcare"
-              style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit"></label>
-          <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#555">Tech
-              Used</span><input placeholder="AWS, Hubspot, React"
-              style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit"></label>
-          <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#555">Revenue
-              Range</span><input placeholder="$10M - $100M"
-              style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit"></label>
-          <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#555">Buying
-              Intent</span><input placeholder="Searching CRM tools"
-              style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit"></label>
-          <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#555">Founded
-              Year</span><input placeholder="2010+"
-              style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit"></label>
-          <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#555">Employee
-              Count</span><input placeholder="50 - 500"
-              style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit"></label>
-        </div>
-
-        <div style="font-size:13px;font-weight:800;letter-spacing:0.5px;color:#111;margin-bottom:16px">CONTACT &amp;
-          DIRECT DIAL INFO</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:18px;margin-bottom:32px">
-          <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#555">Email
-              Status</span><input placeholder="Verified Only"
-              style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit"></label>
-          <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#555">Phone
-              Type</span><input placeholder="Direct Mobile Dials"
-              style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit"></label>
-          <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#555">Job Title
-              /
-              Role</span><input placeholder="VP, Director, C-Level"
-              style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit"></label>
-          <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#555">Contact
-              Name</span><input placeholder="Full Name"
-              style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit"></label>
-        </div>
-
-        <div style="display:flex;justify-content:flex-end;gap:12px">
-          <button id="reset-modal-btn"
-            style="border:none;cursor:pointer;background:#4b5563;color:#fff;font-size:14px;font-weight:700;padding:11px 24px;border-radius:99px">Reset</button>
-          <button id="apply-modal-btn"
-            style="border:none;cursor:pointer;background:#6fd943;color:#0b132a;font-size:14px;font-weight:800;padding:11px 24px;border-radius:99px">Apply
-            Filters &amp; Search</button>
         </div>
       </div>
     </div>
@@ -1765,6 +1691,6 @@
     </script>
   @endif
   {{-- Bump ?v= on every home-01.js change: LiteSpeed serves JS with a one-year immutable cache --}}
-  <script src="{{ asset('assets/frontend/js/home-01.js') }}?v=6" defer></script>
+  <script src="{{ asset('assets/frontend/js/home-01.js') }}?v=7" defer></script>
 @include('frontend.partials.contact-section')
 @include('frontend.partials.chat-widget')

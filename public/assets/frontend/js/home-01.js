@@ -51,28 +51,6 @@
           });
         }
     
-        // Filter Modal
-        function setupModal() {
-          const modal = document.getElementById('filter-modal');
-          const openBtn = document.getElementById('open-filter-btn');
-          const closeBtn = document.getElementById('close-modal-x');
-          const applyBtn = document.getElementById('apply-modal-btn');
-          const resetBtn = document.getElementById('reset-modal-btn');
-    
-          if (openBtn && modal) openBtn.addEventListener('click', (e) => { e.preventDefault(); modal.classList.remove('hidden'); });
-          if (closeBtn && modal) closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
-          if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.add('hidden'); });
-          if (resetBtn && modal) resetBtn.addEventListener('click', () => {
-            modal.querySelectorAll('input').forEach(i => i.value = '');
-          });
-          // The modal's fields aren't sent to the API yet, so Apply re-runs the
-          // current search instead of replacing real results with sample data.
-          if (applyBtn && modal) applyBtn.addEventListener('click', () => {
-            modal.classList.add('hidden');
-            buildParamsAndFetch();
-          });
-        }
-    
         // Category Tabs
         // function setupCategoryTabs() {
         //   const tabs = document.querySelectorAll('.category-tab');
@@ -614,7 +592,6 @@ function buildParamsAndFetch() {
   buildParamsAndFetch();
 
   setupFilterListeners();
-  setupModal();
   setupCardStackingEffect();
   setupFAQ();
   setupSimpleAnimatedTestimonials();
