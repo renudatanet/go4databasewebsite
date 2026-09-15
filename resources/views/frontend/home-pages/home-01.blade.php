@@ -1184,7 +1184,7 @@
         $style = $cardStyles[$loop->index % 3];
     @endphp
 
-    <a href="#search-section"
+    <a href="{{route('frontend.work.single',$data->slug)}}"
        class="fav-banner-card"
        data-category="{{ Str::slug(trim(get_work_category_by_id($data->id, 'slug'))) }}"
        style="
@@ -1435,10 +1435,10 @@
 
           <div id="modal-blog-meta" style="font-size:13px;color:#64748b;font-weight:600;margin-bottom:8px">Mar 23, 2026
             • 6 min read</div>
-          <h1 id="modal-blog-title"
+          <h2 id="modal-blog-title"
             style="font-size:30px;font-weight:800;color:#0f172a;line-height:1.25;margin:0 0 20px 0;letter-spacing:-0.8px">
             Female Multi-Channel Mailing Lists: Strategic B2B Reach
-          </h1>
+          </h2>
         </div>
 
         <!-- Article Body Content -->
