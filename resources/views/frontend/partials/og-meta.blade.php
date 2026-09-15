@@ -839,15 +839,16 @@
      @elseif(isset($work_item) && !empty($work_item))
 @php
     $pageUrl = url()->current();
-    $pageTitle = $work_item->title ?? 'CEO Email List';
-    $pageDescription = {{ \Illuminate\Support\Str::limit(
-    trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($work_item->description)))),
-    350,
-    ''
-    ) }}
-    $pageName = $pageTitle ?? 'CEO Email List';
-    $serviceName = "{$pageName} Service";
+    $pageName = $work_item->title ?? 'CEO Email List';
+    $serviceName = $dynamicServiceName ?? "{$pageName} Service";
     
+    $dynamicPageDescription = \Illuminate\Support\Str::limit(
+        trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($work_item->description)))),
+        350,
+        ''
+    );
+    $pageDescription = $dynamicPageDescription ?? "Reach verified {$pageName} and top executives across industries with accurate email and contact data.";
+
     // Dynamic catalog items fallback or passed from controller
     $catalogItems = $dynamicCatalogItems ?? [
         [
@@ -873,88 +874,115 @@
         ];
     }
 
-    $schemaGraph = [
-        '@context' => 'https://schema.org',
-        '@graph' => [
-            [
-                '@type' => 'Organization',
-                '@id' => url('/#organization'),
-                'name' => 'Go4Database',
-                'url' => url('/'),
-                'logo' => [
-                    '@type' => 'ImageObject',
-                    'url' => url('/assets/uploads/media-uploader/go4database-logo1751528079.png'),
-                    'width' => 300,
-                    'height' => 300
+    // Map your $work_item->faqs database column dynamically
+    $faqMainEntity = [];
+    if (!empty($work_item->faqs) && is_array($work_item->faqs)) {
+        foreach ($work_item->faqs as $faq) {
+            $faqMainEntity[] = [
+                '@type' => 'Question',
+                'name' => $faq['question'] ?? '',
+                'acceptedAnswer' => [
+                    '@type' => 'Answer',
+                    'text' => $faq['answer'] ?? ''
+                ]
+            ];
+        }
+    }
+    
+    // Base graph nodes
+    $graphNodes = [
+        [
+            '@type' => 'Organization',
+            '@id' => url('/#organization'),
+            'name' => 'Go4Database',
+            'url' => url('/'),
+            'logo' => [
+                '@type' => 'ImageObject',
+                'url' => url('/assets/uploads/media-uploader/go4database-logo1751528079.png'),
+                'width' => 300,
+                'height' => 300
+            ],
+            'contactPoint' => [
+                '@type' => 'ContactPoint',
+                'telephone' => '+1 786 785 2141',
+                'contactType' => 'customer service',
+                'areaServed' => 'US',
+                'availableLanguage' => 'en'
+            ]
+        ],
+        [
+            '@type' => 'WebSite',
+            '@id' => url('/#website'),
+            'name' => 'Go4Database',
+            'url' => url('/'),
+            'publisher' => ['@id' => url('/#organization')]
+        ],
+        [
+            '@type' => 'Service',
+            '@id' => "{$pageUrl}#service",
+            'name' => $serviceName,
+            'description' => $pageDescription,
+            'provider' => ['@id' => url('/#organization')],
+            'areaServed' => 'Global',
+            'hasOfferCatalog' => [
+                '@type' => 'OfferCatalog',
+                'name' => 'Executive Contact Data Plans',
+                'itemListElement' => $itemListElement
+            ]
+        ],
+        [
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => [
+                [
+                    '@type' => 'ListItem',
+                    'position' => 1,
+                    'name' => 'Home',
+                    'item' => url('/')
                 ],
-                'contactPoint' => [
-                    '@type' => 'ContactPoint',
-                    'telephone' => '+1 786 785 2141',
-                    'contactType' => 'customer service',
-                    'areaServed' => 'US',
-                    'availableLanguage' => 'en'
+                [
+                    '@type' => 'ListItem',
+                    'position' => 2,
+                    'name' => 'B2B',
+                    'item' => url('/b2b')
+                ],
+                [
+                    '@type' => 'ListItem',
+                    'position' => 3,
+                    'name' => $pageName,
+                    'item' => $pageUrl
                 ]
-            ],
-            [
-                '@type' => 'WebSite',
-                '@id' => url('/#website'),
-                'name' => 'Go4Database',
-                'url' => url('/'),
-                'publisher' => ['@id' => url('/#organization')]
-            ],
-            [
-                '@type' => 'Service',
-                '@id' => "{$pageUrl}#service",
-                'name' => $serviceName,
-                'description' => $pageDescription ?? "Reach verified {$pageName} and top executives across industries with accurate email and contact data.",
-                'provider' => ['@id' => url('/#organization')],
-                'areaServed' => 'Global',
-                'hasOfferCatalog' => [
-                    '@type' => 'OfferCatalog',
-                    'name' => 'Executive Contact Data Plans',
-                    'itemListElement' => $itemListElement
-                ]
-            ],
-            [
-                '@type' => 'BreadcrumbList',
-                'itemListElement' => [
-                    [
-                        '@type' => 'ListItem',
-                        'position' => 1,
-                        'name' => 'Home',
-                        'item' => url('/')
-                    ],
-                    [
-                        '@type' => 'ListItem',
-                        'position' => 2,
-                        'name' => 'B2B',
-                        'item' => url('/b2b')
-                    ],
-                    [
-                        '@type' => 'ListItem',
-                        'position' => 3,
-                        'name' => $pageName,
-                        'item' => $pageUrl
-                    ]
-                ]
-            ],
-            [
-                '@type' => 'WebPage',
-                '@id' => "{$pageUrl}#webpage",
-                'url' => $pageUrl,
-                'name' => $pageName,
-                'isPartOf' => ['@id' => url('/#website')],
-                'mainEntity' => ['@id' => "{$pageUrl}#service"]
             ]
         ]
+    ];
+
+    // Conditionally add FAQ node if FAQs exist
+    if (!empty($faqMainEntity)) {
+        $graphNodes[] = [
+            '@type' => 'FAQPage',
+            '@id' => "{$pageUrl}#faq",
+            'mainEntity' => $faqMainEntity
+        ];
+    }
+
+    // Add WebPage node last
+    $graphNodes[] = [
+        '@type' => 'WebPage',
+        '@id' => "{$pageUrl}#webpage",
+        'url' => $pageUrl,
+        'name' => $pageName,
+        'isPartOf' => ['@id' => url('/#website')],
+        'mainEntity' => ['@id' => "{$pageUrl}#service"]
+    ];
+
+    $schemaGraph = [
+        '@context' => 'https://schema.org',
+        '@graph' => $graphNodes
     ];
 @endphp
 
 <script type="application/ld+json">
 {!! json_encode($schemaGraph, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}
 </script>
-
-
  
       @endif
        
