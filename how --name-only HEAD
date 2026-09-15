@@ -1,0 +1,40 @@
+[33mcommit 8ea33fca28d031c179c28d424d1fc60850cc3be7[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: Renu Rana <renurana501@gmail.com>
+Date:   Tue Sep 15 08:53:18 2026 +0000
+
+    fix jsonscript issue
+
+ resources/views/backend/pages/list/edit-list.blade.php                      |    6 [32m+[m[31m-[m
+ resources/views/backend/pages/works/edit-work.blade.php                     |    6 [32m+[m[31m-[m
+ resources/views/frontend/partials/og-meta.blade.php                         |  233 [32m+++[m[31m---[m
+ storage/framework/cache/data/00/0d/000d422222812ea2621dfad880a64e3072e613a5 |  Bin [31m1410[m -> [32m1410[m bytes
+ storage/framework/cache/data/03/47/0347bf660f0d831796d72a15f0ea7734266c954d |  Bin [31m1256[m -> [32m1256[m bytes
+ storage/framework/cache/data/03/88/03881381eb2ddf5b12a9a7b73e8a9ec680333fc1 |  Bin [31m1328[m -> [32m1328[m bytes
+ storage/framework/cache/data/05/3e/053e150083248f027e99413977f1a084fdc23667 |  Bin [31m1298[m -> [32m1298[m bytes
+ storage/framework/cache/data/05/d3/05d3e4a64327bf504302cee02b3173527a0de85e |  Bin [31m1318[m -> [32m1318[m bytes
+ storage/framework/cache/data/05/ff/05ffab5393ff57e7d28712e7d5956ca94acb7abc |  Bin [31m1256[m -> [32m1256[m bytes
+ storage/framework/cache/data/08/ad/08ad79d324fa4168175155066b9a6738888e7f32 |  Bin [31m1300[m -> [32m1300[m bytes
+ storage/framework/cache/data/09/ae/09ae7a4ddc8956ed0d6f5c66b644b44a838600c1 |  Bin [31m1260[m -> [32m0[m bytes
+ storage/framework/cache/data/0a/4c/0a4c76639beaaf2315be4b1cefa4ca174aed3df6 |  Bin [31m1384[m -> [32m1384[m bytes
+ storage/framework/cache/data/0c/87/0c87bfe3e99d2d664427980d01c9f5b393cc74d2 |  Bin [31m1292[m -> [32m1292[m bytes
+ storage/framework/cache/data/0d/09/0d0908dd45066288c920c176b6d73b16d0bfaa4b |  Bin [31m1240[m -> [32m1240[m bytes
+ storage/framework/cache/data/0d/e1/0de129206620cd6f41558949a1b5f9b93d5567f5 |  Bin [31m1292[m -> [32m1292[m bytes
+ storage/framework/cache/data/0e/0f/0e0fdbfc59c5f6865148d295396e74119bc646f2 |  Bin [31m1462[m -> [32m1462[m bytes
+ storage/framework/cache/data/0e/fc/0efc461f9cacb207365a066ee58a23e26155f774 |  Bin [31m1322[m -> [32m1322[m bytes
+ storage/framework/cache/data/0f/0e/0f0e4668544e5548c8346eba777cae9fc75627e2 |  Bin [31m1278[m -> [32m1278[m bytes
+ storage/framework/cache/data/0f/2b/0f2b403ee9de179820c79e054d7f1ee770e37ca8 |  Bin [31m1386[m -> [32m1386[m bytes
+ storage/framework/cache/data/0f/92/0f92d33285573ab575caa549e8cdd80d60e3a032 |  Bin [31m1276[m -> [32m1276[m bytes
+ storage/framework/cache/data/10/83/108397046c589c5253bed1243d9baa7cdfc15c52 |  Bin [31m1290[m -> [32m1290[m bytes
+ storage/framework/cache/data/10/ec/10ec6fe11428c1176bbca82023dcac8259e8b41e |  Bin [31m1272[m -> [32m0[m bytes
+ storage/framework/cache/data/11/3c/113c02f92a23a323d3f54977e7ddfe1931d89d32 |  Bin [31m1264[m -> [32m1264[m bytes
+ storage/framework/cache/data/12/0b/120b30baef5b19a4ef880a431f58840de0df99fb |    2 [32m+[m[31m-[m
+ storage/framework/cache/data/14/63/14636ad75fb1580c25a42aeb29496f2cfa02e0f0 |  Bin [31m1270[m -> [32m1270[m bytes
+ storage/framework/cache/data/14/c1/14c16a6ef07a5db6a878feb00a91db2ee7027f8a |  Bin [31m1338[m -> [32m1338[m bytes
+ storage/framework/cache/data/15/47/1547186f0467b87a6c1403de14704424387ffa30 |  Bin [31m1272[m -> [32m1272[m bytes
+ storage/framework/cache/data/19/a9/19a9e8f04701981363125fd322071b93eecdb1a1 |  Bin [31m1248[m -> [32m1248[m bytes
+ storage/framework/cache/data/1a/b9/1ab9f85dc494d62f78d6a7f4f83e3ae057e3486c |  Bin [31m1282[m -> [32m1282[m bytes
+ storage/framework/cache/data/1c/53/1c53ee449eec68ea88b67cbd1b5eaf19364e5433 |  Bin [31m1244[m -> [32m1244[m bytes
+ storage/framework/cache/data/1d/06/1d06a7629e006bf8b9eebf93cacb5de09c184371 |  Bin [31m1276[m -> [32m0[m bytes
+ storage/framework/cache/data/1d/53/1d53085e02a15e78fcb2e0ae7d824c7672dc470d |  Bin [31m1252[m -> [32m1252[m bytes
+ storage/framework/cache/data/1d/de/1dde2df2c44e5b2048df55f81a691c9750714b73 |  Bin [31m1238[m -> [32m1238[m bytes
+ storage/framew
