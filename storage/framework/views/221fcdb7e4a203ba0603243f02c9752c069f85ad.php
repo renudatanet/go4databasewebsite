@@ -897,133 +897,125 @@
           } 
       </script>
      <?php elseif(isset($work_item) && !empty($work_item)): ?>
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-
-    {
-      "@type": "Organization",
-      "@id": "<?php echo e(url('/')); ?>#organization",
-      "name": "Go4Database",
-      "url": "<?php echo e(url('/')); ?>",
-      "logo": {
-        "@type": "ImageObject",
-        "@id": "<?php echo e(url('/')); ?>#logo",
-        "url": "<?php echo e(url('/')); ?>/assets/uploads/media-uploader/go4database-logo1751528079.png",
-        "contentUrl": "<?php echo e(url('/')); ?>/assets/uploads/media-uploader/go4database-logo1751528079.png",
-        "width": 300,
-        "height": 300,
-        "caption": "Go4Database"
-      },
-      "image": { "@id": "<?php echo e(url('/')); ?>#logo" },
-     
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "telephone": "+1 786 785 2141",
-        "contactType": "customer service",
-        "areaServed": "US",
-        "availableLanguage": "en"
-      },
-      "sameAs": [
-        "https://www.facebook.com/Go4Database",
-        "https://twitter.com/go4database",
-        "https://www.instagram.com/go4database/",
-        "https://www.youtube.com/@Go4Database",
-        "https://www.linkedin.com/company/go4database/",
-        "https://in.pinterest.com/go4database/"
-      ]
-    },
-
-    {
-      "@type": "WebSite",
-      "@id": "<?php echo e(url('/')); ?>#website",
-      "name": "Go4Database",
-      "url": "<?php echo e(url('/')); ?>",
-      "publisher": {
-        "@id": "<?php echo e(url('/')); ?>#organization"
-      }
-    },
-
-    {
-      "@type": "Product",
-      "@id": "<?php echo e(url()->current()); ?>#product",
-      "name": "<?php echo e($work_item->title); ?>",
-      "image": "<?php echo e(get_attachment_image_by_id($work_item->image,'full',true)['img_url'] ?? ''); ?>",
-      "description": "<?php echo e(\Illuminate\Support\Str::limit(
+<?php
+    $pageUrl = url()->current();
+    $pageTitle = $work_item->title ?? 'CEO Email List';
+    $pageDescription = {{ \Illuminate\Support\Str::limit(
     trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($work_item->description)))),
     350,
     ''
-)); ?>",
-      "brand": { "@id": "<?php echo e(url('/')); ?>#organization" },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.7",
-        "reviewCount": "39"
-      }
-    },
+    ) }}
+    $pageName = $pageTitle ?? 'CEO Email List';
+    $serviceName = "{$pageName} Service";
+    
+    // Dynamic catalog items fallback or passed from controller
+    $catalogItems = $dynamicCatalogItems ?? [
+        [
+            'name' => "Custom {$pageName} Quote",
+            'priceDesc' => 'Custom pricing / Contact for quote'
+        ]
+    ];
 
-    {
-      "@type": "BreadcrumbList",
-      "@id": "<?php echo e(url()->current()); ?>#breadcrumb",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "item": {
-            "@type": "WebPage",
-            "@id": "<?php echo e(url('/')); ?>",
-            "url": "<?php echo e(url('/')); ?>",
-            "name": "Home"
-          }
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "item": {
-            "@type": "WebPage",
-            "@id": "<?php echo e(url('b2b')); ?>",
-            "url": "<?php echo e(url('b2b')); ?>",
-            "name": "B2B"
-          }
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "item": {
-            "@type": "WebPage",
-            "@id": "<?php echo e(url()->current()); ?>",
-            "url": "<?php echo e(url()->current()); ?>",
-            "name": "<?php echo e($work_item->title); ?>"
-          }
-        }
-      ]
-    },
-
-    {
-      "@type": "WebPage",
-      "@id": "<?php echo e(url()->current()); ?>#webpage",
-      "url": "<?php echo e(url()->current()); ?>",
-      "name": "<?php echo e($work_item->title); ?>",
-      "isPartOf": {
-        "@id": "<?php echo e(url('/')); ?>#website"
-      },
-      "breadcrumb": {
-        "@id": "<?php echo e(url()->current()); ?>#breadcrumb"
-      },
-      "mainEntity": {
-        "@id": "<?php echo e(url()->current()); ?>#product"
-      },
-      "publisher": {
-        "@id": "<?php echo e(url('/')); ?>#organization"
-      }
+    $itemListElement = [];
+    foreach ($catalogItems as $item) {
+        $itemListElement[] = [
+            '@type' => 'Offer',
+            'itemOffered' => [
+                '@type' => 'Service',
+                'name' => $item['name']
+            ],
+            'availability' => 'https://schema.org/InStock',
+            'priceSpecification' => [
+                '@type' => 'PriceSpecification',
+                'priceCurrency' => 'USD',
+                'description' => $item['priceDesc'] ?? 'Custom pricing / Contact for quote'
+            ]
+        ];
     }
 
-  ]
-}
+    $schemaGraph = [
+        '@context' => 'https://schema.org',
+        '@graph' => [
+            [
+                '@type' => 'Organization',
+                '@id' => url('/#organization'),
+                'name' => 'Go4Database',
+                'url' => url('/'),
+                'logo' => [
+                    '@type' => 'ImageObject',
+                    'url' => url('/assets/uploads/media-uploader/go4database-logo1751528079.png'),
+                    'width' => 300,
+                    'height' => 300
+                ],
+                'contactPoint' => [
+                    '@type' => 'ContactPoint',
+                    'telephone' => '+1 786 785 2141',
+                    'contactType' => 'customer service',
+                    'areaServed' => 'US',
+                    'availableLanguage' => 'en'
+                ]
+            ],
+            [
+                '@type' => 'WebSite',
+                '@id' => url('/#website'),
+                'name' => 'Go4Database',
+                'url' => url('/'),
+                'publisher' => ['@id' => url('/#organization')]
+            ],
+            [
+                '@type' => 'Service',
+                '@id' => "{$pageUrl}#service",
+                'name' => $serviceName,
+                'description' => $pageDescription ?? "Reach verified {$pageName} and top executives across industries with accurate email and contact data.",
+                'provider' => ['@id' => url('/#organization')],
+                'areaServed' => 'Global',
+                'hasOfferCatalog' => [
+                    '@type' => 'OfferCatalog',
+                    'name' => 'Executive Contact Data Plans',
+                    'itemListElement' => $itemListElement
+                ]
+            ],
+            [
+                '@type' => 'BreadcrumbList',
+                'itemListElement' => [
+                    [
+                        '@type' => 'ListItem',
+                        'position' => 1,
+                        'name' => 'Home',
+                        'item' => url('/')
+                    ],
+                    [
+                        '@type' => 'ListItem',
+                        'position' => 2,
+                        'name' => 'B2B',
+                        'item' => url('/b2b')
+                    ],
+                    [
+                        '@type' => 'ListItem',
+                        'position' => 3,
+                        'name' => $pageName,
+                        'item' => $pageUrl
+                    ]
+                ]
+            ],
+            [
+                '@type' => 'WebPage',
+                '@id' => "{$pageUrl}#webpage",
+                'url' => $pageUrl,
+                'name' => $pageName,
+                'isPartOf' => ['@id' => url('/#website')],
+                'mainEntity' => ['@id' => "{$pageUrl}#service"]
+            ]
+        ]
+    ];
+?>
+
+<script type="application/ld+json">
+<?php echo json_encode($schemaGraph, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT); ?>
+
 </script>
+
+
  
       <?php endif; ?>
        

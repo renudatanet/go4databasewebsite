@@ -167,8 +167,8 @@
                             <div class="faq-container">
     <div id="faq-wrapper">
 
-        @if(!empty($blog_post->faqs))
-            @foreach($blog_post->faqs as $i => $faq)
+        @if(!empty($service->faqs))
+            @foreach($service->faqs as $i => $faq)
                 <div class="faq-item">
                     <input type="text" 
                            name="faqs[{{ $i }}][question]" 
@@ -187,7 +187,7 @@
 
             <script>
                 // 👇 important: continue index from last item
-                let index = {{ count($blog_post->faqs) }};
+                let index = {{ count($service->faqs) }};
             </script>
 
         @else
