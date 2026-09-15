@@ -56,7 +56,7 @@ class WorksController extends Controller
     }
 
     public function store(Request $request)
-    {
+    { 
         $this->validate($request, [
             'title' => 'required|string|max:191',
             'slug' => 'nullable|string|max:191',
@@ -74,9 +74,20 @@ class WorksController extends Controller
             'image' => 'nullable|string|max:191',
         ]);
         $slug = !empty($request->slug) ? $request->slug : Str::slug($request->title,$request->lang);
+        $faqs = [];
+            if ($request->has('faqs')) {
+            $faqs = collect($request->faqs)
+            ->filter(function ($faq) {
+            return !empty($faq['question']) && !empty($faq['answer']);
+            })
+            ->values()
+            ->toArray();
+            }
+            
         Works::create([
             'title' => $request->title,
             'slug' => $slug,
+            'faqs' => !empty($faqs) ? $faqs : null,
             'excerpt' => $request->excerpt,
             'meta_tag' => $request->meta_tags,
             'meta_description' => $request->meta_description,
@@ -114,6 +125,15 @@ class WorksController extends Controller
             'image' => 'nullable|string|max:191',
         ]);
         $slug = !empty($request->slug) ? $request->slug : Str::slug($request->title,$request->lang);
+         $faqs = [];
+
+if ($request->has('faqs')) {
+    $faqs = collect($request->faqs)
+        ->filter(fn($faq) => !empty($faq['question']) && !empty($faq['answer']))
+        ->values()
+        ->toArray();
+}
+
         Works::find($request->id)->update(
             [
                 'title' => $request->title,
@@ -129,6 +149,7 @@ class WorksController extends Controller
                 'budget' => $request->budget,
                 'status' => $request->status,
                 'description' => $request->description,
+                'faqs' => !empty($faqs) ? $faqs : null,
                 'image' => $request->image,
                 'categories_id' => serialize($request->categories_id),
             ]
@@ -151,6 +172,7 @@ class WorksController extends Controller
                 'duration' => $single_work->duration,
                 'gallery' => $single_work->gallery,
                 'budget' => $single_work->budget,
+                'faqs' => $single_work->faqs,
                 'status' => 'draft',
                 'description' => $single_work->description,
                 'image' => $single_work->image,

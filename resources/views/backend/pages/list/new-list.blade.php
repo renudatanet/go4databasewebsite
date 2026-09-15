@@ -10,7 +10,7 @@
     {{__('Services')}}
 @endsection
 @section('content')
-<style>
+<style> 
 
 
 .faq-item {

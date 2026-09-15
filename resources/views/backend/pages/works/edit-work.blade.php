@@ -10,6 +10,68 @@
     {{__('Edit B2B')}}
 @endsection
 @section('content')
+<style>
+    .faq-container {
+    max-width: 800px;
+}
+
+.faq-item {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    position: relative;
+}
+
+.faq-item input,
+.faq-item textarea {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.faq-item textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.faq-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.add-btn {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.add-btn:hover {
+    background: #1d4ed8;
+}
+
+.delete-btn {
+    background: #ef4444;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background: #dc2626;
+}
+</style>
     <div class="col-lg-12 col-ml-12 padding-bottom-30">
         <div class="row">
             <div class="col-lg-12">
@@ -62,7 +124,52 @@
         <textarea name="description" id="description">{{ old('description', $work_details->description) }}</textarea>
                                 <!--<div class="summernote" data-content='{{$work_details->description}}'></div>-->
                             </div>
-                            
+                            <div class="faq-container">
+    <div id="faq-wrapper">
+
+        @if(!empty($blog_post->faqs))
+            @foreach($blog_post->faqs as $i => $faq)
+                <div class="faq-item">
+                    <input type="text" 
+                           name="faqs[{{ $i }}][question]" 
+                           value="{{ $faq['question'] }}" 
+                           placeholder="Enter question">
+
+                    <textarea name="faqs[{{ $i }}][answer]" 
+                              placeholder="Enter answer">{{ $faq['answer'] }}</textarea>
+
+                    <div class="faq-actions">
+                        <span></span>
+                        <button type="button" class="delete-btn" onclick="removeFaq(this)">Delete</button>
+                    </div>
+                </div>
+            @endforeach
+
+            <script>
+                // 👇 important: continue index from last item
+                let index = {{ count($blog_post->faqs) }};
+            </script>
+
+        @else
+            <div class="faq-item">
+                <input type="text" name="faqs[0][question]" placeholder="Enter question">
+                <textarea name="faqs[0][answer]" placeholder="Enter answer"></textarea>
+
+                <div class="faq-actions">
+                    <span></span>
+                    <button type="button" class="delete-btn" onclick="removeFaq(this)">Delete</button>
+                </div>
+            </div>
+
+            <script>
+                let index = 1;
+            </script>
+        @endif
+
+    </div>
+
+    <button type="button" class="add-btn" onclick="addFaq()">+ Add FAQ</button>
+</div>
                             <div class="form-group">
                                 <label for="image">{{__('Gallery')}}</label>
                                 @php
@@ -247,7 +354,33 @@
     });
     
 </script>
+ <script>
+function addFaq() {
+    let html = `
+        <div class="faq-item">
+            <input type="text" name="faqs[${index}][question]" placeholder="Enter question">
+            <textarea name="faqs[${index}][answer]" placeholder="Enter answer"></textarea>
 
+            <div class="faq-actions">
+                <span></span>
+                <button type="button" class="delete-btn" onclick="removeFaq(this)">Delete</button>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('faq-wrapper').insertAdjacentHTML('beforeend', html);
+    index++;
+}
+
+function removeFaq(btn) {
+    let wrapper = document.getElementById('faq-wrapper');
+    if (wrapper.children.length > 1) {
+        btn.closest('.faq-item').remove();
+    } else {
+        alert('At least one FAQ is required');
+    }
+}
+</script>
    <!--  <script>
    
     $(document).ready(function() {

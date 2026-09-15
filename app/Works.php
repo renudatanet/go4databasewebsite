@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Works extends Model
 {
     protected $table = 'works';
+    protected $casts = [
+      'faqs' => 'array'
+    ];
     protected $fillable = [
         'title',
         'gallery',
@@ -23,7 +26,8 @@ class Works extends Model
         'budget',
         'description',
         'gallery',
-        'image'
+        'image',
+        'faqs'
     ];
 
     public function getCategoriesIdAttribute($value){
