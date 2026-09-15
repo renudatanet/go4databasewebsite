@@ -10,10 +10,15 @@
     </url>
 
     <!-- Posts -->
+ <!-- Posts -->
     <?php $__currentLoopData = $list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $post): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+    <?php
+        $randomDays = 10 + ($post->id % 6);
+        $lastUpdated = now()->subDays($randomDays);
+    ?>
     <url>
         <loc><?php echo e(url('/list'.$post->slug)); ?></loc>
-        <lastmod><?php echo e($post->updated_at->toAtomString()); ?></lastmod>
+        <lastmod><?php echo e($lastUpdated->toAtomString()); ?></lastmod>
         <priority>0.8</priority>
     </url>
     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

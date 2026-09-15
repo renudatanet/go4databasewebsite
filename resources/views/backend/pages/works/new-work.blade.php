@@ -10,6 +10,66 @@
     {{__('New B2B')}}
 @endsection
 @section('content')
+<style> 
+
+
+.faq-item {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    position: relative;
+}
+
+.faq-item input,
+.faq-item textarea {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.faq-item textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.faq-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.add-btn {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.add-btn:hover {
+    background: #1d4ed8;
+}
+
+.delete-btn {
+    background: #ef4444;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background: #dc2626;
+}
+</style>
     <div class="col-lg-12 col-ml-12 padding-bottom-30">
         <div class="row">
             <div class="col-lg-12">f
@@ -61,6 +121,21 @@
                                 <textarea name="description" id="description"></textarea>
                                 <!--<div class="summernote"></div>-->
                             </div>
+                              <div class="faq-container">
+                        <div id="faq-wrapper">
+                        <div class="faq-item">
+                        <input type="text" name="faqs[0][question]" placeholder="Enter question">
+                        <textarea name="faqs[0][answer]" placeholder="Enter answer"></textarea>
+                        
+                        <div class="faq-actions">
+                        <span></span>
+                        <button type="button" class="delete-btn" onclick="removeFaq(this)">Delete</button>
+                        </div>
+                        </div>
+                        </div>
+                        
+                        <button type="button" class="add-btn" onclick="addFaq()">+ Add FAQ</button>
+                        </div>
                             <div class="form-group">
                                 <label for="excerpt">{{__('Excerpt')}}</label>
                                 <textarea name="excerpt"  class="form-control" rows="5" id="excerpt"></textarea>
@@ -225,6 +300,35 @@
         }
         console.log(typeof CKEDITOR);
     });
+</script>
+<script>
+let index = 1;
+
+function addFaq() {
+    let html = `
+        <div class="faq-item">
+            <input type="text" name="faqs[${index}][question]" placeholder="Enter question">
+            <textarea name="faqs[${index}][answer]" placeholder="Enter answer"></textarea>
+
+            <div class="faq-actions">
+                <span></span>
+                <button type="button" class="delete-btn" onclick="removeFaq(this)">Delete</button>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('faq-wrapper').insertAdjacentHTML('beforeend', html);
+    index++;
+}
+
+function removeFaq(btn) {
+    let wrapper = document.getElementById('faq-wrapper');
+    if (wrapper.children.length > 1) {
+        btn.closest('.faq-item').remove();
+    } else {
+        alert('At least one FAQ is required');
+    }
+}
 </script>
     @include('backend.partials.media-upload.media-js')
 @endsection

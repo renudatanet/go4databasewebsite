@@ -1,7 +1,8 @@
 <?php echo $__env->make('frontend.partials.header', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 <?php echo $__env->make('frontend.partials.navbar-variant.navbar-'.get_static_option('navbar_variant'), \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
-<?php if(!request()->is('author*') && !request()->is('list/*')): ?>
+
+<?php if(!request()->is('author*') && !request()->is('list/*') && !request()->is('email-verifier') && !request()->routeIs('frontend.faq')): ?>
    <?php echo $__env->make('frontend.partials.breadcrumb', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 <?php endif; ?>
 <?php echo $__env->yieldContent('content'); ?>

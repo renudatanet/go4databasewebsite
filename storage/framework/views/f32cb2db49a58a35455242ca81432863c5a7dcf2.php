@@ -104,6 +104,14 @@
 
     <?php echo filter_static_option_value('site_third_party_tracking_code',$global_static_field_data); ?>
 
+
+    
+    <link rel="stylesheet" href="<?php echo e(asset('assets/frontend/css/mobile-nav.css?v=1')); ?>">
+    <script src="<?php echo e(asset('assets/frontend/js/mobile-nav.js?v=1')); ?>" defer></script>
+
+    
+    <style>html,body{overflow-x:clip;}body{overflow-y:visible;}</style>
+
     <?php echo $__env->yieldPushContent('styles'); ?>
 </head>
 

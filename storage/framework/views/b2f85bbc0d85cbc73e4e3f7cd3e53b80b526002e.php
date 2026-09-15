@@ -1,5 +1,5 @@
 <?php echo $__env->make('frontend.partials.homesupportbar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-<?php echo $__env->make('frontend.partials.navbar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?> 
+<?php echo $__env->make('frontend.partials.navbar-new', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?> 
 <?php $__env->startPush('styles'); ?>
     <link rel="stylesheet" href="<?php echo e(asset('assets/frontend/css/home.css?v=123')); ?>">
 <?php $__env->stopPush(); ?>
@@ -185,35 +185,71 @@
         <div class="search-controls-row"
           style="display:flex;align-items:center;gap:12px;padding:18px 26px;flex-wrap:wrap">
           <input id="filter-title" placeholder="Title"
-            style="flex:1;min-width:130px;background:#f8fafc;border:1.5px solid #cbd5e1;border-radius:10px;padding:11px 16px;font-size:14px;color:#0f172a;font-family:inherit;box-shadow:inset 0 2px 4px rgba(0,0,0,0.02)">
-          <input id="filter-industry" placeholder="Industry"
-            style="flex:1;min-width:130px;background:#f8fafc;border:1.5px solid #cbd5e1;border-radius:10px;padding:11px 16px;font-size:14px;color:#0f172a;font-family:inherit;box-shadow:inset 0 2px 4px rgba(0,0,0,0.02)">
-          <input id="filter-business" placeholder="Business"
-            style="flex:1;min-width:130px;background:#f8fafc;border:1.5px solid #cbd5e1;border-radius:10px;padding:11px 16px;font-size:14px;color:#0f172a;font-family:inherit;box-shadow:inset 0 2px 4px rgba(0,0,0,0.02)">
+            style="flex:1;min-width:120px;background:#fff;border:1.5px solid #d9e1ea;border-radius:10px;padding:11px 16px;font-size:14px;color:#0f172a;font-family:inherit;outline:none">
+          <input id="filter-industry" placeholder="Industry / Business"
+            style="flex:1.35;min-width:160px;background:#fff;border:1.5px solid #d9e1ea;border-radius:10px;padding:11px 16px;font-size:14px;color:#0f172a;font-family:inherit;outline:none">
           <input id="filter-location" placeholder="Location"
-            style="flex:1;min-width:130px;background:#f8fafc;border:1.5px solid #cbd5e1;border-radius:10px;padding:11px 16px;font-size:14px;color:#0f172a;font-family:inherit;box-shadow:inset 0 2px 4px rgba(0,0,0,0.02)">
-          <button id="search-action-btn"
-            style="border:none;cursor:pointer;background:#6fd943;color:#0b132a;font-size:14px;font-weight:800;padding:11px 26px;border-radius:99px;display:flex;align-items:center;gap:7px;box-shadow:0 8px 22px rgba(111,217,67,0.45);flex-shrink:0">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <circle cx="11" cy="11" r="7" stroke="#0b132a" stroke-width="2.5" />
-              <path d="M16 16l4.5 4.5" stroke="#0b132a" stroke-width="2.5" stroke-linecap="round" />
+            style="flex:1;min-width:120px;background:#fff;border:1.5px solid #d9e1ea;border-radius:10px;padding:11px 16px;font-size:14px;color:#0f172a;font-family:inherit;outline:none">
+
+          <a id="download-leads-btn" href="https://app.go4database.com/register" target="_blank" rel="noopener"
+            style="cursor:pointer;background:#3b8e15;color:#fff;font-size:14px;font-weight:700;padding:11px 24px;border-radius:99px;display:flex;align-items:center;gap:8px;text-decoration:none;box-shadow:0 8px 20px rgba(59,142,21,0.3);flex-shrink:0">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 3v11m0 0l-4.2-4.2M12 14l4.2-4.2M4 19h16" stroke="currentColor" stroke-width="2.3"
+                stroke-linecap="round" stroke-linejoin="round" />
             </svg>
-            Search
-          </button>
+            Download
+          </a>
         </div>
 
         <!-- Results Table -->
-        <div id="results-container" class="hidden"
-          style="margin:16px 28px 28px;border:1px solid rgba(0,0,0,0.08);border-radius:14px;overflow:hidden;background:#fff;overflow-x:auto">
-          <div
-            style="display:grid;grid-template-columns:36px 1.7fr 1.3fr 1.4fr 1.1fr 1.1fr;align-items:center;padding:16px 20px;background:#f8fafc;border-bottom:1px solid #e2e8f0;min-width:860px">
-            <span
-              style="width:16px;height:16px;border:1.5px solid #cbd5e1;border-radius:3px;display:inline-block"></span>
-            <span style="font-size:12px;font-weight:800;letter-spacing:0.4px;color:#1e293b">COMPANY</span>
-            <span style="font-size:12px;font-weight:800;letter-spacing:0.4px;color:#1e293b">PERSON NAME</span>
-            <span style="font-size:12px;font-weight:800;letter-spacing:0.4px;color:#1e293b">TITLE</span>
-            <span style="font-size:12px;font-weight:800;letter-spacing:0.4px;color:#1e293b">EMAIL ID</span>
-            <span style="font-size:12px;font-weight:800;letter-spacing:0.4px;color:#1e293b">PHONE</span>
+        
+        <style>
+          #results-container { margin: 16px 28px 28px; border: 1px solid rgba(0,0,0,0.08); border-radius: 14px; overflow: hidden; background: #fff; }
+          .g4d-leads-summary { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 16px; padding: 12px 20px; border-bottom: 1px solid #e2e8f0; font-size: 13.5px; color: #475569; }
+          .g4d-leads-summary strong { color: #0f172a; font-weight: 700; }
+          .g4d-leads-summary a { color: #3b8e15; font-weight: 700; text-decoration: none; white-space: nowrap; }
+          .g4d-leads-summary a:hover { text-decoration: underline; }
+          .g4d-leads-grid { display: grid; grid-template-columns: minmax(0,1.5fr) minmax(0,1.15fr) minmax(0,1.45fr) minmax(150px,1.1fr) 140px; column-gap: 16px; align-items: center; }
+          .g4d-leads-head { padding: 13px 20px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; font-size: 12px; font-weight: 800; letter-spacing: 0.4px; color: #1e293b; }
+          .g4d-lead { padding: 16px 20px; border-bottom: 1px solid #f1f5f9; font-size: 13.5px; color: #333; }
+          .g4d-lead:last-child { border-bottom: 0; }
+          .g4d-lead-company { font-weight: 700; color: #1e293b; font-size: 14px; line-height: 1.35; }
+          .g4d-lead-meta { margin-top: 3px; font-size: 11.5px; color: #64748b; }
+          .g4d-lead-person { font-weight: 700; color: #1e293b; font-size: 14px; line-height: 1.35; }
+          .g4d-lead-title { color: #475569; font-weight: 500; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+          .g4d-lead-btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #cbd5e1; background: #fff; border-radius: 8px; padding: 7px 12px; font-family: inherit; font-size: 12.5px; font-weight: 600; color: #334155; cursor: pointer; white-space: nowrap; box-shadow: 0 1px 2px rgba(0,0,0,0.04); transition: border-color .15s, box-shadow .15s; }
+          .g4d-lead-btn:hover { border-color: #3b8e15; box-shadow: 0 2px 8px rgba(59,142,21,0.15); }
+          .g4d-lead-btn:focus-visible { outline: 2px solid #3b8e15; outline-offset: 2px; }
+          .g4d-lead-status { width: 16px; height: 16px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+          .g4d-lead-status.is-yes { background: #dcfce7; color: #15803d; }
+          .g4d-lead-status.is-no { background: #fee2e2; color: #dc2626; }
+          .g4d-lead-value { font-size: 13px; font-weight: 600; color: #1e293b; overflow-wrap: anywhere; }
+          .g4d-lead-limit { font-size: 13px; font-weight: 700; color: #3b8e15; }
+          /* home.css pairs the buttons on one row below 768px; with only Download left,
+             put it beside Location instead of alone at half width. */
+          @media (max-width: 768px) {
+            .search-controls-row #filter-location { flex: 1 1 calc(50% - 6px) !important; }
+            .search-controls-row #download-leads-btn { flex: 1 1 calc(50% - 6px) !important; margin-top: 0 !important; }
+          }
+          @media (max-width: 900px) {
+            .g4d-leads-head { display: none; }
+            .g4d-lead.g4d-leads-grid { grid-template-columns: 1fr 1fr; column-gap: 10px; row-gap: 2px; padding: 14px 16px; }
+            .g4d-lead-company-cell, .g4d-lead-person, .g4d-lead-title { grid-column: 1 / -1; }
+            .g4d-lead-person { margin-top: 8px; font-size: 13.5px; }
+            .g4d-lead-title { font-size: 13px; -webkit-line-clamp: 3; }
+            .g4d-lead-email, .g4d-lead-phone { margin-top: 10px; }
+            .g4d-lead-btn { width: 100%; justify-content: center; }
+            .g4d-leads-summary { padding: 10px 16px; font-size: 13px; }
+          }
+        </style>
+        <div id="results-container" class="hidden">
+          <div id="leads-summary" class="g4d-leads-summary hidden"></div>
+          <div class="g4d-leads-grid g4d-leads-head">
+            <span>COMPANY</span>
+            <span>PERSON NAME</span>
+            <span>TITLE</span>
+            <span>EMAIL</span>
+            <span>PHONE</span>
           </div>
           <div id="leads-rows"></div>
         </div>
@@ -265,74 +301,6 @@
               B2B Category List</div>
           </div>
 
-        </div>
-      </div>
-    </div>
-
-    <!-- Filter Modal -->
-    <div id="filter-modal" class="hidden"
-      style="position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:50;display:flex;align-items:center;justify-content:center;padding:20px">
-      <div
-        style="background:#fff;border-radius:16px;max-width:720px;width:100%;max-height:88vh;overflow-y:auto;padding:32px 36px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:26px">
-          <div style="font-size:22px;font-weight:800;color:#111">50+ Search Filters (UpLead Pattern)</div>
-          <span id="close-modal-x"
-            style="cursor:pointer;color:#999;font-size:24px;line-height:1;padding:4px">&times;</span>
-        </div>
-
-        <div style="font-size:13px;font-weight:800;letter-spacing:0.5px;color:#111;margin-bottom:16px">COMPANY &amp;
-          TECHNOGRAPHICS</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:18px;margin-bottom:28px">
-          <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#555">Company
-              Name</span><input placeholder="e.g. Salesforce"
-              style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit"></label>
-          <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#555">Location /
-              HQ</span><input placeholder="City, State, Country"
-              style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit"></label>
-          <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#555">Industry
-              &amp; SIC</span><input placeholder="Software, Healthcare"
-              style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit"></label>
-          <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#555">Tech
-              Used</span><input placeholder="AWS, Hubspot, React"
-              style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit"></label>
-          <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#555">Revenue
-              Range</span><input placeholder="$10M - $100M"
-              style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit"></label>
-          <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#555">Buying
-              Intent</span><input placeholder="Searching CRM tools"
-              style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit"></label>
-          <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#555">Founded
-              Year</span><input placeholder="2010+"
-              style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit"></label>
-          <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#555">Employee
-              Count</span><input placeholder="50 - 500"
-              style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit"></label>
-        </div>
-
-        <div style="font-size:13px;font-weight:800;letter-spacing:0.5px;color:#111;margin-bottom:16px">CONTACT &amp;
-          DIRECT DIAL INFO</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:18px;margin-bottom:32px">
-          <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#555">Email
-              Status</span><input placeholder="Verified Only"
-              style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit"></label>
-          <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#555">Phone
-              Type</span><input placeholder="Direct Mobile Dials"
-              style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit"></label>
-          <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#555">Job Title
-              /
-              Role</span><input placeholder="VP, Director, C-Level"
-              style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit"></label>
-          <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:#555">Contact
-              Name</span><input placeholder="Full Name"
-              style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:inherit"></label>
-        </div>
-
-        <div style="display:flex;justify-content:flex-end;gap:12px">
-          <button id="reset-modal-btn"
-            style="border:none;cursor:pointer;background:#4b5563;color:#fff;font-size:14px;font-weight:700;padding:11px 24px;border-radius:99px">Reset</button>
-          <button id="apply-modal-btn"
-            style="border:none;cursor:pointer;background:#6fd943;color:#0b132a;font-size:14px;font-weight:800;padding:11px 24px;border-radius:99px">Apply
-            Filters &amp; Search</button>
         </div>
       </div>
     </div>
@@ -657,9 +625,9 @@
 
         <!-- Header -->
         <div style="text-align:center;max-width:720px;margin:0 auto 52px">
-          <div style="font-size:44px;font-weight:800;letter-spacing:-1.5px;color:#0f172a;line-height:1.12">
+          <h2 style="font-size:44px;font-weight:800;letter-spacing:-1.5px;color:#0f172a;line-height:1.12">
             High-Quality
-            Data Drives Better Outreach Results</div>
+            Data Drives Better Outreach Results</h2>
           <div style="font-size:17px;color:#64748b;margin-top:16px;line-height:1.7;font-weight:500">Why leading sales,
             growth, and
             marketing teams choose Go4Database to power their outbound pipeline</div>
@@ -800,9 +768,9 @@
     <div id="comparison" style="padding:72px 40px;background:#ffffff">
       <div style="max-width:1200px;margin:0 auto">
         <div style="text-align:center;max-width:700px;margin:0 auto 52px">
-          <div style="font-size:40px;font-weight:800;letter-spacing:-1.5px;color:#0f172a;line-height:1.12">Why Sales
+          <h2 style="font-size:40px;font-weight:800;letter-spacing:-1.5px;color:#0f172a;line-height:1.12">Why Sales
             Teams
-            Switch to Us</div>
+            Switch to Us</h2>
           <div style="font-size:17px;color:#64748b;margin-top:14px;line-height:1.7;font-weight:500">Compare what you
             get with Go4Database versus
             traditional lead providers</div>
@@ -812,7 +780,7 @@
           <div
             style="background:linear-gradient(135deg, #f0fdf4 0%, #dcfce7 45%, #bbf7d0 100%);border:1.5px solid rgba(34, 197, 94, 0.35);border-radius:20px;padding:36px">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
-              <div style="font-size:22px;font-weight:800;color:#1f7a2e">With Go4Database</div>
+              <h3 style="font-size:22px;font-weight:800;color:#1f7a2e">With Go4Database</h3>
               <span
                 style="background:#1f7a2e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px">95%+
                 ACCURACY</span>
@@ -844,7 +812,7 @@
 
           <div style="background:#fafafa;border:1px solid rgba(0,0,0,0.1);border-radius:20px;padding:36px">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
-              <div style="font-size:22px;font-weight:800;color:#777">With Others</div>
+              <h3 style="font-size:22px;font-weight:800;color:#777">With Others</h3>
               <span
                 style="background:#e5e7eb;color:#666;font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px">80-90%
                 ACCURACY</span>
@@ -889,8 +857,8 @@
             </svg>
             PLATFORM CAPABILITIES
           </div>
-          <div style="font-size:44px;font-weight:800;letter-spacing:-1.5px;color:#0f172a;line-height:1.15">Everything
-            You Need to Find Your Next Customer</div>
+          <h2 style="font-size:44px;font-weight:800;letter-spacing:-1.5px;color:#0f172a;line-height:1.15">Everything
+            You Need to Find Your Next Customer</h2>
           <div style="font-size:18px;color:#64748b;line-height:1.7;margin-top:14px;font-weight:500">From B2B data and
             advanced search to AI-powered ICP targeting.</div>
         </div>
@@ -909,9 +877,9 @@
                   style="display:inline-block;background:#ffe4e6;color:#e11d48;font-size:11.5px;font-weight:800;letter-spacing:1px;padding:6px 14px;border-radius:999px">
                   AI LEAD GENERATION TOOL</div>
               </div>
-              <div
+              <h3
                 style="font-size:34px;font-weight:800;letter-spacing:-1px;color:#111;line-height:1.2;margin-bottom:16px">
-                Get data from the most complete B2B Marketplace</div>
+                Get data from the most complete B2B Marketplace</h3>
               <div style="font-size:16px;color:#555;line-height:1.65;margin-bottom:24px">Access 400M+ decision makers
                 with 50+ granular search filters. Filter by job title, company revenue, location, and real-time
                 verified
@@ -937,7 +905,8 @@
             <!-- Direct Screenshot Image 1 -->
             <div
               style="background:#fff;border-radius:18px;padding:10px;box-shadow:0 20px 50px -15px rgba(0,0,0,0.12);border:1px solid rgba(0,0,0,0.08);overflow:hidden">
-              <img src="<?php echo e(asset('assets/frontend/images/prospecting-table.png')); ?>" alt="B2B Prospecting Leads Data Table Screenshot"
+              <img src="<?php echo e(asset('assets/frontend/images/b2b-marketplace-table.png')); ?>" alt="Go4Database B2B leads table with company, contact name, title and verified email"
+                width="1758" height="1352" loading="lazy"
                 style="width:100%;height:auto;border-radius:12px;display:block;object-fit:cover">
             </div>
           </div>
@@ -953,9 +922,9 @@
                   style="display:inline-block;background:#f3e8ff;color:#7c3aed;font-size:11.5px;font-weight:800;letter-spacing:1px;padding:6px 14px;border-radius:999px">
                   ADVANCED SEARCH &amp; FILTERS</div>
               </div>
-              <div
+              <h3
                 style="font-size:34px;font-weight:800;letter-spacing:-1px;color:#111;line-height:1.2;margin-bottom:16px">
-                Advanced filter section for targeted search</div>
+                Advanced filter section for targeted search</h3>
               <div style="font-size:16px;color:#555;line-height:1.65;margin-bottom:24px">Filter decision makers across
                 50+ granular search criteria including job title, industry, company turnover, location,
                 technographics,
@@ -983,7 +952,8 @@
             <!-- Exact Create Filter Photo uploaded by user -->
             <div
               style="background:#fff;border-radius:18px;padding:10px;box-shadow:0 20px 50px -15px rgba(0,0,0,0.12);border:1px solid rgba(0,0,0,0.08);overflow:hidden">
-              <img src="<?php echo e(asset('assets/frontend/images/create-filter-exact.png')); ?>" alt="Create Filter Advanced Search Photo"
+              <img src="<?php echo e(asset('assets/frontend/images/advanced-filters-form.png')); ?>" alt="Go4Database advanced filters for company, industry, technology, turnover, title and seniority"
+                width="1554" height="1118" loading="lazy"
                 style="width:100%;height:auto;border-radius:12px;display:block;object-fit:cover">
             </div>
           </div>
@@ -999,9 +969,9 @@
                   style="display:inline-block;background:#e0f2fe;color:#0284c7;font-size:11.5px;font-weight:800;letter-spacing:1px;padding:6px 14px;border-radius:999px">
                   AI LEAD GENERATION SOFTWARE</div>
               </div>
-              <div
+              <h3
                 style="font-size:34px;font-weight:800;letter-spacing:-1.2px;color:#111;line-height:1.2;margin-bottom:16px">
-                AI search with website URL &amp; location to generate your ICP</div>
+                AI search with website URL &amp; location to generate your ICP</h3>
               <div style="font-size:16px;color:#555;line-height:1.65;margin-bottom:24px">Input your company website
                 URL
                 and target location. Our AI engine automatically analyzes your domain to generate your exact Ideal
@@ -1180,9 +1150,9 @@
         <!-- Modern Pill Category Tabs -->
         <div class="fav-tabs-pill-wrap">
           <div class="fav-tabs-nav" id="favTabs">
-            <button class="fav-tab-btn active" onclick="filterFavCards('all', this)">Hot List</button>
+            <div  class="fav-tab-btn active" onclick="filterFavCards('all', this)">Hot List</div>
              <?php $__currentLoopData = $all_work_category; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $data): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-            <button class="fav-tab-btn" onclick="filterFavCards('<?php echo e(Str::slug($data->name)); ?>', this)"><?php echo e($data->name); ?></button>
+            <div class="fav-tab-btn" onclick="filterFavCards('<?php echo e(Str::slug($data->name)); ?>', this)"><?php echo e($data->name); ?></div>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
         </div>
@@ -1272,7 +1242,7 @@
 
         </div>
 
-        <div style="
+        <h3 style="
             font-size:24px;
             font-weight:900;
             color:#0b132a;
@@ -1280,7 +1250,7 @@
         ">
             <?php echo e($data->title); ?>
 
-        </div>
+</h3>
 
         <div style="
             font-size:13.5px;
@@ -1349,10 +1319,10 @@
               </svg>
               <?php echo e(filter_static_option_value('home_page_01_'.$user_select_lang_slug.'_latest_news_title',$static_field_data)); ?>
 
-            </div>
-            <div style="font-size:40px;font-weight:800;letter-spacing:-1.3px;color:#0f172a;line-height:1.15">
+</div>
+            <h2 style="font-size:40px;font-weight:800;letter-spacing:-1.3px;color:#0f172a;line-height:1.15">
              <?php echo e(filter_static_option_value('home_page_01_'.$user_select_lang_slug.'_latest_news_description',$static_field_data)); ?> 
-            </div>
+            </h2>
           </div>
         </div>
 
@@ -1637,10 +1607,10 @@
     <div class="g4d-section-texture"
       style="padding:72px 40px;background:linear-gradient(135deg,#f0fdf4,#dcfce7 60%,#e6f7e9);color:#0b132a;text-align:center;border-top:1px solid #d1fae5;border-bottom:1px solid #d1fae5">
       <div style="max-width:800px;margin:0 auto">
-        <div
+        <h2
           style="font-size:46px;font-weight:900;letter-spacing:-1.5px;line-height:1.1;margin-bottom:18px;color:#0b132a">
           Ready to
-          Build a High-Converting Pipeline?</div>
+          Build a High-Converting Pipeline?</h2>
         <div style="font-size:18px;color:#475569;margin-bottom:36px;font-weight:500;line-height:1.7">Start your 1-Month
           free trial today</div>
         <div style="display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap">
@@ -1724,6 +1694,15 @@
         </div>
       </div>
     </div>
-  <script src="<?php echo e(asset('assets/frontend/js/home-01.js')); ?>" defer></script>
+  <?php if(\App\Http\Controllers\WebsiteLeadsLocalProxyController::enabled()): ?>
+    
+    <script>
+      window.G4D_LEADS_API = <?php echo json_encode(route('local.website.leads'), 15, 512) ?>;
+      window.G4D_LEADS_CONTACT_API = <?php echo json_encode(route('local.website.leads.contact'), 15, 512) ?>;
+    </script>
+  <?php endif; ?>
+  
+  <script src="<?php echo e(asset('assets/frontend/js/home-01.js')); ?>?v=7" defer></script>
 <?php echo $__env->make('frontend.partials.contact-section', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php echo $__env->make('frontend.partials.chat-widget', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 <?php /**PATH /home/go4database.com/public_html/@core/resources/views/frontend/home-pages/home-01.blade.php ENDPATH**/ ?>
