@@ -564,10 +564,14 @@ Route::group(['middleware' => ['setlang:frontend', 'globalVariable', 'maintains_
     Route::get('/' . $video_gallery_page_slug . '', 'FrontendController@video_gallery_page')->name('frontend.video.gallery');
 
     //user login
-    Route::get('/login', 'Auth\LoginController@showLoginForm')->name('user.login');
+    // The website has no accounts of its own: signing in and signing up both
+    // happen in the app. These two pages were the template's own copies, so they
+    // send visitors (and search engines) to the real ones. The names stay, because
+    // the topbar, checkout, event booking and course pages all link by route name.
+    Route::get('/login', fn () => redirect()->away('https://app.go4database.com/login', 301))->name('user.login');
     Route::post('/ajax-login', 'FrontendController@ajax_login')->name('user.ajax.login');
     Route::post('/login', 'Auth\LoginController@login');
-    Route::get('/register', 'Auth\RegisterController@showRegistrationForm')->name('user.register');
+    Route::get('/register', fn () => redirect()->away('https://app.go4database.com/register', 301))->name('user.register');
     Route::post('/register', 'Auth\RegisterController@register');
     Route::get('/login/forget-password', 'FrontendController@showUserForgetPasswordForm')->name('user.forget.password');
     Route::get('/login/reset-password/{user}/{token}', 'FrontendController@showUserResetPasswordForm')->name('user.reset.password');
