@@ -63,6 +63,9 @@ class ListController extends Controller
             'sr_order' => 'nullable|string|max:191',
             'image' => 'nullable|string|max:191',
             'status' => 'nullable|string|max:191',
+            'search_title' => 'nullable|string|max:191',
+            'search_industry_business' => 'nullable|string|max:191',
+            'search_location' => 'nullable|string|max:191',
             'price_plan' => 'nullable',
         ]);
         $price_plan = !empty($request->price_plan) ? $request->price_plan : [];
@@ -101,6 +104,10 @@ class ListController extends Controller
             'sr_order' => $request->sr_order,
             'img_icon' => $request->img_icon,
             'icon_type' => $request->icon_type,
+            'search_title' => $request->search_title,
+            'search_industry' => $request->search_industry_business,
+            'search_business_category' => null,
+            'search_location' => $request->search_location,
             'price_plan' =>  serialize($price_plan),
         ]);
 
@@ -124,6 +131,9 @@ class ListController extends Controller
             'image' => 'nullable|string|max:191',
             'sr_order' => 'nullable|string|max:191',
             'status' => 'nullable|string|max:191',
+            'search_title' => 'nullable|string|max:191',
+            'search_industry_business' => 'nullable|string|max:191',
+            'search_location' => 'nullable|string|max:191',
             'price_plan' => 'nullable',
         ]);
         $price_plan = !empty($request->price_plan) ? $request->price_plan : [];
@@ -161,6 +171,10 @@ if ($request->has('faqs')) {
             'sr_order' => $request->sr_order,
             'img_icon' => $request->img_icon,
             'icon_type' => $request->icon_type,
+            'search_title' => $request->search_title,
+            'search_industry' => $request->search_industry_business,
+            'search_business_category' => null,
+            'search_location' => $request->search_location,
             'price_plan' => serialize($price_plan),
         ]);
 
@@ -173,6 +187,10 @@ if ($request->has('faqs')) {
         $service = B2Blist::find($request->item_id);
         B2Blist::create([
             'title' => $service->title,
+            'search_title' => $service->search_title,
+            'search_industry' => $service->search_industry,
+            'search_business_category' => $service->search_business_category,
+            'search_location' => $service->search_location,
             'lang' => $service->lang,
             'icon' => $service->icon,
             'description' => $service->description,

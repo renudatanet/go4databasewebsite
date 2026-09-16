@@ -228,6 +228,22 @@
                                 <small class="info-text">{{__('it will show in home pages service item short details.')}}</small>
                             </div>
                             <div class="form-group">
+                                <h5 class="mt-2">{{__('Lead Search Filters')}}</h5>
+                                <small class="info-text">{{__('These fill the three search boxes on the page, and decide which leads it shows. Each box takes comma separated values, for example: CEO, CTO')}}</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="search_title">{{__('Search Title')}}</label>
+                                <input type="text" name="search_title" class="form-control" value="{{ old('search_title') }}" id="search_title" maxlength="191" placeholder="{{__('e.g. Staffing Manager, HR Director')}}">
+                            </div>
+                            <div class="form-group">
+                                <label for="search_industry_business">{{__('Search Industry / Business')}}</label>
+                                <input type="text" name="search_industry_business" class="form-control" value="{{ old('search_industry_business') }}" id="search_industry_business" maxlength="191" placeholder="{{__('e.g. Healthcare Staffing Agencies')}}">
+                            </div>
+                            <div class="form-group">
+                                <label for="search_location">{{__('Search Location')}}</label>
+                                <input type="text" name="search_location" class="form-control" value="{{ old('search_location') }}" id="search_location" maxlength="191" placeholder="{{__('e.g. United States')}}">
+                            </div>
+                            <div class="form-group">
                                 <label for="meta_tags">{{__('Title')}}</label>
                                 <input type="text" name="meta_tags"  class="form-control"  value="{{old('meta_tags')}}" id="meta_tags" maxlength="60">
                                 <span id="titleLengthMessage"></span>

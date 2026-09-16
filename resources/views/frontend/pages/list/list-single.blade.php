@@ -66,49 +66,73 @@ use App\Services;
      {{$service_item->title}}
     </h1>
 
-  <!-- FILTERS -->
-
-  <div class="filters">
-      
-               <form  enctype="multipart/form-data">
-                    @csrf
-    <input type="text" placeholder="Title"  id="search-title" value="{{ $service_item->search_title ?? '' }}">
-    <input type="text" placeholder="Industry" id="search-industry"  value="{{ $service_item->search_industry ?? '' }}">
-    <input type="text" placeholder="Business Category" id="search-business" value="{{$service_item->search_business_category ?? '' }}">
-    <input type="text" placeholder="Location" id="search-location" value="{{$service_item->search_location ?? '' }}">
-    <button type="button" onclick="fetchLeads()">Search</button>
-    
-     </form>
-  </div>
 
   <!-- HERO -->
 
   <div class="hero">
 
-    <!-- TABLE -->
+    <!-- LEADS: same search, table and click-to-reveal as the homepage -->
 
     <div class="table-wrapper">
- <div class="table-responsive">
+      {{-- Styled here rather than in list.css: production's public_html/assets is a
+           separate copy, so every stylesheet change would need copying by hand. --}}
+      <style>
+        .filters { margin-bottom: 20px; }
+        .filters form { display: flex; flex-wrap: wrap; gap: 14px; width: 100%; align-items: center; }
+        .filters input { flex: 1 1 120px; width: auto; min-width: 0; height: 40px; }
+        .filters #search-leads-btn { flex: 0 0 112px; width: 112px; height: 40px; }
+        #results-container { border: 1px solid rgba(0,0,0,0.08); border-radius: 14px; overflow: hidden; background: #fff; }
+        #results-container.hidden { display: none; }
+        .g4d-leads-grid { display: grid; grid-template-columns: minmax(0,1.5fr) minmax(0,1.15fr) minmax(0,1.45fr) minmax(150px,1.1fr) 140px; column-gap: 16px; align-items: center; }
+        .g4d-leads-head { padding: 14px 20px; background: #67d63d; border-bottom: 1px solid #5cc434; font-size: 12.5px; font-weight: 800; letter-spacing: 0.4px; color: #fff; }
+        .g4d-lead { padding: 16px 20px; border-bottom: 1px solid #f1f5f9; font-size: 13.5px; color: #333; }
+        .g4d-lead:last-child { border-bottom: 0; }
+        .g4d-lead-company { font-weight: 700; color: #1e293b; font-size: 14px; line-height: 1.35; }
+        .g4d-lead-meta { margin-top: 3px; font-size: 11.5px; color: #64748b; }
+        .g4d-lead-person { font-weight: 700; color: #1e293b; font-size: 14px; line-height: 1.35; }
+        .g4d-lead-title { color: #475569; font-weight: 500; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .g4d-lead-btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #cbd5e1; background: #fff; border-radius: 8px; padding: 7px 12px; font-family: inherit; font-size: 12.5px; font-weight: 600; color: #334155; cursor: pointer; white-space: nowrap; box-shadow: 0 1px 2px rgba(0,0,0,0.04); transition: border-color .15s, box-shadow .15s; }
+        .g4d-lead-btn:hover { border-color: #3b8e15; box-shadow: 0 2px 8px rgba(59,142,21,0.15); }
+        .g4d-lead-btn:focus-visible { outline: 2px solid #3b8e15; outline-offset: 2px; }
+        .g4d-lead-status { width: 16px; height: 16px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .g4d-lead-status.is-yes { background: #dcfce7; color: #15803d; }
+        .g4d-lead-status.is-no { background: #fee2e2; color: #dc2626; }
+        .g4d-lead-value { font-size: 13px; font-weight: 600; color: #1e293b; overflow-wrap: anywhere; }
+        .g4d-lead-limit { font-size: 13px; font-weight: 700; color: #3b8e15; }
+        .g4d-leads-note { padding: 32px; text-align: center; color: #64748b; font-size: 14px; }
+        .g4d-leads-note.is-error { color: #ef4444; }
+        @media (max-width: 900px) {
+          .g4d-leads-head { display: none; }
+          .g4d-lead.g4d-leads-grid { grid-template-columns: 1fr 1fr; column-gap: 10px; row-gap: 2px; padding: 14px 16px; }
+          .g4d-lead-company-cell, .g4d-lead-person, .g4d-lead-title { grid-column: 1 / -1; }
+          .g4d-lead-person { margin-top: 8px; font-size: 13.5px; }
+          .g4d-lead-title { font-size: 13px; -webkit-line-clamp: 3; }
+          .g4d-lead-email, .g4d-lead-phone { margin-top: 10px; }
+          .g4d-lead-btn { width: 100%; justify-content: center; }
+        }
+      </style>
 
-      <table class="table" id="leadsTable">
+      <!-- FILTERS -->
+      <div class="filters">
+    <form onsubmit="return false" autocomplete="off">
+      @csrf
+      <input type="text" placeholder="Title" id="search-title" value="{{ $service_item->search_title ?? '' }}">
+      <input type="text" placeholder="Industry / Business" id="search-industry" value="{{ trim($service_item->search_industry ?? '') ?: trim($service_item->search_business_category ?? '') }}">
+      <input type="text" placeholder="Location" id="search-location" value="{{ $service_item->search_location ?? '' }}">
+      <button type="button" id="search-leads-btn">Search</button>
+    </form>
+      </div>
 
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Company</th>
-            <th>Person Name</th>
-            <th>Email Id</th>
-            <th>Industry</th>
-          </tr>
-        </thead>
-
-        <tbody>
-
-
-        </tbody>
-
-      </table>
-</div>
+      <div id="results-container">
+        <div class="g4d-leads-grid g4d-leads-head">
+          <span>COMPANY</span>
+          <span>PERSON NAME</span>
+          <span>TITLE</span>
+          <span>EMAIL</span>
+          <span>PHONE</span>
+        </div>
+        <div id="leads-rows"></div>
+      </div>
       <div class="table-footer">
 <nav class="pagination-wrapper" aria-label="Page navigation "> 
                         <ul class="pagination justify-content-center" role="navigation">
@@ -2040,53 +2064,210 @@ faqItems.forEach(item => {
 
 </script>
 
+@if(\App\Http\Controllers\WebsiteLeadsLocalProxyController::enabled())
+{{-- Local testing only: the API only accepts calls from www.go4database.com. --}}
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    fetchLeads();
-});
-
-function fetchLeads() {
-
-    let title = document.getElementById('search-title').value;
-    let industry = document.getElementById('search-industry').value;
-    let business = document.getElementById('search-business').value;
-    let location = document.getElementById('search-location').value;
-
-    fetch(`https://app.go4database.com/api/getleads?industry=${encodeURIComponent(industry)}&title=${encodeURIComponent(title)}&business=${encodeURIComponent(business)}&location=${encodeURIComponent(location)}`)
-    .then(res => res.json())
-    .then(data => {
-        let rows = '';
-
-        data.forEach(lead => {
-            rows += `
-                <tr>
-                    <td>${lead.title}</td>
-                    <td>${lead.company} <span class="small test1">Founded : ${lead.founded_year} , Turnover ${lead.turnover}</span></td>
-                    <td>${lead.person_name}</td>
-                    <td> <button class="verify-email-btn view-btn" data-email='${lead.email}'  data-id='${lead.id}' data-type="email">View Email</button></td>
-                    <td>${lead.industry}</td>
-                </tr>
-            `;
-        });
-
-        document.querySelector('#leadsTable tbody').innerHTML = rows;
-    })
-    .catch(err => console.log(err));
-}
+  window.G4D_LEADS_API = @json(route('local.website.leads'));
+  window.G4D_LEADS_CONTACT_API = @json(route('local.website.leads.contact'));
 </script>
+@endif
 <script>
-document.addEventListener('click', function(e) {
+/* Lead search and click-to-reveal, the same API and behaviour as the homepage.
+   Inline rather than in a JS file: production's public_html/assets is a separate
+   copy, so a new file would have to be copied by hand on every deploy. */
+(function () {
+  // Website-only endpoint: at most 5 leads plus a total, never an email or phone,
+  // only has_email / has_phone flags and a 30 minute contact_token per lead.
+  var API_BASE = window.G4D_LEADS_API || 'https://app.go4database.com/api/website/leads';
+  var CONTACT_API = window.G4D_LEADS_CONTACT_API || 'https://app.go4database.com/api/website/leads/contact';
+  var REGISTER_URL = 'https://app.go4database.com/register?utm_source=ListPage&utm_medium=Internal&utm_campaign=';
 
-    if (e.target.classList.contains('verify-email-btn')) {
+  var STATUS_ICON = {
+    yes: '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+    no: '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg>'
+  };
 
-        let button = e.target;
-        let email = button.dataset.email;
+  // Lead fields go into innerHTML, so escape them rather than trusting the data.
+  function escapeHtml(value) {
+    return String(value === null || value === undefined ? '' : value).replace(/[&<>"']/g, function (ch) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
+    });
+  }
 
-        // Replace button with email
-        button.outerHTML = `<span class="email-text">${email}</span>`;
+  function el(id) { return document.getElementById(id); }
+
+  function note(text, isError) {
+    var rows = el('leads-rows');
+    if (!rows) return;
+    rows.innerHTML = '<div class="g4d-leads-note' + (isError ? ' is-error' : '') + '">' + escapeHtml(text) + '</div>';
+  }
+
+  function statusBadge(available, what) {
+    return available
+      ? '<span class="g4d-lead-status is-yes" title="' + what + ' available">' + STATUS_ICON.yes + '</span>'
+      : '<span class="g4d-lead-status is-no" title="No ' + what.toLowerCase() + ' on file">' + STATUS_ICON.no + '</span>';
+  }
+
+  function renderLeads(leadsArr) {
+    var rows = el('leads-rows');
+    if (!rows) return;
+    if (!leadsArr || !leadsArr.length) {
+      note('No results found.');
+      return;
+    }
+    rows.innerHTML = leadsArr.map(function (lead) {
+      var token = escapeHtml(lead.contact_token);
+      // The data uses "0000" and "" for unknown values; leave those out entirely.
+      var meta = [
+        lead.founded_year && lead.founded_year !== '0000' ? 'Founded ' + escapeHtml(lead.founded_year) : '',
+        lead.turnover ? 'Turnover ' + escapeHtml(lead.turnover) : ''
+      ].filter(Boolean).join(' &middot; ');
+      var title = escapeHtml(lead.title);
+      return '<div class="g4d-lead g4d-leads-grid">' +
+        '<div class="g4d-lead-company-cell"><div class="g4d-lead-company">' + escapeHtml(lead.company) + '</div>' +
+        (meta ? '<div class="g4d-lead-meta">' + meta + '</div>' : '') + '</div>' +
+        '<div class="g4d-lead-person">' + escapeHtml(lead.person_name) + '</div>' +
+        '<div class="g4d-lead-title" title="' + title + '">' + title + '</div>' +
+        '<div class="g4d-lead-email"><button type="button" class="g4d-lead-btn verify-email-btn view-btn" data-type="email" data-token="' + token + '" data-available="' + (lead.has_email ? 1 : 0) + '">View Email ' + statusBadge(!!lead.has_email, 'Email') + '</button></div>' +
+        '<div class="g4d-lead-phone"><button type="button" class="g4d-lead-btn view-btn" data-type="contact" data-token="' + token + '" data-available="' + (lead.has_phone ? 1 : 0) + '">View Phone ' + statusBadge(!!lead.has_phone, 'Phone') + '</button></div>' +
+        '</div>';
+    }).join('');
+  }
+
+  // Typing and the Search button can overlap requests; only the newest one may
+  // render, so a slow earlier response can't overwrite a later search.
+  var latestRequest = 0;
+
+  // Some pages were imported with a business category ("Healthcare Staffing
+  // Agencies") in place of an industry ("Healthcare"), which matches nothing in
+  // the data. Rather than opening on an empty table, drop that term once and
+  // clear the box, so the page shows the leads it does have and says what it
+  // searched for. Only the page's own opening search widens, never a typed one.
+  function fetchLeads(params, options) {
+    var widenOnEmpty = !!(options && options.widenOnEmpty) && !!params.industry_business;
+    var requestId = ++latestRequest;
+    note('Loading...');
+    fetch(API_BASE + '?' + new URLSearchParams(params).toString(), { headers: { Accept: 'application/json' } })
+      .then(function (res) {
+        if (!res.ok) throw new Error('Network response was not ok');
+        return res.json();
+      })
+      .then(function (json) {
+        if (requestId !== latestRequest) return;
+        var leadsArr = Array.isArray(json) ? json : (Array.isArray(json.data) ? json.data : []);
+        if (!leadsArr.length && widenOnEmpty) {
+          var box = el('search-industry');
+          if (box) box.value = '';
+          buildParamsAndFetch();
+          return;
+        }
+        renderLeads(leadsArr);
+      })
+      .catch(function (err) {
+        if (requestId !== latestRequest) return;
+        console.error('Lead fetch failed:', err);
+        note('Something went wrong. Please try again.', true);
+      });
+  }
+
+  // Same three boxes as the app's Normal filter. Each takes comma separated
+  // values, e.g. "CEO, CTO".
+  function buildParamsAndFetch(options) {
+    var params = {};
+    [['title', 'search-title'], ['industry_business', 'search-industry'], ['location', 'search-location']].forEach(function (pair) {
+      var box = el(pair[1]);
+      var value = box ? box.value.trim() : '';
+      if (value) params[pair[0]] = value;
+    });
+    if (!Object.keys(params).length) {
+      latestRequest++; // discard any request still in flight
+      note('Enter a title, industry or location to search.');
+      return;
+    }
+    fetchLeads(params, options);
+  }
+
+  function setupFilters() {
+    var timer;
+    ['search-title', 'search-industry', 'search-location'].forEach(function (id) {
+      var box = el(id);
+      if (!box) return;
+      box.addEventListener('input', function () {
+        clearTimeout(timer);
+        timer = setTimeout(buildParamsAndFetch, 550);
+      });
+      box.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          clearTimeout(timer);
+          buildParamsAndFetch();
+        }
+      });
+    });
+    var button = el('search-leads-btn');
+    if (button) button.addEventListener('click', function () { clearTimeout(timer); buildParamsAndFetch(); });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    setupFilters();
+    // These pages are about one list, so they open showing its leads.
+    buildParamsAndFetch({ widenOnEmpty: true });
+  });
+
+  // View Email / View Phone: reveal that one lead's value. The API allows 10 per
+  // minute and 100 per day per visitor, answers 429 past that, and 404 once the
+  // search's tokens are older than 30 minutes.
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('#leads-rows .view-btn');
+    if (!btn || btn.disabled) return;
+
+    var type = btn.dataset.type === 'contact' ? 'contact' : 'email';
+    var action = type === 'contact' ? 'view_contact' : 'view_email';
+    var unavailable = type === 'contact' ? 'No phone available' : 'No email available';
+    if (typeof gtag === 'function') gtag('event', action, { location: 'list_page' });
+
+    // Always textContent, never innerHTML: lead data comes from uploaded files.
+    var show = function (text) {
+      var span = document.createElement('span');
+      span.className = 'g4d-lead-value';
+      span.textContent = text;
+      btn.replaceWith(span);
+    };
+
+    // Known to be missing: say so without spending one of the visitor's reveals.
+    if (btn.dataset.available !== '1') {
+      show(unavailable);
+      return;
     }
 
-});
+    var setBusy = function (busy) {
+      btn.disabled = busy;
+      btn.style.opacity = busy ? '0.6' : '';
+      btn.style.cursor = busy ? 'progress' : 'pointer';
+    };
+
+    setBusy(true);
+    fetch(CONTACT_API + '?token=' + encodeURIComponent(btn.dataset.token) + '&type=' + type, { headers: { Accept: 'application/json' } })
+      .then(function (res) { return res.json().then(function (body) { return { status: res.status, body: body }; }); })
+      .then(function (result) {
+        if (result.status === 200) {
+          show((type === 'contact' ? result.body.phone : result.body.email) || unavailable);
+        } else if (result.status === 429) {
+          var link = document.createElement('a');
+          link.href = REGISTER_URL + action + '_limit';
+          link.textContent = 'Sign up free to see more';
+          link.className = 'g4d-lead-limit';
+          btn.replaceWith(link);
+          if (typeof gtag === 'function') gtag('event', 'reveal_limit_reached', { location: 'list_page' });
+        } else if (result.status === 404) {
+          buildParamsAndFetch(); // results expired: fetch fresh ones, and fresh tokens
+        } else {
+          setBusy(false);
+        }
+      })
+      .catch(function () { setBusy(false); });
+  });
+})();
 </script>
 <script>
 let currentIndex = 0;
