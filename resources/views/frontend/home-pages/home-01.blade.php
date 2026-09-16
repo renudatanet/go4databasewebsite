@@ -131,7 +131,7 @@
 
           <!-- CTA Buttons -->
           <div class="hero-cta-group" style="display:flex;align-items:center;gap:14px;margin-top:44px;">
-            <a href="https://app.go4database.com/register" class="hero-btn-primary"
+            <a href="https://app.go4database.com/register?utm_source=HomePage&utm_medium=Internal&utm_campaign=hero_free_credits" class="hero-btn-primary"
               style="background:#ffffff;color:#0b132a;box-shadow:0 12px 30px rgba(0,0,0,0.2);border:none;font-weight:800;padding:12px 26px;text-decoration:none;">
               Get 1200 Free Credits
               <svg class="hero-btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0b132a"
@@ -191,7 +191,7 @@
           <input id="filter-location" placeholder="Location"
             style="flex:1;min-width:120px;background:#fff;border:1.5px solid #d9e1ea;border-radius:10px;padding:11px 16px;font-size:14px;color:#0f172a;font-family:inherit;outline:none">
 
-          <a id="download-leads-btn" href="https://app.go4database.com/register" target="_blank" rel="noopener"
+          <a id="download-leads-btn" href="https://app.go4database.com/register?utm_source=HomePage&utm_medium=Internal&utm_campaign=search_download" target="_blank" rel="noopener"
             style="cursor:pointer;background:#3b8e15;color:#fff;font-size:14px;font-weight:700;padding:11px 24px;border-radius:99px;display:flex;align-items:center;gap:8px;text-decoration:none;box-shadow:0 8px 20px rgba(59,142,21,0.3);flex-shrink:0">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M12 3v11m0 0l-4.2-4.2M12 14l4.2-4.2M4 19h16" stroke="currentColor" stroke-width="2.3"
@@ -522,7 +522,7 @@
             </div>
 
             <div>
-              <a href="https://app.go4database.com/register" class="hero-btn-primary"
+              <a href="https://app.go4database.com/register?utm_source=HomePage&utm_medium=Internal&utm_campaign=mid_free_credits" class="hero-btn-primary"
                 style="background:#6fd943;color:#0b132a;border:none;padding:15px 34px;font-size:15px;box-shadow:0 10px 28px rgba(111,217,67,0.4);font-weight:800;">
                 Claim Your 1200 Free Credits
                 <svg class="hero-btn-arrow" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -894,7 +894,7 @@
               </div>
 
               <div class="card-btn-group" style="display:flex;align-items:center;gap:14px">
-                <a href="https://app.go4database.com/register"
+                <a href="https://app.go4database.com/register?utm_source=HomePage&utm_medium=Internal&utm_campaign=card_database"
                   style="background:#6fd943;color:#0b132a;font-size:14.5px;font-weight:800;padding:12px 24px;border-radius:99px;box-shadow:0 6px 16px rgba(111,217,67,0.35);text-decoration:none;">Start
                   Free Trial</a>
                 <a href="#search-section"
@@ -941,7 +941,7 @@
               </div>
 
               <div class="card-btn-group" style="display:flex;align-items:center;gap:14px">
-                <a href="https://app.go4database.com/register"
+                <a href="https://app.go4database.com/register?utm_source=HomePage&utm_medium=Internal&utm_campaign=card_filters"
                   style="background:#6fd943;color:#0b132a;font-size:14.5px;font-weight:800;padding:12px 24px;border-radius:99px;box-shadow:0 6px 16px rgba(111,217,67,0.35);text-decoration:none;">Start
                   Free Trial</a>
                 <a href="#search-section"
@@ -987,7 +987,7 @@
               </div>
 
               <div class="card-btn-group" style="display:flex;align-items:center;gap:14px">
-                <a href="https://app.go4database.com/register"
+                <a href="https://app.go4database.com/register?utm_source=HomePage&utm_medium=Internal&utm_campaign=card_ai_icp"
                   style="background:#6fd943;color:#0b132a;font-size:14.5px;font-weight:800;padding:12px 24px;border-radius:99px;box-shadow:0 6px 16px rgba(111,217,67,0.35);text-decoration:none;">Start
                   Free Trial</a>
                 <a href="#contact"
@@ -1605,7 +1605,7 @@
         <div style="font-size:18px;color:#475569;margin-bottom:36px;font-weight:500;line-height:1.7">Start your 1-Month
           free trial today</div>
         <div style="display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap">
-          <a href="https://app.go4database.com/register"
+          <a href="https://app.go4database.com/register?utm_source=HomePage&utm_medium=Internal&utm_campaign=bottom_cta"
             style="background:#6fd943;color:#0b132a;font-size:16px;font-weight:800;padding:16px 36px;border-radius:99px;box-shadow:0 10px 24px rgba(111,217,67,0.35);transition:all 0.2s">Start
             Free 1-Month Trial</a>
           <a href="{{url('/')}}#contact"

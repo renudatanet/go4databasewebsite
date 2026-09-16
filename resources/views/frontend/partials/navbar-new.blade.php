@@ -67,8 +67,8 @@
 
         <!-- Right Corner CTA Buttons -->
         <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;margin-left:auto;">
-          <a href="https://app.go4database.com/login" class="nav-login-btn">Log in</a>
-          <a href="https://app.go4database.com/register" class="nav-signup-btn">Sign up for free</a>
+          <a href="https://app.go4database.com/login?utm_source=HomePage&utm_medium=Internal&utm_campaign=app_login" class="nav-login-btn">Log in</a>
+          <a href="https://app.go4database.com/register?utm_source=HomePage&utm_medium=Internal&utm_campaign=navbar_signup" class="nav-signup-btn">Sign up for free</a>
         </div>
       </nav>
     </header>
