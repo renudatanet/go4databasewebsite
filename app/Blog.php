@@ -11,7 +11,7 @@ class Blog extends Model implements Feedable
 {
     protected $table = 'blogs';
  
-    protected $fillable = ['title','lang','status','author','author_id','slug','meta_description','schema_code','meta_tags','excerpt','content','blog_categories_id','categories_id','tags','image','user_id','breaking_news','video_url','publish_date','total_visitors','faqs'];
+    protected $fillable = ['title','lang','status','author','author_id','slug','meta_description','schema_code','meta_tags','excerpt','content','blog_categories_id','categories_id','tags','image','user_id','breaking_news','show_on_homepage','video_url','publish_date','total_visitors','faqs'];
 
     public function category(){
         return $this->belongsTo('App\BlogCategory','blog_categories_id');

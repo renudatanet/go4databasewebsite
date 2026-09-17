@@ -222,6 +222,14 @@ $all_categories = unserialize($blog_post->categories_id) ?: [];
                                         <input type="text" class="form-control" name="video_url" value="{{$blog_post->video_url}}">
                                     </div>
                                     <div class="form-group">
+                                        <label for="show_on_homepage"><strong>{{__('Show On Homepage')}}</strong></label>
+                                        <label class="switch">
+                                            <input type="checkbox" name="show_on_homepage" @if((int) $blog_post->show_on_homepage === 1) checked @endif>
+                                            <span class="slider onff"></span>
+                                        </label>
+                                        <small class="info-text d-block">{{__('Turn this on to put the post in the homepage blog section. While no post is turned on, the homepage keeps showing the three newest posts.')}}</small>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="breaking_news"><strong>{{__('Is Breaking News')}}</strong></label>
                                         <label class="switch">
                                             <input type="checkbox" name="breaking_news" @if($blog_post->breaking_news === 1) checked @endif>

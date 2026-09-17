@@ -1347,7 +1347,7 @@
                   {{$data->title}}
                 </div>
                 <div style="font-size:14px;color:#475569;line-height:1.6;margin-bottom:20px">
-                 {{ \Illuminate\Support\Str::words(strip_tags($data->content), 30, '...') }}
+                 {{ \Illuminate\Support\Str::words(html_entity_decode(strip_tags($data->content), ENT_QUOTES | ENT_HTML5), 30, '...') }}
                 </div>
               </div>
               <div

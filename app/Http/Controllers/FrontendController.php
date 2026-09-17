@@ -110,7 +110,15 @@ class FrontendController extends Controller
         $all_brand_logo = Brand::all();
       
         $all_work = Works::where(['lang' => $lang, 'status' => 'publish'])->orderBy('id', 'desc')->take(get_static_option('home_page_01_case_study_items'))->get();
-        $all_blog = Blog::where(['lang' => $lang, 'status' => 'publish'])->orderBy('id', 'asc')->take(3)->get();
+        // The homepage blog strip shows the posts an admin switched on in
+        // Blogs -> Edit -> Show On Homepage. While nothing is switched on it
+        // falls back to the three newest posts, so the section is never empty.
+        $homepage_blog_query = Blog::where(['lang' => $lang, 'status' => 'publish']);
+        $chosen_blog = (clone $homepage_blog_query)->where('show_on_homepage', 1)
+            ->orderBy('publish_date', 'desc')->orderBy('id', 'desc')->get();
+        $all_blog = $chosen_blog->isNotEmpty()
+            ? $chosen_blog
+            : (clone $homepage_blog_query)->orderBy('id', 'asc')->take(3)->get();
         $all_contact_info = ContactInfoItem::where(['lang' => $lang])->orderBy('id', 'desc')->get();
         $all_service_category = ServiceCategory::where(['lang' => $lang, 'status' => 'publish'])->orderBy('id', 'desc')->take(get_static_option('home_page_01_service_area_items'))->get();
         $all_contain_cat = $all_work->map(function ($index) { return $index->categories_id; });

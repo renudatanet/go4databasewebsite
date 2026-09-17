@@ -185,6 +185,14 @@
                                         <input type="text" class="form-control" name="video_url" value="{{old('video_url')}}">
                                     </div>
                                     <div class="form-group">
+                                        <label for="show_on_homepage"><strong>{{__('Show On Homepage')}}</strong></label>
+                                        <label class="switch">
+                                            <input type="checkbox" name="show_on_homepage">
+                                            <span class="slider onff"></span>
+                                        </label>
+                                        <small class="info-text d-block">{{__('Turn this on to put the post in the homepage blog section. While no post is turned on, the homepage keeps showing the three newest posts.')}}</small>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="breaking_news"><strong>{{__('Is Breaking News')}}</strong></label>
                                         <label class="switch">
                                             <input type="checkbox" name="breaking_news">
