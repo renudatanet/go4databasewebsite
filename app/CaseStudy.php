@@ -9,6 +9,9 @@ class CaseStudy extends Model
 {
     use HasFactory;
     protected $table = 'case_studies';
+     protected $casts = [
+      'faqs' => 'array'
+    ];
     protected $fillable = [
         'title',
         'gallery',
@@ -25,7 +28,8 @@ class CaseStudy extends Model
         'budget',
         'description',
         'gallery',
-        'image'
+        'image',
+        'faqs'
     ];
 
     public function getCategoriesIdAttribute($value){

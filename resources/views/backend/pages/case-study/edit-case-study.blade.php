@@ -10,6 +10,69 @@
     {{__('Edit Case Study')}}
 @endsection
 @section('content')
+
+<style>
+    .faq-container {
+    max-width: 800px;
+}
+
+.faq-item {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    position: relative;
+}
+
+.faq-item input,
+.faq-item textarea {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.faq-item textarea {
+    min-height: 80px;
+    resize: vertical; 
+}
+
+.faq-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.add-btn {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.add-btn:hover {
+    background: #1d4ed8;
+}
+
+.delete-btn {
+    background: #ef4444;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background: #dc2626;
+}
+</style>
     <div class="col-lg-12 col-ml-12 padding-bottom-30">
         <div class="row">
             <div class="col-lg-12">
@@ -57,12 +120,54 @@
                             </div>
                             <div class="form-group">
                                 <label for="description">{{__('Description')}}</label>
-                                <!--<input type="hidden" name="description" id="description" value="{{$CaseStudy->description}}">-->
-                                
-        <textarea name="description" id="description">{{ old('description', $CaseStudy->description) }}</textarea>
-                                <!--<div class="summernote" data-content='{{$CaseStudy->description}}'></div>-->
-                            </div>
-                            
+                                <textarea name="description" id="description">{{ old('description', $CaseStudy->description) }}</textarea>
+                             </div>
+                            <div class="faq-container">
+    <div id="faq-wrapper">
+
+        @if(!empty($CaseStudy->faqs))
+            @foreach($CaseStudy->faqs as $i => $faq)
+                <div class="faq-item">
+                    <input type="text" 
+                           name="faqs[{{ $i }}][question]" 
+                           value="{{ $faq['question'] }}" 
+                           placeholder="Enter question">
+
+                    <textarea name="faqs[{{ $i }}][answer]" 
+                              placeholder="Enter answer">{{ $faq['answer'] }}</textarea>
+
+                    <div class="faq-actions">
+                        <span></span>
+                        <button type="button" class="delete-btn" onclick="removeFaq(this)">Delete</button>
+                    </div>
+                </div>
+            @endforeach
+
+            <script>
+                // 👇 important: continue index from last item
+                let index = {{ count($CaseStudy->faqs) }};
+            </script>
+
+        @else
+            <div class="faq-item">
+                <input type="text" name="faqs[0][question]" placeholder="Enter question">
+                <textarea name="faqs[0][answer]" placeholder="Enter answer"></textarea>
+
+                <div class="faq-actions">
+                    <span></span>
+                    <button type="button" class="delete-btn" onclick="removeFaq(this)">Delete</button>
+                </div>
+            </div>
+
+            <script>
+                let index = 1;
+            </script>
+        @endif
+
+    </div>
+
+    <button type="button" class="add-btn" onclick="addFaq()">+ Add FAQ</button>
+</div>
                             <div class="form-group">
                                 <label for="image">{{__('Gallery')}}</label>
                                 @php
@@ -250,48 +355,33 @@
     
 </script>
 
-   <!--  <script>
-   
-    $(document).ready(function() {
-   $('#description').summernote({
-  height: 300, // Set the height of the editor
-  toolbar: [
-     ['style', ['style']],  // Add Style dropdown (Headers)
-    ['style', ['bold', 'italic', 'underline', 'clear']], // Customize the style dropdown
-   
-    ['color', ['color', 'backColor']], // Add text and background color options
-     ['font', ['fontsize', 'fontname']],
-    ['para', ['ul', 'ol', 'paragraph']],
-    ['table', ['table']],// Lists and paragraph formatting
-    ['insert', ['link', 'picture', 'video']], // Insertion options
-    ['view', ['fullscreen', 'codeview', 'help']] // View options
-  ],   
-  styleTags: [
-      'p',  // Default paragraph
-      { title: 'Header 1', tag: 'h1', className: 'header1', value: 'h1' },
-      { title: 'Header 2', tag: 'h2', className: 'header2', value: 'h2' },
-      { title: 'Header 3', tag: 'h3', className: 'header3', value: 'h3' },
-      { title: 'Header 4', tag: 'h4', className: 'header4', value: 'h4' },
-      { title: 'Header 5', tag: 'h5', className: 'header5', value: 'h5' },
-      { title: 'Header 6', tag: 'h6', className: 'header6', value: 'h6' }
-  ]
-});
- $('#myForm').submit(function(event) {
-      var descriptionContent = $('#description').summernote('code');
-      
-      $('#description').val(descriptionContent); // Update textarea value before submission
-    });
- 
-  $('#description').on('summernote.init', function() {
-    $('.note-editable *').removeAttr('style'); // Remove inline styles
-        let content = $('#description').summernote('code');
-    content = content.replace(/<h5>/g, '<p>').replace(/<\/h5>/g, '</p>');
-    $('#description').summernote('code', content);
+ <script>
+function addFaq() {
+    let html = `
+        <div class="faq-item">
+            <input type="text" name="faqs[${index}][question]" placeholder="Enter question">
+            <textarea name="faqs[${index}][answer]" placeholder="Enter answer"></textarea>
 
-});
-});
+            <div class="faq-actions">
+                <span></span>
+                <button type="button" class="delete-btn" onclick="removeFaq(this)">Delete</button>
+            </div>
+        </div>
+    `;
 
-    </script>-->
+    document.getElementById('faq-wrapper').insertAdjacentHTML('beforeend', html);
+    index++;
+}
+
+function removeFaq(btn) {
+    let wrapper = document.getElementById('faq-wrapper');
+    if (wrapper.children.length > 1) {
+        btn.closest('.faq-item').remove();
+    } else {
+        alert('At least one FAQ is required');
+    }
+}
+</script>
     <script src="{{asset('assets/backend/js/dropzone.js')}}"></script>
     <script src="{{asset('assets/backend/js/bootstrap-tagsinput.js')}}"></script>
     @include('backend.partials.media-upload.media-js')

@@ -65,6 +65,16 @@ class CaseStudyController extends Controller
             'image' => 'nullable|string|max:191',
         ]);
         $slug = !empty($request->slug) ? $request->slug : Str::slug($request->title,$request->lang);
+       $faqs = [];
+            if ($request->has('faqs')) {
+            $faqs = collect($request->faqs)
+            ->filter(function ($faq) {
+            return !empty($faq['question']) && !empty($faq['answer']);
+            })
+            ->values()
+            ->toArray();
+            }
+            
         CaseStudy::create([
             'title' => $request->title,
             'slug' => $slug,
@@ -79,6 +89,7 @@ class CaseStudyController extends Controller
             'budget' => $request->budget,
             'status' => $request->status,
             'description' => $request->description,
+            'faqs' => !empty($faqs) ? $faqs : null,
             'image' => $request->image,
             'categories_id' => serialize($request->categories_id),
         ]);
@@ -105,6 +116,14 @@ class CaseStudyController extends Controller
             'image' => 'nullable|string|max:191',
         ]);
         $slug = !empty($request->slug) ? $request->slug : Str::slug($request->title,$request->lang);
+        $faqs = [];
+
+if ($request->has('faqs')) {
+    $faqs = collect($request->faqs)
+        ->filter(fn($faq) => !empty($faq['question']) && !empty($faq['answer']))
+        ->values()
+        ->toArray();
+}
         CaseStudy::find($request->id)->update(
             [
                 'title' => $request->title,
@@ -120,6 +139,7 @@ class CaseStudyController extends Controller
                 'budget' => $request->budget,
                 'status' => $request->status,
                 'description' => $request->description,
+                 'faqs' => !empty($faqs) ? $faqs : null,
                 'image' => $request->image,
                 'categories_id' => serialize($request->categories_id),
             ]

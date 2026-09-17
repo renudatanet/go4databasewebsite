@@ -1135,118 +1135,159 @@
           } 
       </script>
      @elseif(isset($work_item) && !empty($work_item))
-     
- <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-
-    {
-      "@type": "Organization",
-      "@id": "{{ url('/') }}#organization",
-      "name": "Go4Database",
-      "url": "{{ url('/') }}",
-      "logo": {
-        "@type": "ImageObject",
-        "@id": "{{ url('/') }}#logo",
-        "url": "{{ url('/') }}/assets/uploads/media-uploader/go4database-logo1751528079.png",
-        "contentUrl": "{{ url('/') }}/assets/uploads/media-uploader/go4database-logo1751528079.png",
-        "width": 300,
-        "height": 300,
-        "caption": "Go4Database"
-      },
-      "image": { "@id": "{{ url('/') }}#logo" },
-     
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "telephone": "+1 786 785 2141",
-        "contactType": "customer service",
-        "areaServed": "US",
-        "availableLanguage": "en"
-      },
-      "sameAs": [
-        "https://www.facebook.com/Go4Database",
-        "https://twitter.com/go4database",
-        "https://www.instagram.com/go4database/",
-        "https://www.youtube.com/@Go4Database",
-        "https://www.linkedin.com/company/go4database/",
-        "https://in.pinterest.com/go4database/"
-      ]
-    },
-    {
-      "@type": "WebSite",
-      "@id": "{{ url('/') }}#website",
-      "name": "Go4Database",
-      "url": "{{ url('/') }}",
-      "publisher": {
-        "@id": "{{ url('/') }}#organization"
-      }
-    },
-    {
-      "@type": "BreadcrumbList", 
-      "itemListElement": [{
-        "@type": "ListItem", 
-        "position": 1, 
-        "name": "Home",
-        "item": "{{ url('/') }}"  
-      },{
-        "@type": "ListItem", 
-        "position": 2, 
-        "name": "Case Study",
-        "item": "{{ url('case-study') }}"  
-      },{
-        "@type": "ListItem", 
-        "position": 3, 
-        "name": "{{ $work_item->title }} ",
-        "item": "{{ url()->current() }}"  
-      }]
-    },
-    {
-      "@type": "Article",
-      "mainEntityOfPage": {
-      "@type": "WebPage",
-      "@id": "{{ url()->current() }}"
-      },
-      "headline": "{{ $work_item->title }}",
-      "description": "{{ \Illuminate\Support\Str::limit(strip_tags($work_item->description),150) }}",
-      "image": "{{ get_attachment_image_by_id($work_item->image,'full',true)['img_url'] ?? '' }}",
-      "author": {
-      "url": "{{ url()->current() }}",
-      "@type": "Organization",
-      "name": "Go4Database",
-      "logo": {
-      "@type": "ImageObject",
-      "url": "{{ get_attachment_image_by_id($work_item->image,'full',true)['img_url'] ?? '' }}"
-      }
-      },
-      "publisher": {
-      "@type": "Organization",
-      "name": "Go4Database",
-      "logo": {
-      "@type": "ImageObject",
-      "url": "{{ get_attachment_image_by_id($work_item->image,'full',true)['img_url'] ?? '' }}"
-      }
-      },
-      "datePublished": "{{ $work_item->created_at?->utc()->toIso8601String() }}",
-"dateModified": "{{ $work_item->updated_at?->utc()->toIso8601String() }}"
-    }
-  ]
-}
-</script>
+     @php
+    $pageUrl = url()->current();
+    $pageName = $work_item->title ?? 'Case Study';
+    $siteUrl = url('/');
     
+    $dynamicPageDescription = \Illuminate\Support\Str::limit(
+        trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($work_item->description)))),
+        350,
+        ''
+    );
+    $pageDescription = $dynamicPageDescription ?? "Read our case study on {$pageName} by Go4Database.";
+    
+    $featuredImage = get_attachment_image_by_id($work_item->image, 'full', true)['img_url'] ?? '';
+    
+    // Map $work_item->faqs if available
+    $faqMainEntity = [];
+    if (!empty($work_item->faqs) && is_array($work_item->faqs)) {
+        foreach ($work_item->faqs as $faq) {
+            $faqMainEntity[] = [
+                '@type' => 'Question',
+                'name' => $faq['question'] ?? '',
+                'acceptedAnswer' => [
+                    '@type' => 'Answer',
+                    'text' => $faq['answer'] ?? ''
+                ]
+            ];
+        }
+    }
 
+    $graphNodes = [
+        [
+            '@type' => 'Organization',
+            '@id' => "{$siteUrl}/#organization",
+            'name' => 'Go4Database',
+            'url' => $siteUrl,
+            'logo' => [
+                '@type' => 'ImageObject',
+                '@id' => "{$siteUrl}/#logo",
+                'url' => "{$siteUrl}/assets/uploads/media-uploader/go4database-logo1751528079.png",
+                'contentUrl' => "{$siteUrl}/assets/uploads/media-uploader/go4database-logo1751528079.png",
+                'width' => 300,
+                'height' => 300,
+                'caption' => 'Go4Database'
+            ],
+            'image' => ['@id' => "{$siteUrl}/#logo"],
+            'contactPoint' => [
+                '@type' => 'ContactPoint',
+                'telephone' => '+1 786 785 2141',
+                'contactType' => 'customer service',
+                'areaServed' => 'US',
+                'availableLanguage' => 'en'
+            ],
+            'sameAs' => [
+                'https://www.facebook.com/Go4Database',
+                'https://twitter.com/go4database',
+                'https://www.instagram.com/go4database/',
+                'https://www.youtube.com/@Go4Database',
+                'https://www.linkedin.com/company/go4database/',
+                'https://in.pinterest.com/go4database/'
+            ]
+        ],
+        [
+            '@type' => 'WebSite',
+            '@id' => "{$siteUrl}/#website",
+            'name' => 'Go4Database',
+            'url' => $siteUrl,
+            'publisher' => ['@id' => "{$siteUrl}/#organization"]
+        ],
+        [
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => [
+                [
+                    '@type' => 'ListItem',
+                    'position' => 1,
+                    'name' => 'Home',
+                    'item' => $siteUrl
+                ],
+                [
+                    '@type' => 'ListItem',
+                    'position' => 2,
+                    'name' => 'Case Study',
+                    'item' => url('case-study')
+                ],
+                [
+                    '@type' => 'ListItem',
+                    'position' => 3,
+                    'name' => $pageName,
+                    'item' => $pageUrl
+                ]
+            ]
+        ],
+        [
+            '@type' => 'Article',
+            'mainEntityOfPage' => [
+                '@type' => 'WebPage',
+                '@id' => "{$pageUrl}#webpage"
+            ],
+            'headline' => $pageName,
+            'description' => \Illuminate\Support\Str::limit(strip_tags($work_item->description), 150),
+            'image' => $featuredImage,
+            'author' => [
+                '@type' => 'Organization',
+                'name' => 'Go4Database',
+                'url' => $siteUrl,
+                'logo' => [
+                    '@type' => 'ImageObject',
+                    'url' => "{$siteUrl}/assets/uploads/media-uploader/go4database-logo1751528079.png"
+                ]
+            ],
+            'publisher' => [
+                '@type' => 'Organization',
+                'name' => 'Go4Database',
+                'logo' => [
+                    '@type' => 'ImageObject',
+                    'url' => "{$siteUrl}/assets/uploads/media-uploader/go4database-logo1751528079.png"
+                ]
+            ],
+            'datePublished' => optional($work_item->created_at)->utc()->toIso8601String(),
+            'dateModified' => optional($work_item->updated_at)->utc()->toIso8601String()
+        ]
+    ];
 
+    // Conditionally append FAQ node if available
+    if (!empty($faqMainEntity)) {
+        $graphNodes[] = [
+            '@type' => 'FAQPage',
+            '@id' => "{$pageUrl}#faq",
+            'mainEntity' => $faqMainEntity
+        ];
+    }
 
+    // Connect WebPage node pointing to Article / main content
+    $graphNodes[] = [
+        '@type' => 'WebPage',
+        '@id' => "{$pageUrl}#webpage",
+        'url' => $pageUrl,
+        'name' => $pageName,
+        'isPartOf' => ['@id' => "{$siteUrl}/#website"],
+        'mainEntity' => ['@id' => "{$pageUrl}#article"]
+    ];
+
+    // Fix Article @id cross-reference so webpage mainEntity ties nicely
+    $graphNodes[3]['@id'] = "{$pageUrl}#article";
+
+    $schemaGraph = [
+        '@context' => 'https://schema.org',
+        '@graph' => $graphNodes
+    ];
+@endphp
 
 <script type="application/ld+json">
-         {         
-            "@context": "https://schema.org/",         
-            "@type": "WebPage",         
-            "@id": "#WebPage",         
-            "url": "{{ url()->current() }}",          
-            "name": "{{ $work_item->title }}"
-          } 
-      </script>
+{!! json_encode($schemaGraph, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}
+</script>
       @endif
        
      @elseif(Request::path()=='b2c')
@@ -1625,123 +1666,128 @@
           } 
       </script>
      @elseif(isset($service_item) && !empty($service_item))
-     
-     
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-   {
-       "@type": "Organization",
-      "@id": "{{ url('/') }}#organization",
-      "name": "Go4Database",
-      "url": "{{ url('/') }}",
-      "logo": {
-        "@type": "ImageObject",
-        "@id": "{{ url('/') }}#logo",
-        "url": "{{ url('/') }}/assets/uploads/media-uploader/go4database-logo1751528079.png",
-        "contentUrl": "{{ url('/') }}/assets/uploads/media-uploader/go4database-logo1751528079.png",
-        "width": 300,
-        "height": 300,
-        "caption": "Go4Database"
-      },
-      "image": { "@id": "{{ url('/') }}#logo" },
-     
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "telephone": "+1 786 785 2141",
-        "contactType": "customer service",
-        "areaServed": "US",
-        "availableLanguage": "en"
-      },
-      "sameAs": [
-        "https://www.facebook.com/Go4Database",
-        "https://twitter.com/go4database",
-        "https://www.instagram.com/go4database/",
-        "https://www.youtube.com/@Go4Database",
-        "https://www.linkedin.com/company/go4database/",
-        "https://in.pinterest.com/go4database/"
-      ]
-   },
-   {
-      "@type": "WebSite",
-      "@id": "{{ url('/') }}#website",
-      "name": "Go4Database",
-      "url": "{{ url('/') }}",
-      "publisher": {
-        "@id": "{{ url('/') }}#organization"
-      }
-    },
-    {
-      "@type": "Product",
-      "name": "{{ $service_item->title }}",
-      "image": "{{ get_attachment_image_by_id($service_item->image,'full',true)['img_url'] ?? '' }}",
-      "description": "{{ \Illuminate\Support\Str::limit(strip_tags($service_item->description),150) }}",
-      "brand": { "@id": "https://www.go4database.com#organization" },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.7",
-        "reviewCount": "39"
-      }
-    },
+     @php
+    $pageUrl = url()->current();
+    $pageName = $service_item->title ?? 'List Item';
+    $siteUrl = url('/');
     
-    {
-      "@type": "BreadcrumbList",
-      "@id": "{{ url()->current() }}#breadcrumb",
-      "itemListElement": [
-      {
-      "@type": "ListItem", 
-      "position": 1, 
-      "name": "Home",
-      "item": "{{ url('/') }}"  
-      },
-      {
-        "@type": "ListItem", 
-        "position": 2, 
-        "name": "list",
-        "item": "{{ url('list') }}"  
-      },
-      {
-      "@type": "ListItem", 
-      "position": 3, 
-      "name": "{{ $service_item->title }} ",
-      "item": "{{ url()->current() }}"  
-      }
-    ]
+    $dynamicPageDescription = \Illuminate\Support\Str::limit(
+        trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($service_item->description)))),
+        350,
+        ''
+    );
+    $pageDescription = $dynamicPageDescription ?? "Reach verified {$pageName} and top executives across industries with accurate email and contact data.";
+    
+    $featuredImage = get_attachment_image_by_id($service_item->image, 'full', true)['img_url'] ?? '';
+    
+    $faqMainEntity = [];
+    if (!empty($service_item->faqs)) {
+        foreach ($service_item->faqs as $faq) {
+            $faqMainEntity[] = [
+                '@type' => 'Question',
+                'name' => $faq['question'] ?? '',
+                'acceptedAnswer' => [
+                    '@type' => 'Answer',
+                    'text' => strip_tags($faq['answer'] ?? '')
+                ]
+            ];
+        }
     }
-  ]
-}
-</script>
 
-@if(!empty($service_item->faqs))
-<script type="application/ld+json">
-{!! json_encode([
-    "@context" => "https://schema.org",
-    "@type" => "FAQPage",
-    "mainEntity" => collect($service_item->faqs)->map(function ($faq) {
-        return [
-            "@type" => "Question",
-            "name" => $faq['question'],
-            "acceptedAnswer" => [
-                "@type" => "Answer",
-                "text" => strip_tags($faq['answer'])
+    $graphNodes = [
+        [
+            '@type' => 'Organization',
+            '@id' => "{$siteUrl}/#organization",
+            'name' => 'Go4Database',
+            'url' => $siteUrl,
+            'logo' => [
+                '@type' => 'ImageObject',
+                '@id' => "{$siteUrl}/#logo",
+                'url' => "{$siteUrl}/assets/uploads/media-uploader/go4database-logo1751528079.png",
+                'width' => 300,
+                'height' => 300
+            ],
+            'contactPoint' => [
+                '@type' => 'ContactPoint',
+                'telephone' => '+1 786 785 2141',
+                'contactType' => 'customer service',
+                'areaServed' => 'US',
+                'availableLanguage' => 'en'
             ]
+        ],
+        [
+            '@type' => 'WebSite',
+            '@id' => "{$siteUrl}/#website",
+            'name' => 'Go4Database',
+            'url' => $siteUrl,
+            'publisher' => ['@id' => "{$siteUrl}/#organization"]
+        ],
+        [
+            '@type' => 'Service',
+            '@id' => "{$pageUrl}#service",
+            'name' => $pageName,
+            'description' => $pageDescription,
+            'image' => $featuredImage,
+            'provider' => ['@id' => "{$siteUrl}/#organization"],
+            'areaServed' => 'Global',
+            'hasOfferCatalog' => [
+                '@type' => 'OfferCatalog',
+                'name' => 'Executive Contact Data Plans',
+                'itemListElement' => [
+                    [
+                        '@type' => 'Offer',
+                        'itemOffered' => [
+                            '@type' => 'Service',
+                            'name' => "Custom {$pageName} Quote"
+                        ],
+                        'availability' => 'https://schema.org/InStock',
+                        'priceSpecification' => [
+                            '@type' => 'PriceSpecification',
+                            'priceCurrency' => 'USD',
+                            'description' => 'Custom pricing / Contact for quote'
+                        ]
+                    ]
+                ]
+            ]
+        ],
+        [
+            '@type' => 'BreadcrumbList',
+            '@id' => "{$pageUrl}#breadcrumb",
+            'itemListElement' => [
+                ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => $siteUrl],
+                ['@type' => 'ListItem', 'position' => 2, 'name' => 'List', 'item' => url('list')],
+                ['@type' => 'ListItem', 'position' => 3, 'name' => $pageName, 'item' => $pageUrl]
+            ]
+        ]
+    ];
+
+    if (!empty($faqMainEntity)) {
+        $graphNodes[] = [
+            '@type' => 'FAQPage',
+            '@id' => "{$pageUrl}#faq",
+            'mainEntity' => $faqMainEntity
         ];
-    })->values()
-], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
+    }
+
+    $graphNodes[] = [
+        '@type' => 'WebPage',
+        '@id' => "{$pageUrl}#webpage",
+        'url' => $pageUrl,
+        'name' => $pageName,
+        'isPartOf' => ['@id' => "{$siteUrl}/#website"],
+        'mainEntity' => ['@id' => "{$pageUrl}#service"]
+    ];
+
+    $schemaGraph = [
+        '@context' => 'https://schema.org',
+        '@graph' => $graphNodes
+    ];
+@endphp
+
+<script type="application/ld+json">
+{!! json_encode($schemaGraph, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}
 </script>
 @endif
-
-<script type="application/ld+json">
-         {         
-            "@context": "https://schema.org/",         
-            "@type": "WebPage",         
-            "@id": "#WebPage",         
-            "url": "{{ url()->current() }}",          
-            "name": "{{ $service_item->title }}"
-          } 
-      </script>
-      @endif
 
         @elseif(Request::path()=='career')
         
