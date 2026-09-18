@@ -323,32 +323,32 @@
               style="font-family:'Palatino Linotype',Georgia,serif;font-size:15px;font-weight:600;letter-spacing:3px;color:#1a1a2e;text-transform:uppercase;white-space:nowrap;">Westin</span>
             <span class="marquee-text-logo"
               style="font-family:'Inter',sans-serif;font-size:18px;font-weight:900;color:#003087;letter-spacing:1px;white-space:nowrap;">CBRE</span>
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Google_2015_logo.svg') }}"
               alt="Google" />
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Amazon_logo.svg') }}"
               alt="Amazon" />
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/c/cb/Dropbox_logo_2017.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Dropbox_logo_2017.svg') }}"
               alt="Dropbox" />
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Shopify_logo_2018.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Shopify_logo_2018.svg') }}"
               alt="Shopify" />
             <span class="marquee-text-logo"
               style="font-family:'Inter',sans-serif;font-size:15px;font-weight:600;letter-spacing:2.5px;color:#222;text-transform:uppercase;white-space:nowrap;">CANDELA</span>
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Salesforce.com_logo.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Salesforce.com_logo.svg') }}"
               alt="Salesforce" />
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/c/c8/Zendesk_logo.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Zendesk_logo.svg') }}"
               alt="Zendesk" />
             <span class="marquee-text-logo"
               style="font-family:'Didot','Palatino Linotype',Georgia,serif;font-size:16px;font-weight:700;color:#111;letter-spacing:1.5px;white-space:nowrap;">J.POCKER</span>
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/3/3f/HubSpot_Logo.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/HubSpot_Logo.svg') }}"
               alt="HubSpot" />
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Microsoft_logo.svg') }}"
               alt="Microsoft" />
             <span class="marquee-text-logo"
               style="font-family:'Inter',sans-serif;font-size:18px;font-weight:800;color:#0a0a23;display:flex;align-items:center;gap:2px;white-space:nowrap;"><span
                 style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:2.5px solid #0a0a23;border-radius:50%;font-size:13px;font-weight:900;">Q</span>MiQ</span>
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Linkedin_icon.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Linkedin_icon.svg') }}"
               alt="LinkedIn" style="height:22px;" />
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Slack_icon_2019.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Slack_icon_2019.svg') }}"
               alt="Slack" style="height:28px;" />
 
             <!-- Set 2 (duplicate for seamless loop) -->
@@ -359,32 +359,32 @@
               style="font-family:'Palatino Linotype',Georgia,serif;font-size:15px;font-weight:600;letter-spacing:3px;color:#1a1a2e;text-transform:uppercase;white-space:nowrap;">Westin</span>
             <span class="marquee-text-logo"
               style="font-family:'Inter',sans-serif;font-size:18px;font-weight:900;color:#003087;letter-spacing:1px;white-space:nowrap;">CBRE</span>
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Google_2015_logo.svg') }}"
               alt="Google" />
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Amazon_logo.svg') }}"
               alt="Amazon" />
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/c/cb/Dropbox_logo_2017.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Dropbox_logo_2017.svg') }}"
               alt="Dropbox" />
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Shopify_logo_2018.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Shopify_logo_2018.svg') }}"
               alt="Shopify" />
             <span class="marquee-text-logo"
               style="font-family:'Inter',sans-serif;font-size:15px;font-weight:600;letter-spacing:2.5px;color:#222;text-transform:uppercase;white-space:nowrap;">CANDELA</span>
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Salesforce.com_logo.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Salesforce.com_logo.svg') }}"
               alt="Salesforce" />
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/c/c8/Zendesk_logo.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Zendesk_logo.svg') }}"
               alt="Zendesk" />
             <span class="marquee-text-logo"
               style="font-family:'Didot','Palatino Linotype',Georgia,serif;font-size:16px;font-weight:700;color:#111;letter-spacing:1.5px;white-space:nowrap;">J.POCKER</span>
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/3/3f/HubSpot_Logo.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/HubSpot_Logo.svg') }}"
               alt="HubSpot" />
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Microsoft_logo.svg') }}"
               alt="Microsoft" />
             <span class="marquee-text-logo"
               style="font-family:'Inter',sans-serif;font-size:18px;font-weight:800;color:#0a0a23;display:flex;align-items:center;gap:2px;white-space:nowrap;"><span
                 style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:2.5px solid #0a0a23;border-radius:50%;font-size:13px;font-weight:900;">Q</span>MiQ</span>
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Linkedin_icon.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Linkedin_icon.svg') }}"
               alt="LinkedIn" style="height:22px;" />
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Slack_icon_2019.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Slack_icon_2019.svg') }}"
               alt="Slack" style="height:28px;" />
 
             <!-- Set 3 -->
@@ -395,32 +395,32 @@
               style="font-family:'Palatino Linotype',Georgia,serif;font-size:15px;font-weight:600;letter-spacing:3px;color:#1a1a2e;text-transform:uppercase;white-space:nowrap;">Westin</span>
             <span class="marquee-text-logo"
               style="font-family:'Inter',sans-serif;font-size:18px;font-weight:900;color:#003087;letter-spacing:1px;white-space:nowrap;">CBRE</span>
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Google_2015_logo.svg') }}"
               alt="Google" />
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Amazon_logo.svg') }}"
               alt="Amazon" />
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/c/cb/Dropbox_logo_2017.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Dropbox_logo_2017.svg') }}"
               alt="Dropbox" />
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Shopify_logo_2018.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Shopify_logo_2018.svg') }}"
               alt="Shopify" />
             <span class="marquee-text-logo"
               style="font-family:'Inter',sans-serif;font-size:15px;font-weight:600;letter-spacing:2.5px;color:#222;text-transform:uppercase;white-space:nowrap;">CANDELA</span>
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Salesforce.com_logo.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Salesforce.com_logo.svg') }}"
               alt="Salesforce" />
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/c/c8/Zendesk_logo.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Zendesk_logo.svg') }}"
               alt="Zendesk" />
             <span class="marquee-text-logo"
               style="font-family:'Didot','Palatino Linotype',Georgia,serif;font-size:16px;font-weight:700;color:#111;letter-spacing:1.5px;white-space:nowrap;">J.POCKER</span>
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/3/3f/HubSpot_Logo.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/HubSpot_Logo.svg') }}"
               alt="HubSpot" />
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Microsoft_logo.svg') }}"
               alt="Microsoft" />
             <span class="marquee-text-logo"
               style="font-family:'Inter',sans-serif;font-size:18px;font-weight:800;color:#0a0a23;display:flex;align-items:center;gap:2px;white-space:nowrap;"><span
                 style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:2.5px solid #0a0a23;border-radius:50%;font-size:13px;font-weight:900;">Q</span>MiQ</span>
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Linkedin_icon.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Linkedin_icon.svg') }}"
               alt="LinkedIn" style="height:22px;" />
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Slack_icon_2019.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Slack_icon_2019.svg') }}"
               alt="Slack" style="height:28px;" />
 
             <!-- Set 4 -->
@@ -431,32 +431,32 @@
               style="font-family:'Palatino Linotype',Georgia,serif;font-size:15px;font-weight:600;letter-spacing:3px;color:#1a1a2e;text-transform:uppercase;white-space:nowrap;">Westin</span>
             <span class="marquee-text-logo"
               style="font-family:'Inter',sans-serif;font-size:18px;font-weight:900;color:#003087;letter-spacing:1px;white-space:nowrap;">CBRE</span>
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Google_2015_logo.svg') }}"
               alt="Google" />
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Amazon_logo.svg') }}"
               alt="Amazon" />
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/c/cb/Dropbox_logo_2017.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Dropbox_logo_2017.svg') }}"
               alt="Dropbox" />
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Shopify_logo_2018.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Shopify_logo_2018.svg') }}"
               alt="Shopify" />
             <span class="marquee-text-logo"
               style="font-family:'Inter',sans-serif;font-size:15px;font-weight:600;letter-spacing:2.5px;color:#222;text-transform:uppercase;white-space:nowrap;">CANDELA</span>
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Salesforce.com_logo.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Salesforce.com_logo.svg') }}"
               alt="Salesforce" />
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/c/c8/Zendesk_logo.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Zendesk_logo.svg') }}"
               alt="Zendesk" />
             <span class="marquee-text-logo"
               style="font-family:'Didot','Palatino Linotype',Georgia,serif;font-size:16px;font-weight:700;color:#111;letter-spacing:1.5px;white-space:nowrap;">J.POCKER</span>
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/3/3f/HubSpot_Logo.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/HubSpot_Logo.svg') }}"
               alt="HubSpot" />
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Microsoft_logo.svg') }}"
               alt="Microsoft" />
             <span class="marquee-text-logo"
               style="font-family:'Inter',sans-serif;font-size:18px;font-weight:800;color:#0a0a23;display:flex;align-items:center;gap:2px;white-space:nowrap;"><span
                 style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:2.5px solid #0a0a23;border-radius:50%;font-size:13px;font-weight:900;">Q</span>MiQ</span>
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Linkedin_icon.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Linkedin_icon.svg') }}"
               alt="LinkedIn" style="height:22px;" />
-            <img class="marquee-logo" src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Slack_icon_2019.svg"
+            <img class="marquee-logo" src="{{ asset('assets/frontend/images/logos/Slack_icon_2019.svg') }}"
               alt="Slack" style="height:28px;" />
           </div>
         </div>
@@ -538,7 +538,10 @@
           <div
             style="position:relative;display:flex;justify-content:center;align-items:flex-end;background:transparent;overflow:hidden;"
             class="promo-img-container">
-            <img src="{{ asset('assets/frontend/images/free-credits-promo.webp') }}" alt="1200 Free Credits Offer" width="880" height="880" loading="lazy" style="width:100%;max-width:440px;height:auto;display:block;object-fit:contain;
+            <img src="{{ asset('assets/frontend/images/free-credits-promo.webp') }}"
+              srcset="{{ asset('assets/frontend/images/free-credits-promo-440.webp') }} 440w, {{ asset('assets/frontend/images/free-credits-promo.webp') }} 880w"
+              sizes="440px"
+              alt="1200 Free Credits Offer" width="880" height="880" loading="lazy" style="width:100%;max-width:440px;height:auto;display:block;object-fit:contain;
                 mix-blend-mode:multiply;
                 -webkit-mask-image: radial-gradient(ellipse 88% 92% at 50% 55%, black 40%, transparent 75%);
                 mask-image: radial-gradient(ellipse 88% 92% at 50% 55%, black 40%, transparent 75%);
@@ -1634,7 +1637,7 @@
                 style="font-family:'Palatino Linotype',Georgia,serif;font-size:14px;font-weight:600;letter-spacing:2px;color:#1a1a2e;text-transform:uppercase;">Westin</span>
               <span class="trusted-text-logo"
                 style="font-family:'Inter',sans-serif;font-size:16px;font-weight:900;color:#003087;letter-spacing:0.5px;">CBRE</span>
-              <img class="trusted-logo" src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Shopify_logo_2018.svg"
+              <img class="trusted-logo" src="{{ asset('assets/frontend/images/logos/Shopify_logo_2018.svg') }}"
                 alt="Shopify" style="height: 22px;" />
               <span class="trusted-text-logo"
                 style="font-family:'Inter',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;color:#222;text-transform:uppercase;">CANDELA</span>
