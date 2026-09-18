@@ -56,18 +56,11 @@
 <!-- Other styles loaded normally but not render-blocking -->
 <link rel="stylesheet" href="{{ asset('assets/frontend/css/fontawesome.min.css') }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ asset('assets/frontend/css/flaticon.css') }}" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="{{ asset('assets/frontend/css/nexicon.css') }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ asset('assets/frontend/css/owl.carousel.min.css') }}" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="{{ asset('assets/frontend/css/animate.css') }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ asset('assets/frontend/css/magnific-popup.css') }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ asset('assets/frontend/css/style-two.css') }}" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="{{ asset('assets/frontend/css/helpers.css') }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ asset('assets/frontend/css/responsive.css') }}" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="{{ asset('assets/frontend/css/jquery.ihavecookies.css') }}" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="{{ asset('assets/frontend/css/dynamic-style.css') }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ asset('assets/frontend/css/toastr.css') }}" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="{{ asset('assets/frontend/css/slick.css') }}" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="{{ asset('assets/frontend/css/jquery.mb.YTPlayer.min.css') }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" media="print" onload="this.media='all'">
 
 <!-- Fallback for no-JS browsers -->
@@ -76,18 +69,11 @@
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/style.css?v=123') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/fontawesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/flaticon.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/frontend/css/nexicon.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/owl.carousel.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/frontend/css/animate.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/magnific-popup.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/style-two.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/frontend/css/helpers.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/responsive.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/frontend/css/jquery.ihavecookies.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/frontend/css/dynamic-style.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/toastr.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/frontend/css/slick.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/frontend/css/jquery.mb.YTPlayer.min.css') }}">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 </noscript>
 @if(file_exists('assets/frontend/css/home-'.$home_page_variant.'.css') && empty(get_static_option('home_page_page_builder_status')))

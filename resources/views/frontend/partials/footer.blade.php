@@ -195,14 +195,7 @@
 <script src="{{asset('assets/frontend/js/jquery.magnific-popup.js')}}" defer></script>
 <script src="{{asset('assets/frontend/js/imagesloaded.pkgd.min.js')}}" defer></script>
 <script src="{{asset('assets/frontend/js/isotope.pkgd.min.js')}}" defer></script>
-<script src="{{asset('assets/frontend/js/jquery.waypoints.js')}}" defer></script>
-<script src="{{asset('assets/frontend/js/jquery.counterup.min.js')}}" defer></script>
 <script src="{{asset('assets/frontend/js/owl.carousel.min.js')}}" defer></script>
-<script src="{{asset('assets/frontend/js/wow.min.js')}}" defer></script>
-<script src="{{asset('assets/frontend/js/jQuery.rProgressbar.min.js')}}" defer></script>
-<script src="{{asset('assets/frontend/js/jquery.mb.YTPlayer.js')}}" defer></script>
-<script src="{{asset('assets/frontend/js/jquery.nicescroll.min.js')}}" defer></script>
-<script src="{{asset('assets/frontend/js/slick.js')}}" defer></script>
 <script src="{{asset('assets/frontend/js/main.js')}}" defer></script>
 @if(\Route::currentRouteName() === 'frontend.products')
 <script src="{{asset('assets/frontend/js/jquery-ui.js')}}" defer></script>
