@@ -3,9 +3,7 @@
    ========================================================================== */
 
 /* --- Style Section 1 --- */
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&display=swap');
+/* Fonts (Inter, Poppins, Nunito) are requested from the page <head>, not @import: an @import inside a stylesheet can only start once this file has arrived, which held rendering. */
 
     *,
     *::before,

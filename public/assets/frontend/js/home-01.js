@@ -252,9 +252,13 @@
             "Executive Decision Makers",
             "AI-Powered B2B Prospecting"
           ];
-          let wordIndex = 0;
-          let charIndex = 0;
-          let isDeleting = false;
+          // The page ships with the longest phrase already in the span and the
+          // animation starts by deleting it. Painting the longest string first means
+          // no later word is a bigger paint, so Largest Contentful Paint is the
+          // first render of the hero rather than whichever word types out last.
+          let wordIndex = 2;                       // "Real-Time Verified B2B Emails"
+          let charIndex = words[wordIndex].length;
+          let isDeleting = true;
           const target = document.getElementById('hero-rotating-word');
           if (!target) return;
     
@@ -282,7 +286,7 @@
             setTimeout(type, typeSpeed);
           }
     
-          type();
+          setTimeout(type, 2000);
         }
     /* ==========================================================================
    Go4Database - Leads Fetch + Render + Filter

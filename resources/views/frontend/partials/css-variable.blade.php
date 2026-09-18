@@ -1,5 +1,5 @@
 <style>
-@font-face{font-family:Nunito-fallback;src:local('Arial');size-adjust:95%;ascent-override:103%;descent-override:38%;line-gap-override:0%}@font-face{font-family:'Adjusted Arial Fallback';src:local(Arial);size-adjust:99%;ascent-override:102%;descent-override:27%;line-gap-override:3%}
+@font-face{font-family:Nunito-fallback;src:local('Arial');size-adjust:100.3%;ascent-override:101%;descent-override:35%;line-gap-override:0%}@font-face{font-family:Nunito-fallback-400;src:local('Arial');size-adjust:100.3%;ascent-override:101%;descent-override:35%;line-gap-override:0%}@font-face{font-family:Nunito-fallback-700;src:local('Arial');font-weight:700;size-adjust:100.3%;ascent-override:101%;descent-override:35%;line-gap-override:0%}@font-face{font-family:'Adjusted Arial Fallback';src:local(Arial);size-adjust:99%;ascent-override:102%;descent-override:27%;line-gap-override:3%}
 :root {
         --main-color-one: {{filter_static_option_value('site_color',$global_static_field_data) ?? '#ff8a73'}};
         --main-color-two: {{filter_static_option_value('site_main_color_two',$global_static_field_data) ?? '#5580ff'}};

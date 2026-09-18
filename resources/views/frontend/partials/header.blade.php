@@ -32,14 +32,21 @@
     {!! render_favicon_by_id(filter_static_option_value('site_favicon',$global_static_field_data)) !!}
     <!-- {!! load_google_fonts() !!} -->
    
-<link rel="preload" as="font" type="font/woff2" 
-      href="https://fonts.gstatic.com/s/nunito/v32/XRXV3I6Li01BKofINeaB.woff2" 
-      crossorigin>
+{{-- Fonts, in one request that does not block the first paint: the stylesheet is
+     preloaded and only becomes a stylesheet once it has arrived, so text shows in
+     the metric-matched Nunito-fallback face first and swaps in (display=swap).
+     Nunito is the site font (--body-font / --heading-font; the hero headline is
+     Nunito 800, so its file is preloaded too). The homepage also sets Inter for
+     body copy and Poppins 900 for one icon letter; font files download only
+     where a stylesheet uses the family, so other pages pay for the CSS alone.
+     Two things used to sit here and cost ~1.4s of blocked rendering: a request
+     for five unused families (~36 faces), and three @import lines inside
+     home.css that could only start after that file had arrived. --}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,400;1,500;1,700;1,900&family=Outfit:wght@200;300;400;500;600;700;800;900&family=Source+Serif+Pro:wght@200;300;400;600;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
-      <!-- GOOD — 1 request for all fonts -->
-<link rel="preload" href="{{ asset('assets/frontend/webfonts/fa-brands-400.woff2') }}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/nunito/v32/XRXV3I6Li01BKofINeaB.woff2" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Inter:wght@400..900&family=Poppins:wght@900&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Inter:wght@400..900&family=Poppins:wght@900&display=swap"></noscript>
 <link rel="preload" href="{{ asset('assets/frontend/webfonts/fa-solid-900.woff2') }}" as="font" type="font/woff2" crossorigin>
     
 <!-- Preload key CSS (icons, layout, main styles) -->

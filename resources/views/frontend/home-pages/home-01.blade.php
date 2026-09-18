@@ -1,7 +1,7 @@
 @include('frontend.partials.homesupportbar')
 @include('frontend.partials.navbar-new') 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('assets/frontend/css/home.css?v=123') }}">
+    <link rel="stylesheet" href="{{ asset('assets/frontend/css/home.css?v=124') }}">
 @endpush
  <!-- ═══════════════════════════════════════════════════════
          ANIMATED HERO SECTION — Go4Database
@@ -125,7 +125,7 @@
             style="font-size: 40px; font-weight: 800; line-height: 1.28; letter-spacing: -1.2px; color: #ffffff; margin: 0; text-shadow: 0 2px 8px rgba(0,0,0,0.18);">
             Supercharge Your Sales with <br>
             <span id="hero-rotating-word"
-              style="color:#0b132a;font-weight:900;display:inline-block;margin-top:6px;transition:opacity 0.3s ease,transform 0.3s ease;text-shadow:0 0 2px #fff, 0 0 10px #ffffff, 0 0 24px #ffffff, 0 0 40px rgba(255,255,255,0.9), 0 4px 16px rgba(255,255,255,0.8);filter:drop-shadow(0 0 8px rgba(255,255,255,0.9));">AI Lead Generation</span>
+              style="color:#0b132a;font-weight:900;display:inline-block;margin-top:6px;transition:opacity 0.3s ease,transform 0.3s ease;text-shadow:0 0 2px #fff, 0 0 10px #ffffff, 0 0 24px #ffffff, 0 0 40px rgba(255,255,255,0.9), 0 4px 16px rgba(255,255,255,0.8);filter:drop-shadow(0 0 8px rgba(255,255,255,0.9));">Real-Time Verified B2B Emails</span>
           </h1>
 
 
@@ -538,7 +538,7 @@
           <div
             style="position:relative;display:flex;justify-content:center;align-items:flex-end;background:transparent;overflow:hidden;"
             class="promo-img-container">
-            <img src="{{ asset('assets/frontend/images/free-credits-promo.png') }}" alt="1200 Free Credits Offer" style="width:100%;max-width:440px;height:auto;display:block;object-fit:contain;
+            <img src="{{ asset('assets/frontend/images/free-credits-promo.webp') }}" alt="1200 Free Credits Offer" width="880" height="880" loading="lazy" style="width:100%;max-width:440px;height:auto;display:block;object-fit:contain;
                 mix-blend-mode:multiply;
                 -webkit-mask-image: radial-gradient(ellipse 88% 92% at 50% 55%, black 40%, transparent 75%);
                 mask-image: radial-gradient(ellipse 88% 92% at 50% 55%, black 40%, transparent 75%);
@@ -906,8 +906,8 @@
             <!-- Direct Screenshot Image 1 -->
             <div
               style="background:#fff;border-radius:18px;padding:10px;box-shadow:0 20px 50px -15px rgba(0,0,0,0.12);border:1px solid rgba(0,0,0,0.08);overflow:hidden">
-              <img src="{{ asset('assets/frontend/images/b2b-marketplace-table.png') }}" alt="Go4Database B2B leads table with company, contact name, title and verified email"
-                width="1758" height="1352" loading="lazy"
+              <img src="{{ asset('assets/frontend/images/b2b-marketplace-table.webp') }}" alt="Go4Database B2B leads table with company, contact name, title and verified email"
+                width="1140" height="877" loading="lazy"
                 style="width:100%;height:auto;border-radius:12px;display:block;object-fit:cover">
             </div>
           </div>
@@ -953,8 +953,8 @@
             <!-- Exact Create Filter Photo uploaded by user -->
             <div
               style="background:#fff;border-radius:18px;padding:10px;box-shadow:0 20px 50px -15px rgba(0,0,0,0.12);border:1px solid rgba(0,0,0,0.08);overflow:hidden">
-              <img src="{{ asset('assets/frontend/images/advanced-filters-form.png') }}" alt="Go4Database advanced filters for company, industry, technology, turnover, title and seniority"
-                width="1554" height="1118" loading="lazy"
+              <img src="{{ asset('assets/frontend/images/advanced-filters-form.webp') }}" alt="Go4Database advanced filters for company, industry, technology, turnover, title and seniority"
+                width="1140" height="821" loading="lazy"
                 style="width:100%;height:auto;border-radius:12px;display:block;object-fit:cover">
             </div>
           </div>
@@ -999,7 +999,7 @@
             <!-- Direct Screenshot Image 3 -->
             <div
               style="background:#fff;border-radius:18px;padding:10px;box-shadow:0 20px 50px -15px rgba(0,0,0,0.12);border:1px solid rgba(0,0,0,0.08);overflow:hidden">
-              <img src="{{ asset('assets/frontend/images/ai-lead-finder.png') }} " alt="AI Suggestions & Lead Finder Platform Screenshot"
+              <img src="{{ asset('assets/frontend/images/ai-lead-finder.webp') }}" alt="AI Suggestions & Lead Finder Platform Screenshot" width="1024" height="631" loading="lazy"
                 style="width:100%;height:auto;border-radius:12px;display:block;object-fit:cover">
             </div>
           </div>
@@ -1430,7 +1430,7 @@
 
         <!-- Article Banner Image & Header -->
         <div style="padding:28px 36px 0">
-          <img id="modal-blog-img" src="{{ asset('assets/frontend/images/blog1.jpg') }}" alt="Article Banner"
+          <img id="modal-blog-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Article Banner"
             style="width:100%;height:300px;object-fit:cover;border-radius:16px;margin-bottom:24px">
 
           <div id="modal-blog-meta" style="font-size:13px;color:#64748b;font-weight:600;margin-bottom:8px">Mar 23, 2026
@@ -1693,6 +1693,6 @@
     </script>
   @endif
   {{-- Bump ?v= on every home-01.js change: LiteSpeed serves JS with a one-year immutable cache --}}
-  <script src="{{ asset('assets/frontend/js/home-01.js') }}?v=7" defer></script>
+  <script src="{{ asset('assets/frontend/js/home-01.js') }}?v=8" defer></script>
 @include('frontend.partials.contact-section')
 @include('frontend.partials.chat-widget')
