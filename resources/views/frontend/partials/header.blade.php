@@ -128,6 +128,20 @@
          asset to copy into the live assets folder and fall out of step. --}}
     <style>html,body{overflow-x:clip;}body{overflow-y:visible;}</style>
 
+    {{-- The search popup (frontend.partials.search-popup, included below on
+         every page) is only hidden by a rule inside style.css --
+         .search-popup-inner-wrapper{position:fixed;...;visibility:hidden;opacity:0}.
+         style.css is deferred on purpose (Round 1) so it never blocks first
+         paint, but that means for however long it takes to arrive, this
+         element sits in the page as a normal, visible, ~163px block instead
+         -- and every page on the site jumps up by that much the moment
+         style.css finally loads and hides it. Measured on PageSpeeds own
+         throttled mobile test: a single 0.17 CLS jump, timed exactly to
+         style.css's arrival. Repeating the same three properties here,
+         inline, makes it hidden from first paint instead -- style.css still
+         sets the same values later, so nothing changes when it arrives. --}}
+    <style>.search-popup-inner-wrapper{position:fixed;visibility:hidden;opacity:0;}</style>
+
     @stack('styles')
 </head>
 

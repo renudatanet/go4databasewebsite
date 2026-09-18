@@ -1513,6 +1513,34 @@
         color: #16a34a;
       }
 
+      /* #hero-rotating-word types out five different phrases forever (see
+         home-01.js). Without a reserved height, a phrase that wraps onto a
+         second line makes the box taller than one that doesn't, which
+         pushes everything below it down -- and PageSpeed independently
+         re-measures "largest paint" every time that box grows, so the
+         typing animation kept re-triggering Largest Contentful Paint
+         minutes into the page's life. Reserving height for the tallest
+         phrase at each font size the headline uses (measured directly in a
+         browser, not guessed) makes the box's size constant from first
+         paint, so neither problem can happen. Three sizes because the
+         headline's own font-size changes at 768px and the phrases start
+         wrapping to a second line below ~413px. */
+      #hero-rotating-word {
+        min-height: 52px;
+      }
+
+      @media (max-width: 768px) {
+        #hero-rotating-word {
+          min-height: 30px;
+        }
+      }
+
+      @media (max-width: 412px) {
+        #hero-rotating-word {
+          min-height: 60px;
+        }
+      }
+
       .g4d-hero-sub {
         font-size: 14px;
         color: #475569;
