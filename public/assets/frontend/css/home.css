@@ -1527,6 +1527,17 @@
          wrapping to a second line below ~413px. */
       #hero-rotating-word {
         min-height: 52px;
+        /* width:100% (not a fixed px number): reserving height alone stopped
+           words wrapping to a taller 2nd line from re-triggering LCP, but
+           PageSpeed's own live report still showed it happening -- a later
+           word that's simply WIDER than whatever was on screen at the
+           first measurement still paints a bigger area even at the same
+           height. Stretching every word to the same width as the line
+           above ("Supercharge Your Sales with") makes the box's area
+           identical for every word, so none can ever paint "larger" than
+           another again. Same left-aligned look either way -- this is an
+           invisible layout box, not a visible border. */
+        width: 100%;
       }
 
       @media (max-width: 768px) {
