@@ -1262,15 +1262,21 @@
         }
       }
 
+      /* Opacity-only on purpose: this used to also slide the card in via
+         transform, but that a) visually moves already-rendered pixels,
+         which Chrome's layout-shift tracking counts against CLS even
+         though the card is position:absolute, and b) competed with the
+         continuous cardFloat animation for control of the same transform
+         property, which is why DevTools reported these as "non-composited"
+         (main-thread) animations. The float loop still runs; the card just
+         fades in where it already sits instead of sliding into place. */
       @keyframes cardSlideIn {
         from {
           opacity: 0;
-          transform: translateX(40px) scale(0.92);
         }
 
         to {
           opacity: 1;
-          transform: translateX(0) scale(1);
         }
       }
 

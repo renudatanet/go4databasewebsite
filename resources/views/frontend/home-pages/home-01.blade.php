@@ -1,7 +1,7 @@
 @include('frontend.partials.homesupportbar')
 @include('frontend.partials.navbar-new') 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('assets/frontend/css/home.css?v=124') }}">
+    <link rel="stylesheet" href="{{ asset('assets/frontend/css/home.css?v=125') }}">
 @endpush
  <!-- ═══════════════════════════════════════════════════════
          ANIMATED HERO SECTION — Go4Database
