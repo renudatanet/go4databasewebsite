@@ -65,7 +65,13 @@
 @endif
 @section('scripts')
     <script>
-        $(document).ready(function () {
+        {{-- jQuery loads with `defer` (see header.blade.php), so it isn't
+             available yet when the browser parses this inline block --
+             $(document).ready(...) itself needs $ to exist just to be
+             called. DOMContentLoaded doesn't have that problem: the spec
+             guarantees deferred scripts finish before it fires, so by the
+             time this callback runs, jQuery is already loaded. --}}
+        document.addEventListener('DOMContentLoaded', function () {
             $(document).on('click', '#get_in_touch_submit_btn', function (e) {
                 e.preventDefault();
                 var myForm = document.getElementById('get_in_touch_form');

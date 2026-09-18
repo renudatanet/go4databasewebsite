@@ -60,8 +60,6 @@
 <link rel="stylesheet" href="{{ asset('assets/frontend/css/magnific-popup.css') }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ asset('assets/frontend/css/style-two.css') }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ asset('assets/frontend/css/responsive.css') }}" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="{{ asset('assets/frontend/css/toastr.css') }}" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" media="print" onload="this.media='all'">
 
 <!-- Fallback for no-JS browsers -->
 <noscript>
@@ -73,8 +71,6 @@
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/magnific-popup.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/style-two.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/responsive.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/frontend/css/toastr.css') }}">
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 </noscript>
 @if(file_exists('assets/frontend/css/home-'.$home_page_variant.'.css') && empty(get_static_option('home_page_page_builder_status')))
         <link rel="stylesheet" href="{{asset('assets/frontend/css/home-'.$home_page_variant.'.css')}}">

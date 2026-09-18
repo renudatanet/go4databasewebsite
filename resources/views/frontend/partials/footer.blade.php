@@ -199,8 +199,8 @@
 <script src="{{asset('assets/frontend/js/main.js')}}" defer></script>
 @if(\Route::currentRouteName() === 'frontend.products')
 <script src="{{asset('assets/frontend/js/jquery-ui.js')}}" defer></script>
-@endif
 <script src="{{asset('assets/frontend/js/toastr.min.js')}}" defer></script>
+@endif
 
 <x-frontend.others.advertisement-script/>
 @if(request()->routeIs('homepage') || request()->routeIs('frontend.homepage.demo'))
