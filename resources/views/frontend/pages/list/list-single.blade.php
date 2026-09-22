@@ -74,52 +74,30 @@ use App\Services;
     <!-- LEADS: same search, table and click-to-reveal as the homepage -->
 
     <div class="table-wrapper">
-      {{-- Styled here rather than in list.css: production's public_html/assets is a
-           separate copy, so every stylesheet change would need copying by hand. --}}
-      <style>
-        .filters { margin-bottom: 20px; }
-        .filters form { display: flex; flex-wrap: wrap; gap: 14px; width: 100%; align-items: center; }
-        .filters input { flex: 1 1 120px; width: auto; min-width: 0; height: 40px; }
-        .filters #search-leads-btn { flex: 0 0 112px; width: 112px; height: 40px; }
-        #results-container { border: 1px solid rgba(0,0,0,0.08); border-radius: 14px; overflow: hidden; background: #fff; }
-        #results-container.hidden { display: none; }
-        .g4d-leads-grid { display: grid; grid-template-columns: minmax(0,1.5fr) minmax(0,1.15fr) minmax(0,1.45fr) minmax(150px,1.1fr) 140px; column-gap: 16px; align-items: center; }
-        .g4d-leads-head { padding: 14px 20px; background: #67d63d; border-bottom: 1px solid #5cc434; font-size: 12.5px; font-weight: 800; letter-spacing: 0.4px; color: #fff; }
-        .g4d-lead { padding: 16px 20px; border-bottom: 1px solid #f1f5f9; font-size: 13.5px; color: #333; }
-        .g4d-lead:last-child { border-bottom: 0; }
-        .g4d-lead-company { font-weight: 700; color: #1e293b; font-size: 14px; line-height: 1.35; }
-        .g4d-lead-meta { margin-top: 3px; font-size: 11.5px; color: #64748b; }
-        .g4d-lead-person { font-weight: 700; color: #1e293b; font-size: 14px; line-height: 1.35; }
-        .g4d-lead-title { color: #475569; font-weight: 500; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .g4d-lead-btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #cbd5e1; background: #fff; border-radius: 8px; padding: 7px 12px; font-family: inherit; font-size: 12.5px; font-weight: 600; color: #334155; cursor: pointer; white-space: nowrap; box-shadow: 0 1px 2px rgba(0,0,0,0.04); transition: border-color .15s, box-shadow .15s; }
-        .g4d-lead-btn:hover { border-color: #3b8e15; box-shadow: 0 2px 8px rgba(59,142,21,0.15); }
-        .g4d-lead-btn:focus-visible { outline: 2px solid #3b8e15; outline-offset: 2px; }
-        .g4d-lead-status { width: 16px; height: 16px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .g4d-lead-status.is-yes { background: #dcfce7; color: #15803d; }
-        .g4d-lead-status.is-no { background: #fee2e2; color: #dc2626; }
-        .g4d-lead-value { font-size: 13px; font-weight: 600; color: #1e293b; overflow-wrap: anywhere; }
-        .g4d-lead-limit { font-size: 13px; font-weight: 700; color: #3b8e15; }
-        .g4d-leads-note { padding: 32px; text-align: center; color: #64748b; font-size: 14px; }
-        .g4d-leads-note.is-error { color: #ef4444; }
-        @media (max-width: 900px) {
-          .g4d-leads-head { display: none; }
-          .g4d-lead.g4d-leads-grid { grid-template-columns: 1fr 1fr; column-gap: 10px; row-gap: 2px; padding: 14px 16px; }
-          .g4d-lead-company-cell, .g4d-lead-person, .g4d-lead-title { grid-column: 1 / -1; }
-          .g4d-lead-person { margin-top: 8px; font-size: 13.5px; }
-          .g4d-lead-title { font-size: 13px; -webkit-line-clamp: 3; }
-          .g4d-lead-email, .g4d-lead-phone { margin-top: 10px; }
-          .g4d-lead-btn { width: 100%; justify-content: center; }
-        }
-      </style>
 
       <!-- FILTERS -->
       <div class="filters">
     <form onsubmit="return false" autocomplete="off">
       @csrf
-      <input type="text" placeholder="Title" id="search-title" value="{{ $service_item->search_title ?? '' }}">
-      <input type="text" placeholder="Industry / Business" id="search-industry" value="{{ trim($service_item->search_industry ?? '') ?: trim($service_item->search_business_category ?? '') }}">
-      <input type="text" placeholder="Location" id="search-location" value="{{ $service_item->search_location ?? '' }}">
-      <button type="button" id="search-leads-btn">Search</button>
+      <div class="field-group">
+        <label for="search-title">Job title</label>
+        <input type="text" placeholder="Title" id="search-title" value="{{ $service_item->search_title ?? '' }}">
+      </div>
+      <div class="field-group">
+        <label for="search-industry">Industry / Business</label>
+        <input type="text" placeholder="Industry / Business" id="search-industry" value="{{ trim($service_item->search_industry ?? '') ?: trim($service_item->search_business_category ?? '') }}">
+      </div>
+      <div class="field-group">
+        <label for="search-location">Location</label>
+        <input type="text" placeholder="Location" id="search-location" value="{{ $service_item->search_location ?? '' }}">
+      </div>
+      <button type="button" id="search-leads-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2.3"/>
+          <path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/>
+        </svg>
+        Search
+      </button>
     </form>
       </div>
 
@@ -222,10 +200,12 @@ use App\Services;
 
   <div class="stats">
 
+    @if(!empty($service_item->data_counts))
     <div class="stat">
       <span>{{$service_item->data_counts}}</span>
       <p>Data Counts</p>
     </div>
+    @endif
 @php
     $randomDays = 10 + ($service_item->id % 6); // 10-15 days
    $lastUpdated = now()->subDays($randomDays);
@@ -244,6 +224,7 @@ use App\Services;
 
     <div class="logos">
 
+  <div class="logo-slider-viewport">
   <div class="logo-slider">
 
     <!-- Original Logos -->
@@ -264,6 +245,7 @@ use App\Services;
     <img src="{{asset('assets/uploads/product/MIQ.png')}}"  width="68">
     <img src="{{asset('assets/uploads/product/J Pocker.png')}}"  width="68">
 
+  </div>
   </div>
   <div class="stats-cmp-main">
 <div class="stat-comp">
@@ -500,11 +482,11 @@ use App\Services;
       <h2 class="title">
         Simple steps to get free {{ $contactDatabaseTitle }}
       </h2>
+@if(!empty(env('VIDEO_CDN')))
 <video width="100%" controls class="video-box">
     <source src="{{ env('VIDEO_CDN') }}" type="video/mp4">
-    <source src="{{ env('VIDEO_CDN') }}" type="video/mp4">
- 
 </video>
+@endif
 
 
       <!-- <div class="video-box" style="background-image: url({{asset('assets/uploads/product/list.png')}});">
@@ -605,43 +587,6 @@ Key Decision Makers in the {{ $emailTitle }}
         @endforeach
     </div>
 @endif
-
-
-<style>
-.vertical-table{
-    width:100%;
-    border:1px solid #ddd;
-    border-radius:8px;
-    overflow:hidden;
-    font-family:Arial, sans-serif;
-}
-
-.table-row{
-    display:flex;
-    border-bottom:1px solid #ddd;
-}
-
-.table-row:last-child{
-    border-bottom:none;
-}
-
-.table-label{
-    width: 40%;
-    background: #67d63deb;
-    padding: 14px;
-    color: #000;
-    font-weight: 500;
-    text-align: center;
-    border-right: 1px solid #67d63b;
-}
-
-.table-value{
-    flex:1;
-    padding:14px;
-    background: #e7fde7;
-    color: #000;
-}
-</style>
 
 
 
