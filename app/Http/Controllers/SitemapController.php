@@ -81,7 +81,18 @@ class SitemapController extends Controller
     }
      private function getListLastModified()
     {
-        return $this->formatLastMod(B2BList::max('updated_at'));
+        // return $this->formatLastMod(B2BList::max('updated_at'));
+        // Grab the latest record to anchor the formula (or adjust query as needed)
+        $latestRecord = B2BList::orderBy('id', 'desc')->first();
+
+        if (!$latestRecord) {
+            return now()->toIso8601String();
+        }
+
+        // Apply the same random/deterministic days logic
+        $randomDays = 10 + ($latestRecord->id % 6);
+        
+        return now()->subDays($randomDays)->toIso8601String();
     }
          private function getCaseStudyLastModified()
     {
