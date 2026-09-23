@@ -1766,6 +1766,12 @@
                             <li class="{{active_menu('admin-home/general-settings/email-verifier-settings')}}"><a
                                         href="{{route('admin.email.verifier.settings')}}">{{__('Email Verifier Settings')}}</a>
                             </li>
+                            <li class="{{active_menu('admin-home/general-settings/email-finder-content')}}"><a
+                                        href="{{route('admin.email.finder.content')}}">{{__('Email Finder Page Content')}}</a>
+                            </li>
+                            <li class="{{active_menu('admin-home/general-settings/email-finder-settings')}}"><a
+                                        href="{{route('admin.email.finder.settings')}}">{{__('Email Finder Settings')}}</a>
+                            </li>
                             <li class="{{active_menu('admin-home/general-settings/chat-widget-settings')}}"><a
                                         href="{{route('admin.chat.widget.settings')}}">{{__('Chat Widget Settings')}}</a>
                             </li>

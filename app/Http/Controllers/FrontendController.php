@@ -81,8 +81,11 @@ use Svg\Tag\Image;
 use Symfony\Component\Process\Process;
 use App\Helpers\HomePageStaticSettings;
 use App\Helpers\EmailVerifierHelper;
+use App\Helpers\EmailFinderHelper;
 use App\EmailVerifierItem;
+use App\EmailFinderItem;
 use App\Http\Controllers\EmailVerifierSettingsController;
+use App\Http\Controllers\EmailFinderSettingsController;
 
 class FrontendController extends Controller
 {
@@ -1455,6 +1458,83 @@ $all_testimonial = Testimonial::where('lang', $lang)->orderBy('id', 'desc')->tak
         ]);
 
         $result = EmailVerifierHelper::verify($request->input('email'));
+
+        return response()->json($result);
+    }
+
+    public function email_finder_page()
+    {
+        $default_lang = Language::where('default', 1)->first();
+        $lang = !empty(session()->get('lang')) ? session()->get('lang') : $default_lang->slug;
+
+        $all_testimonial = Testimonial::where(['lang' => $lang, 'status' => 'publish'])
+            ->orderBy('id', 'desc')->take(3)->get();
+
+        // hasTable guard, not decoration: if this page's code reaches a server
+        // before its migration does, querying a missing table is a fatal error
+        // and the page 500s. This way it quietly uses the shipped copy instead.
+        $ef_items = \Illuminate\Support\Facades\Schema::hasTable('email_finder_items')
+            ? EmailFinderItem::where(['lang' => $lang, 'status' => 'publish'])
+                ->orderBy('sr_order')->get()->groupBy('section')
+            : collect();
+
+        // Any section with no rows falls back to the shipped copy, so a server
+        // running this code before its migrations still renders a whole page.
+        // Cast to objects so the blade reads every item the same way, whether
+        // it came from the database or from the fallback.
+        foreach (EmailFinderSettingsController::default_items() as $section => $rows) {
+            if ($ef_items->get($section, collect())->isEmpty()) {
+                $ef_items[$section] = collect($rows)->map(fn($row) => (object) $row);
+            }
+        }
+
+        // Admin points this page's FAQ at a Faq category, so the questions are
+        // edited in the normal Faq screens rather than in this file. One list
+        // feeds both the visible accordion and the FAQ schema, so the answers
+        // people read and the ones search engines read can never drift apart.
+        $faq_category_id = get_static_option('ef_' . $lang . '_faq_category_id');
+        $ef_faqs = !empty($faq_category_id)
+            ? Faq::where(['lang' => $lang, 'status' => 'publish', 'category_id' => $faq_category_id])->get()
+            : collect();
+
+        if ($ef_faqs->isEmpty()) {
+            $ef_faqs = collect(EmailFinderSettingsController::default_faqs())->map(fn($row) => (object) $row);
+        }
+
+        return view('frontend.pages.email-finder')->with([
+            'all_testimonial' => $all_testimonial,
+            'ef_items' => $ef_items,
+            'ef_faqs' => $ef_faqs,
+            'ef' => $this->email_finder_content($lang),
+        ]);
+    }
+
+    /**
+     * Page copy, admin value when one is set, otherwise the shipped default.
+     */
+    private function email_finder_content($lang)
+    {
+        $content = [];
+        foreach (array_keys(EmailFinderSettingsController::default_text()) as $field) {
+            $content[$field] = EmailFinderSettingsController::text_value($lang, $field);
+        }
+
+        return $content;
+    }
+
+    public function email_finder_search(Request $request)
+    {
+        $this->validate($request, [
+            'first_name' => 'required|string|max:60',
+            'last_name' => 'nullable|string|max:60',
+            'domain' => 'required|string|max:190',
+        ]);
+
+        $result = EmailFinderHelper::find(
+            $request->input('first_name'),
+            (string) $request->input('last_name', ''),
+            $request->input('domain')
+        );
 
         return response()->json($result);
     }

@@ -43,6 +43,7 @@
             </a>
             <div class="nav-dropdown-menu">
               <a href="{{ route('frontend.email.verifier') }}" class="simple-dropdown-item">Email Verifier</a>
+              <a href="{{ route('frontend.email.finder') }}" class="simple-dropdown-item">Email Finder</a>
               <div class="dropdown-green-bar"></div>
             </div>
           </div>

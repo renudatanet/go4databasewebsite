@@ -51,6 +51,14 @@
 <priority>0.80</priority>
 </url>
 
+{{-- Email Finder is a hardcoded route rather than a Page record, so it is
+     listed here directly, the same way /pricing and /faq are. --}}
+<url>
+<loc>{{ url('/email-finder') }}</loc>
+<lastmod>{{ now()->toAtomString() }}</lastmod>
+<priority>0.80</priority>
+</url>
+
  @foreach ($pages as $post)
 <url>
 <loc>{{ url('/'.$post->slug) }}</loc>

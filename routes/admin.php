@@ -2235,6 +2235,18 @@ Route::prefix('admin-home')->middleware(['setlang:backend'])->group(function () 
         Route::get('/email-verifier-content/item/delete/{id}', 'EmailVerifierSettingsController@item_delete')->name('admin.email.verifier.item.delete');
 
         /*----------------------------------------------------
+          EMAIL FINDER SETTINGS
+         ----------------------------------------------------*/
+        Route::get('/email-finder-settings', 'EmailFinderSettingsController@index')->name('admin.email.finder.settings');
+        Route::post('/email-finder-settings', 'EmailFinderSettingsController@update');
+
+        Route::get('/email-finder-content', 'EmailFinderSettingsController@content')->name('admin.email.finder.content');
+        Route::post('/email-finder-content', 'EmailFinderSettingsController@update_content');
+        Route::post('/email-finder-content/item', 'EmailFinderSettingsController@item_store')->name('admin.email.finder.item.store');
+        Route::post('/email-finder-content/item/update', 'EmailFinderSettingsController@item_update')->name('admin.email.finder.item.update');
+        Route::get('/email-finder-content/item/delete/{id}', 'EmailFinderSettingsController@item_delete')->name('admin.email.finder.item.delete');
+
+        /*----------------------------------------------------
           CHAT WIDGET SETTINGS
          ----------------------------------------------------*/
         Route::get('/chat-widget-settings', 'ChatWidgetSettingsController@index')->name('admin.chat.widget.settings');

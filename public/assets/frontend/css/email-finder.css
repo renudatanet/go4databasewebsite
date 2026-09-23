@@ -1,0 +1,385 @@
+/* ==========================================================================
+   Email Finder, page design system.
+   Prefix is ef- so this file can never collide with the Email Verifier's.
+
+   Every colour below is taken from the site's own palette, as used in
+   public/assets/frontend/css/home.css and home-01.blade.php, so this page
+   reads as part of go4database.com rather than a separate microsite:
+     #6fd943  brand green      #1f7a2e  link / primary button green
+     #0b132a  dark navy        #0f172a  body ink
+     #475569 / #64748b  slate text      #e2e8f0 / #f1f5f9  lines
+   ========================================================================== */
+.ef{
+  /* #6fd943 is the brand green. It is bright, so it always carries dark
+     text (#0b132a) on top, never white, exactly as the homepage uses it. */
+  --green:#6fd943;
+  --green-bright:#86efac;   /* lighter green, used only for hover on --green */
+  --green-deep:#1f7a2e;     /* the site's link + primary button green */
+  --green-ink:#15803d;
+  --green-tint:#f0fdf4;
+  --green-line:#86efac;
+
+  --ink:#0b132a;
+  --ink-2:#0f172a;
+  --ink-3:#1e293b;
+  --ink-line:rgba(255,255,255,.09);
+
+  --surface:#ffffff;
+  --surface-soft:#f8fafc;
+  --line:#e2e8f0;
+  --line-soft:#f1f5f9;
+
+  --tx:#0f172a;
+  --tx-2:#475569;
+  --tx-3:#64748b;
+  --tx-inv:#ffffff;
+  --tx-inv-2:rgba(255,255,255,.72);
+
+  /* Status colours stay on the same Tailwind ramps the site uses, picked a
+     step or two darker so they are readable as text rather than as fills. */
+  --amber:#b45309;
+  --amber-bg:#fffbeb;
+  --amber-line:#fde68a;
+  --red:#dc2626;
+  --red-bg:#fef2f2;
+  --red-line:#fecaca;
+
+  --r-sm:10px;
+  --r-md:14px;
+  --r-lg:20px;
+  --r-xl:28px;
+
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  color:var(--tx);
+  overflow-x:clip;
+}
+.ef *{box-sizing:border-box;}
+/* Reset margin only. Colour is deliberately NOT set here: a ".ef h1"
+   selector outranks a ".ef-h1" class, so setting colour here would win
+   against the per-element rules below and paint dark text onto the dark
+   hero. Each heading sets its own colour instead. */
+.ef h1,.ef h2,.ef h3{margin:0;}
+.ef p{margin:0;}
+
+/* --------------------------------------------------------------------------
+   Hero
+   -------------------------------------------------------------------------- */
+/* Light hero, deliberately the same treatment as the Email Verifier page:
+   soft off-white base, faint green radial washes, and a faint grid that is
+   masked out towards the edges. The two Solutions pages read as one set. */
+.ef-hero{
+  position:relative;background:var(--surface-soft);color:var(--tx);
+  padding:72px 20px 92px;overflow:hidden;isolation:isolate;
+  border-bottom:1px solid var(--line-soft);
+}
+.ef-hero::before{
+  content:'';position:absolute;inset:0;z-index:-2;
+  background:
+    radial-gradient(900px 420px at 50% -10%,rgba(111,217,67,.16),transparent 62%),
+    radial-gradient(620px 340px at 88% 6%,rgba(58,180,160,.09),transparent 66%),
+    radial-gradient(520px 300px at 6% 32%,rgba(111,217,67,.08),transparent 68%);
+}
+.ef-hero::after{
+  content:'';position:absolute;inset:0;z-index:-1;opacity:.7;
+  background-image:linear-gradient(rgba(15,23,42,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(15,23,42,.045) 1px,transparent 1px);
+  background-size:64px 64px;
+  -webkit-mask-image:radial-gradient(720px 420px at 50% 0%,#000,transparent 76%);
+  mask-image:radial-gradient(720px 420px at 50% 0%,#000,transparent 76%);
+}
+.ef-hero-inner{max-width:920px;margin:0 auto;text-align:center;}
+/* White pill on the light hero: deep green text, not the bright brand green,
+   which only reaches 1.8:1 on white. */
+.ef-eyebrow{
+  display:inline-flex;align-items:center;gap:9px;
+  background:var(--surface);border:1px solid var(--green-line);
+  color:var(--green-ink);
+  font-size:12.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;
+  padding:7px 15px 7px 11px;border-radius:999px;margin-bottom:22px;
+  box-shadow:0 1px 2px rgba(15,23,42,.05);
+}
+.ef-eyebrow-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 0 3px rgba(111,217,67,.24);animation:ef-pulse 2.4s ease-in-out infinite;
+}
+@keyframes ef-pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.ef-h1{
+  font-size:clamp(32px,5.2vw,52px);line-height:1.1;font-weight:800;
+  letter-spacing:-1px;color:var(--tx);text-wrap:balance;
+}
+/* Gradient-filled highlight, same as the verifier's headline. The fallback
+   colour matters: if background-clip:text is unsupported the word still
+   renders in deep green rather than transparent. */
+.ef-h1 em{
+  font-style:normal;color:var(--green-deep);
+  background:linear-gradient(100deg,var(--green-deep),#57c22c 52%,#2f9e8f);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.ef .ef-hero-sub{
+  margin:16px auto 0;max-width:580px;
+  font-size:16px;line-height:1.65;color:var(--tx-2);
+}
+
+/* --------------------------------------------------------------------------
+   The tool card
+   -------------------------------------------------------------------------- */
+.ef-tool{margin-top:34px;}
+/* Border plus a soft lift, not the deep drop shadow a dark hero needed:
+   on the light hero that read as a smudge and the card lost its edge. */
+.ef-tool-inner{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);
+  box-shadow:0 2px 4px rgba(15,23,42,.03),0 24px 56px -20px rgba(15,23,42,.16);
+  padding:22px;text-align:left;max-width:820px;margin:0 auto;
+}
+.ef-tool-form{
+  display:grid;
+  grid-template-columns:1fr 1fr 1.4fr auto;
+  gap:12px;align-items:end;
+}
+.ef-field{display:flex;flex-direction:column;gap:5px;min-width:0;}
+.ef-field label{
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.45px;
+  color:var(--tx-3);
+}
+.ef-field input{
+  height:46px;border:1.5px solid var(--line);border-radius:var(--r-sm);
+  padding:0 14px;font-family:inherit;font-size:14.5px;font-weight:500;color:var(--tx);
+  background:var(--surface);outline:0;transition:border-color .15s,box-shadow .15s;
+  min-width:0;width:100%;
+}
+.ef-field input::placeholder{color:var(--tx-3);font-weight:400;}
+/* Ring is --green-deep (#1f7a2e) at low alpha, so it tracks the border colour. */
+.ef-field input:focus{border-color:var(--green-deep);box-shadow:0 0 0 3px rgba(31,122,46,.14);}
+.ef-tool-btn{
+  height:46px;padding:0 24px;border:none;border-radius:var(--r-sm);
+  background:var(--green-deep);color:#fff;font-family:inherit;
+  font-size:14.5px;font-weight:700;cursor:pointer;white-space:nowrap;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  transition:background .18s,transform .15s;
+}
+.ef-tool-btn:hover:not(:disabled){background:#16601f;}
+.ef-tool-btn:disabled{opacity:.72;cursor:progress;}
+.ef-tool-btn .ef-spin{display:none;width:16px;height:16px;animation:ef-rotate .9s linear infinite;}
+.ef-tool-btn.is-busy .ef-btn-label{display:none;}
+.ef-tool-btn.is-busy .ef-spin{display:block;}
+@keyframes ef-rotate{to{transform:rotate(360deg);}}
+
+/* Candidates being worked through */
+.ef-working{margin-top:18px;padding-top:18px;border-top:1px solid var(--line-soft);}
+.ef .ef-working-label{font-size:12.5px;color:var(--tx-3);font-weight:600;margin-bottom:10px;}
+.ef-working-list{display:flex;flex-wrap:wrap;gap:8px;}
+.ef-chip{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--surface-soft);border:1px solid var(--line);
+  border-radius:999px;padding:6px 13px;
+  font-size:12.5px;font-weight:600;color:var(--tx-2);
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+.ef-chip-spin{width:12px;height:12px;color:var(--green-deep);animation:ef-rotate 1.1s linear infinite;}
+
+/* Result */
+.ef-result{margin-top:18px;padding-top:18px;border-top:1px solid var(--line-soft);}
+.ef-result-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+.ef-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:12.5px;font-weight:700;padding:5px 12px;border-radius:999px;
+}
+.ef-pill i{width:14px;height:14px;}
+.ef-pill--ok{background:var(--green-tint);color:var(--green-ink);border:1px solid var(--green-line);}
+.ef-pill--warn{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-line);}
+.ef-pill--bad{background:var(--red-bg);color:var(--red);border:1px solid var(--red-line);}
+.ef-confidence{font-size:12px;color:var(--tx-3);font-weight:600;text-transform:capitalize;}
+.ef-result-mail{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  background:var(--surface-soft);border:1px solid var(--line);
+  border-radius:var(--r-md);padding:14px 16px;
+}
+.ef-result-email{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:16px;font-weight:600;color:var(--tx);overflow-wrap:anywhere;
+}
+.ef-copy{
+  display:inline-flex;align-items:center;gap:6px;flex-shrink:0;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);
+  padding:7px 13px;font-family:inherit;font-size:12.5px;font-weight:600;
+  color:var(--tx-2);cursor:pointer;transition:border-color .15s,color .15s;
+}
+.ef-copy:hover{border-color:var(--green-deep);color:var(--green-ink);}
+.ef-copy i{width:13px;height:13px;}
+.ef .ef-result-reason{margin-top:12px;font-size:14px;line-height:1.6;color:var(--tx-2);}
+.ef-result-meta{
+  margin-top:12px;display:flex;align-items:center;flex-wrap:wrap;gap:10px;
+  font-size:12.5px;color:var(--tx-3);
+}
+.ef-result-meta b{color:var(--tx-2);font-weight:600;}
+.ef-dot{width:3px;height:3px;border-radius:50%;background:var(--tx-3);opacity:.6;}
+
+.ef-alert{
+  margin-top:18px;background:var(--red-bg);border:1px solid var(--red-line);
+  color:var(--red);border-radius:var(--r-md);padding:13px 16px;
+  font-size:14px;line-height:1.55;
+}
+
+.ef-tool-foot{
+  margin-top:18px;padding-top:16px;border-top:1px solid var(--line-soft);
+  display:flex;flex-wrap:wrap;gap:8px 22px;
+}
+.ef-tool-foot span{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:12.5px;color:var(--tx-3);font-weight:500;
+}
+.ef-tool-foot i{width:13px;height:13px;color:var(--green-deep);}
+
+/* --------------------------------------------------------------------------
+   Content bands
+   -------------------------------------------------------------------------- */
+.ef-band{padding:76px 20px;background:var(--surface);}
+.ef-band--soft{background:var(--surface-soft);}
+.ef-band--tight{padding:60px 20px;}
+.ef-band-inner{max-width:1000px;margin:0 auto;}
+.ef-h2{font-size:clamp(24px,3.4vw,34px);line-height:1.2;font-weight:800;letter-spacing:-.5px;text-wrap:balance;color:var(--tx);}
+.ef-h3{font-size:clamp(19px,2.4vw,23px);line-height:1.3;font-weight:800;letter-spacing:-.3px;color:var(--tx);}
+.ef .ef-lede{margin-top:14px;max-width:640px;font-size:15.5px;line-height:1.7;color:var(--tx-2);}
+
+/* Reveal-on-scroll, but only once JS has confirmed it can run: the hidden
+   state is gated behind .ef-js, which the page script adds on init. Without
+   it (JS blocked, script error, crawler that doesn't execute JS) the content
+   simply renders visible instead of the whole page staying blank. */
+.ef-js .ef-rv{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease;}
+.ef-js .ef-rv.in{opacity:1;transform:none;}
+@media (prefers-reduced-motion:reduce){
+  .ef-js .ef-rv{opacity:1;transform:none;transition:none;}
+  .ef-spin,.ef-chip-spin{animation:none;}
+}
+
+/* Steps */
+.ef-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:38px;}
+.ef-step{
+  background:var(--surface-soft);border:1px solid var(--line);
+  border-radius:var(--r-lg);padding:26px 24px;
+}
+.ef-band--soft .ef-step{background:var(--surface);}
+.ef-step-n{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:30px;height:30px;border-radius:9px;
+  background:var(--green-deep);color:#fff;
+  font-size:14px;font-weight:800;margin-bottom:14px;
+}
+.ef-step h3{font-size:17px;font-weight:700;margin-bottom:8px;color:var(--tx);}
+.ef-step p{font-size:14px;line-height:1.65;color:var(--tx-2);}
+
+/* Pattern table */
+.ef-patterns{
+  margin-top:34px;border:1px solid var(--line);border-radius:var(--r-lg);
+  overflow:hidden;background:var(--surface);
+}
+.ef-pattern-row{
+  display:grid;grid-template-columns:1.1fr 1.5fr 1.4fr;
+  gap:16px;align-items:center;padding:15px 20px;
+  border-bottom:1px solid var(--line-soft);font-size:14px;
+}
+.ef-pattern-row:last-child{border-bottom:none;}
+.ef-pattern-row--head{
+  background:var(--surface-soft);
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.45px;color:var(--tx-3);
+}
+.ef-mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:600;overflow-wrap:anywhere;}
+.ef-dim{color:var(--tx-3);font-weight:500;}
+.ef-bar-wrap{display:flex;align-items:center;gap:10px;min-width:0;}
+.ef-bar{height:7px;border-radius:999px;background:var(--green);flex-shrink:1;min-width:8px;}
+.ef-bar--dim{background:var(--line);}
+.ef-bar-wrap b{font-size:12.5px;font-weight:700;color:var(--tx-2);white-space:nowrap;}
+
+/* Cross-link to verifier */
+.ef-pair{
+  display:flex;align-items:center;justify-content:space-between;gap:26px;
+  background:var(--green-tint);border:1px solid var(--green-line);
+  border-radius:var(--r-lg);padding:28px 30px;flex-wrap:wrap;
+}
+.ef-pair-tx{flex:1 1 380px;min-width:0;}
+.ef-pair-tx p{margin-top:9px;font-size:14.5px;line-height:1.65;color:var(--tx-2);}
+.ef-pair-btn{
+  display:inline-flex;align-items:center;gap:8px;flex-shrink:0;
+  background:var(--green-deep);color:#fff;text-decoration:none;
+  border-radius:var(--r-sm);padding:13px 22px;font-size:14.5px;font-weight:700;
+  transition:background .18s;
+}
+.ef-pair-btn:hover{background:#16601f;color:#fff;}
+.ef-pair-btn i{width:15px;height:15px;}
+
+/* Offer. A light green-tint card, the same treatment as the Email Verifier's
+   offer block, rather than a full-bleed dark band: with a light hero it was
+   the only dark section left on the page and read as a different site. */
+.ef-offer{padding:72px 20px;background:var(--surface);}
+.ef-offer-inner{
+  max-width:720px;margin:0 auto;text-align:center;
+  background:var(--green-tint);border:1px solid var(--green-line);
+  border-radius:18px;padding:38px 32px;
+  box-shadow:0 18px 40px -26px rgba(31,122,46,.5);
+}
+.ef-offer-title{font-size:clamp(23px,3.2vw,32px);font-weight:800;color:var(--green-ink);letter-spacing:-.5px;}
+.ef .ef-offer-sub{margin-top:14px;font-size:15.5px;line-height:1.7;color:var(--tx-2);}
+/* Brand green with dark text, the pairing the homepage uses for this same
+   "free credits" button. White on #6fd943 is only 1.8:1. */
+.ef-offer-btn{
+  display:inline-block;margin-top:26px;background:var(--green);color:#0b132a;
+  text-decoration:none;border-radius:var(--r-sm);padding:15px 32px;
+  font-size:15.5px;font-weight:800;transition:background .18s;
+}
+.ef-offer-btn:hover{background:var(--green-bright);color:#0b132a;}
+/* Back to --tx-3 now this sits on the light tint: --tx-inv-2 was for the
+   dark band and would be near-invisible here. */
+.ef-offer-foot{display:block;margin-top:13px;font-size:12.5px;color:var(--tx-3);}
+
+/* FAQ */
+.ef-faq{margin-top:32px;border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;background:var(--surface);}
+.ef-faq-item{border-bottom:1px solid var(--line-soft);}
+.ef-faq-item:last-child{border-bottom:none;}
+.ef-faq-q{
+  width:100%;background:none;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;gap:18px;
+  padding:19px 22px;text-align:left;font-family:inherit;
+  font-size:15.5px;font-weight:600;color:var(--tx);
+}
+.ef-faq-q i{width:17px;height:17px;color:var(--green-deep);flex-shrink:0;transition:transform .25s;}
+.ef-faq-item.open .ef-faq-q i{transform:rotate(45deg);}
+.ef-faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+.ef-faq-item.open .ef-faq-a{max-height:420px;}
+.ef-faq-a p{padding:0 22px 20px;font-size:14.5px;line-height:1.75;color:var(--tx-2);}
+
+/* Closing CTA */
+.ef-cta{padding:78px 20px;background:var(--surface-soft);text-align:center;}
+.ef-cta-inner{max-width:620px;margin:0 auto;}
+.ef-cta h2{font-size:clamp(24px,3.4vw,32px);font-weight:800;letter-spacing:-.5px;color:var(--tx);}
+.ef-cta p{margin-top:13px;font-size:15.5px;line-height:1.7;color:var(--tx-2);}
+.ef-cta-row{margin-top:26px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap;}
+.ef-cta-btn{
+  display:inline-block;background:var(--green-deep);color:#fff;text-decoration:none;
+  border-radius:var(--r-sm);padding:14px 28px;font-size:15px;font-weight:700;
+  transition:background .18s;
+}
+.ef-cta-btn:hover{background:#16601f;color:#fff;}
+.ef-cta-btn--ghost{background:var(--surface);color:var(--tx);border:1.5px solid var(--line);}
+.ef-cta-btn--ghost:hover{background:var(--surface);border-color:var(--green-deep);color:var(--green-ink);}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+@media (max-width:860px){
+  .ef-tool-form{grid-template-columns:1fr 1fr;}
+  .ef-field--wide{grid-column:1 / -1;}
+  .ef-tool-btn{grid-column:1 / -1;}
+  .ef-steps{grid-template-columns:1fr;}
+}
+@media (max-width:620px){
+  .ef-hero{padding:52px 16px 72px;}
+  .ef-tool-inner{padding:18px;border-radius:var(--r-lg);}
+  .ef-tool-form{grid-template-columns:1fr;}
+  .ef-band{padding:56px 16px;}
+  .ef-band--tight{padding:46px 16px;}
+  .ef-pattern-row{grid-template-columns:1fr;gap:6px;}
+  .ef-pattern-row--head{display:none;}
+  .ef-pair{padding:22px;}
+  .ef-pair-btn{width:100%;justify-content:center;}
+  .ef-offer,.ef-cta{padding:56px 16px;}
+}
