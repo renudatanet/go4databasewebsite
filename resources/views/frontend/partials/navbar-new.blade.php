@@ -44,6 +44,7 @@
             <div class="nav-dropdown-menu">
               <a href="{{ route('frontend.email.verifier') }}" class="simple-dropdown-item">Email Verifier</a>
               <a href="{{ route('frontend.email.finder') }}" class="simple-dropdown-item">Email Finder</a>
+              <a href="{{ route('frontend.affiliate') }}" class="simple-dropdown-item">Affiliate Program</a>
               <div class="dropdown-green-bar"></div>
             </div>
           </div>

@@ -512,6 +512,8 @@ Route::group(['middleware' => ['setlang:frontend', 'globalVariable', 'maintains_
     Route::post('/email-verifier/check', 'FrontendController@email_verifier_check')->name('frontend.email.verifier.check')->middleware('throttle:20,1');
     Route::get('/email-finder', 'FrontendController@email_finder_page')->name('frontend.email.finder');
     Route::post('/email-finder/search', 'FrontendController@email_finder_search')->name('frontend.email.finder.search')->middleware('throttle:20,1');
+    Route::get('/affiliate', 'FrontendController@affiliate_page')->name('frontend.affiliate');
+    Route::post('/affiliate/apply', 'FrontendController@affiliate_apply')->name('frontend.affiliate.apply')->middleware('throttle:6,1');
     Route::post('/chat/send', 'ChatWidgetController@send')->name('frontend.chat.send')->middleware('throttle:30,1');
     Route::get('/' . $contact_page_slug, 'FrontendController@contact_page')->name('frontend.contact');
     Route::get('/' . $quote_page_slug, 'FrontendController@request_quote')->name('frontend.request.quote');

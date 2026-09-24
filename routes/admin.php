@@ -2247,6 +2247,22 @@ Route::prefix('admin-home')->middleware(['setlang:backend'])->group(function () 
         Route::get('/email-finder-content/item/delete/{id}', 'EmailFinderSettingsController@item_delete')->name('admin.email.finder.item.delete');
 
         /*----------------------------------------------------
+          AFFILIATE SETTINGS
+         ----------------------------------------------------*/
+        Route::get('/affiliate-settings', 'AffiliateSettingsController@index')->name('admin.affiliate.settings');
+        Route::post('/affiliate-settings', 'AffiliateSettingsController@update');
+
+        Route::get('/affiliate-content', 'AffiliateSettingsController@content')->name('admin.affiliate.content');
+        Route::post('/affiliate-content', 'AffiliateSettingsController@update_content');
+        Route::post('/affiliate-content/item', 'AffiliateSettingsController@item_store')->name('admin.affiliate.item.store');
+        Route::post('/affiliate-content/item/update', 'AffiliateSettingsController@item_update')->name('admin.affiliate.item.update');
+        Route::get('/affiliate-content/item/delete/{id}', 'AffiliateSettingsController@item_delete')->name('admin.affiliate.item.delete');
+
+        Route::get('/affiliate-applications', 'AffiliateSettingsController@applications')->name('admin.affiliate.applications');
+        Route::post('/affiliate-applications/update', 'AffiliateSettingsController@application_update')->name('admin.affiliate.application.update');
+        Route::get('/affiliate-applications/delete/{id}', 'AffiliateSettingsController@application_delete')->name('admin.affiliate.application.delete');
+
+        /*----------------------------------------------------
           CHAT WIDGET SETTINGS
          ----------------------------------------------------*/
         Route::get('/chat-widget-settings', 'ChatWidgetSettingsController@index')->name('admin.chat.widget.settings');

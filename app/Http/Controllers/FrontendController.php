@@ -84,8 +84,10 @@ use App\Helpers\EmailVerifierHelper;
 use App\Helpers\EmailFinderHelper;
 use App\EmailVerifierItem;
 use App\EmailFinderItem;
+use App\AffiliateItem;
 use App\Http\Controllers\EmailVerifierSettingsController;
 use App\Http\Controllers\EmailFinderSettingsController;
+use App\Http\Controllers\AffiliateSettingsController;
 
 class FrontendController extends Controller
 {
@@ -1517,6 +1519,124 @@ $all_testimonial = Testimonial::where('lang', $lang)->orderBy('id', 'desc')->tak
         $content = [];
         foreach (array_keys(EmailFinderSettingsController::default_text()) as $field) {
             $content[$field] = EmailFinderSettingsController::text_value($lang, $field);
+        }
+
+        return $content;
+    }
+
+    public function affiliate_page()
+    {
+        $default_lang = Language::where('default', 1)->first();
+        $lang = !empty(session()->get('lang')) ? session()->get('lang') : $default_lang->slug;
+
+        $testimonial_count = (int) AffiliateSettingsController::term('testimonial_count');
+        $all_testimonial = Testimonial::where(['lang' => $lang, 'status' => 'publish'])
+            ->orderBy('id', 'desc')
+            ->take($testimonial_count >= 1 && $testimonial_count <= 12 ? $testimonial_count : 3)
+            ->get();
+
+        // hasTable guard: if this page's code reaches a server before its
+        // migration does, querying a missing table is fatal and the page 500s.
+        $af_items = \Illuminate\Support\Facades\Schema::hasTable('affiliate_items')
+            ? AffiliateItem::where(['lang' => $lang, 'status' => 'publish'])
+                ->orderBy('sr_order')->get()->groupBy('section')
+            : collect();
+
+        foreach (AffiliateSettingsController::default_items() as $section => $rows) {
+            if ($af_items->get($section, collect())->isEmpty()) {
+                $af_items[$section] = collect($rows)->map(fn($row) => (object) $row);
+            }
+        }
+
+        $faq_category_id = get_static_option('af_' . $lang . '_faq_category_id');
+        $af_faqs = !empty($faq_category_id)
+            ? Faq::where(['lang' => $lang, 'status' => 'publish', 'category_id' => $faq_category_id])->get()
+            : collect();
+
+        if ($af_faqs->isEmpty()) {
+            $af_faqs = collect(AffiliateSettingsController::default_faqs())->map(fn($row) => (object) $row);
+        }
+
+        return view('frontend.pages.affiliate')->with([
+            'all_testimonial' => $all_testimonial,
+            'af_items' => $af_items,
+            'af_faqs' => $af_faqs,
+            'af' => $this->affiliate_content($lang),
+            // Null when nobody has set a rate yet. The page shows the
+            // calculator disabled rather than quoting an invented figure.
+            'af_rate' => AffiliateSettingsController::rate(),
+            'af_plans' => AffiliateSettingsController::plans(),
+            'af_months' => AffiliateSettingsController::calc_months(),
+        ]);
+    }
+
+    /**
+     * The affiliate application form on /affiliate.
+     *
+     * Only used while no external Apply Button Link is set: once one is, the
+     * buttons point there and nothing posts here.
+     */
+    public function affiliate_apply(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required|string|max:120',
+            'email' => 'required|email|max:190',
+            'site' => 'nullable|string|max:255',
+            'promotion' => 'nullable|string|max:2000',
+            // Honeypot: a real person never sees this field, so anything in it
+            // is a bot. Fail quietly rather than telling it why.
+            'company_website' => 'nullable|size:0',
+        ]);
+
+        if (!\Illuminate\Support\Facades\Schema::hasTable('affiliate_applications')) {
+            return redirect()->back()->with([
+                'msg' => __('We could not take your application just now. Please email info@go4database.com instead.'),
+                'type' => 'danger',
+            ])->withInput();
+        }
+
+        $application = \App\AffiliateApplication::create([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'site' => $request->input('site'),
+            'promotion' => $request->input('promotion'),
+            'status' => 'new',
+            'ip' => $request->ip(),
+        ]);
+
+        // Saved first, mailed second, and the mail is allowed to fail. An
+        // application that is in the database but did not trigger an email is
+        // recoverable from the admin panel; one that was thrown away because
+        // SMTP was down is gone for good.
+        $notify = AffiliateSettingsController::term('notify_email');
+        if (!empty($notify)) {
+            try {
+                Mail::send('mail.affiliate-application', ['data' => $application->toArray()], function ($message) use ($notify, $application) {
+                    $message->to($notify)
+                        ->replyTo($application->email, $application->name)
+                        ->subject('New Affiliate Application');
+                });
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning('Affiliate application saved but notification failed: ' . $e->getMessage());
+            }
+        }
+
+        $default_lang = Language::where('default', 1)->first();
+        $lang = !empty(session()->get('lang')) ? session()->get('lang') : $default_lang->slug;
+
+        return redirect()->to(route('frontend.affiliate') . '#af-apply')->with([
+            'af_applied' => AffiliateSettingsController::text_value($lang, 'apply_success'),
+        ]);
+    }
+
+    /**
+     * Page copy, admin value when one is set, otherwise the shipped default.
+     */
+    private function affiliate_content($lang)
+    {
+        $content = [];
+        foreach (array_keys(AffiliateSettingsController::default_text()) as $field) {
+            $content[$field] = AffiliateSettingsController::text_value($lang, $field);
         }
 
         return $content;

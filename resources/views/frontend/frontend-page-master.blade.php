@@ -3,7 +3,7 @@
 
 {{-- The FAQ page is matched by route name rather than path, because its slug
      is admin-configurable and differs between environments. --}}
-@if (!request()->is('author*') && !request()->is('list/*') && !request()->is('email-verifier') && !request()->is('email-finder') && !request()->routeIs('frontend.faq'))
+@if (!request()->is('author*') && !request()->is('list/*') && !request()->is('email-verifier') && !request()->is('email-finder') && !request()->is('affiliate') && !request()->routeIs('frontend.faq'))
    @include('frontend.partials.breadcrumb')
 @endif
 @yield('content')

@@ -1,0 +1,423 @@
+/* ==========================================================================
+   Affiliate page design system. Prefix is af- so this file can never collide
+   with the Email Verifier's or the Email Finder's.
+
+   Same palette as those two pages, taken from the site's own stylesheet
+   (home.css / home-01.blade.php), so all three Solutions pages read as one
+   family rather than three separate microsites.
+   ========================================================================== */
+.af{
+  --green:#6fd943;          /* brand green, always carries dark text */
+  --green-bright:#86efac;
+  --green-deep:#1f7a2e;     /* the site's link + primary button green */
+  --green-ink:#15803d;
+  --green-tint:#f0fdf4;
+  --green-line:#86efac;
+
+  --ink:#0b132a;
+  --ink-2:#0f172a;
+  --ink-line:rgba(255,255,255,.09);
+
+  --surface:#ffffff;
+  --surface-soft:#f8fafc;
+  --line:#e2e8f0;
+  --line-soft:#f1f5f9;
+
+  --tx:#0f172a;
+  --tx-2:#475569;
+  --tx-3:#64748b;
+  --tx-inv:#ffffff;
+  --tx-inv-2:rgba(255,255,255,.72);
+
+  --amber:#b45309;
+  --amber-bg:#fffbeb;
+  --amber-line:#fde68a;
+
+  --r-sm:10px;
+  --r-md:14px;
+  --r-lg:18px;
+  --r-xl:22px;
+
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  color:var(--tx);
+  overflow-x:clip;
+}
+.af *{box-sizing:border-box;}
+/* Reset margin only. Colour is deliberately NOT set here: a ".af h2"
+   selector outranks a ".af-h2" class, so setting colour here would win
+   against the per-element rules below. Each heading sets its own. */
+.af h1,.af h2,.af h3{margin:0;font-family:'Poppins','Inter',sans-serif;}
+.af p{margin:0;}
+
+/* --------------------------------------------------------------------------
+   Shared section furniture
+   -------------------------------------------------------------------------- */
+.af-band{padding:72px 20px;background:var(--surface);}
+.af-band--soft{background:var(--surface-soft);}
+.af-band--dark{background:var(--ink);}
+.af-inner{max-width:1120px;margin:0 auto;}
+.af .af-h2{font-size:clamp(24px,3.3vw,32px);font-weight:800;letter-spacing:-.7px;color:var(--tx);}
+.af .af-h2--inv{color:var(--tx-inv);}
+.af .af-lede{margin-top:10px;font-size:15.5px;line-height:1.6;color:var(--tx-2);max-width:660px;}
+.af .af-lede--inv{color:var(--tx-inv-2);}
+
+/* --------------------------------------------------------------------------
+   Hero
+   -------------------------------------------------------------------------- */
+.af-hero{
+  position:relative;background:var(--surface-soft);color:var(--tx);
+  padding:72px 20px 64px;overflow:hidden;isolation:isolate;
+  border-bottom:1px solid var(--line-soft);
+}
+.af-hero::before{
+  content:'';position:absolute;inset:0;z-index:-2;
+  background:
+    radial-gradient(900px 420px at 50% -10%,rgba(111,217,67,.16),transparent 62%),
+    radial-gradient(620px 340px at 88% 6%,rgba(58,180,160,.09),transparent 66%),
+    radial-gradient(520px 300px at 6% 32%,rgba(111,217,67,.08),transparent 68%);
+}
+.af-hero::after{
+  content:'';position:absolute;inset:0;z-index:-1;opacity:.7;
+  background-image:linear-gradient(rgba(15,23,42,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(15,23,42,.045) 1px,transparent 1px);
+  background-size:64px 64px;
+  -webkit-mask-image:radial-gradient(720px 420px at 50% 0%,#000,transparent 76%);
+  mask-image:radial-gradient(720px 420px at 50% 0%,#000,transparent 76%);
+}
+.af-hero-inner{max-width:900px;margin:0 auto;text-align:center;}
+/* Deep green on white, not the bright brand green, which is 1.8:1 here. */
+.af-eyebrow{
+  display:inline-flex;align-items:center;gap:9px;
+  background:var(--surface);border:1px solid var(--green-line);
+  color:var(--green-ink);
+  font-size:12.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;
+  padding:7px 15px 7px 11px;border-radius:999px;margin-bottom:22px;
+  box-shadow:0 1px 2px rgba(15,23,42,.05);
+}
+.af-eyebrow-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 0 3px rgba(111,217,67,.24);animation:af-pulse 2.4s ease-in-out infinite;
+}
+@keyframes af-pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.af-h1{
+  font-size:clamp(32px,5vw,52px);line-height:1.09;font-weight:800;
+  letter-spacing:-1.3px;color:var(--tx);text-wrap:balance;
+}
+.af-h1 em{
+  font-style:normal;color:var(--green-deep);
+  background:linear-gradient(100deg,var(--green-deep),#57c22c 52%,#2f9e8f);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.af .af-hero-sub{margin:18px auto 0;max-width:620px;font-size:16.5px;line-height:1.65;color:var(--tx-2);}
+.af-hero-row{margin-top:30px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.af-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--green-deep);color:#fff;text-decoration:none;
+  border-radius:var(--r-sm);padding:15px 30px;font-size:15.5px;font-weight:700;
+  transition:background .18s;border:none;cursor:pointer;font-family:inherit;
+}
+.af-btn:hover{background:#16601f;color:#fff;}
+.af-btn--ghost{background:var(--surface);color:var(--tx);border:1.5px solid var(--line);padding:13.5px 28px;}
+.af-btn--ghost:hover{background:var(--surface);border-color:var(--green-deep);color:var(--green-ink);}
+.af-btn--brand{background:var(--green);color:var(--ink);font-weight:800;}
+.af-btn--brand:hover{background:var(--green-bright);color:var(--ink);}
+.af-trust{margin-top:26px;display:flex;gap:26px;justify-content:center;flex-wrap:wrap;font-size:13.5px;color:var(--tx-2);font-weight:500;}
+.af-trust span{display:inline-flex;align-items:center;gap:7px;}
+.af-trust i{width:15px;height:15px;color:var(--green-deep);}
+
+/* --------------------------------------------------------------------------
+   Audience discount strip
+   -------------------------------------------------------------------------- */
+.af-discount{padding:0 20px;margin-top:-28px;position:relative;z-index:2;}
+.af-discount-card{
+  max-width:900px;margin:0 auto;display:flex;align-items:center;gap:24px;
+  background:var(--surface);border:1px solid var(--green-line);border-radius:18px;
+  padding:24px 28px;box-shadow:0 18px 40px -26px rgba(31,122,46,.5);
+}
+.af-discount-badge{
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  min-width:86px;height:64px;padding:0 14px;border-radius:14px;
+  background:var(--green);color:var(--ink);
+  font-family:'Poppins','Inter',sans-serif;font-size:26px;font-weight:800;letter-spacing:-1px;
+}
+.af-discount-tx{min-width:0;}
+.af .af-h3{font-size:19px;font-weight:700;color:var(--tx);}
+.af .af-discount-tx p{margin-top:7px;font-size:14.5px;line-height:1.6;color:var(--tx-2);}
+
+/* --------------------------------------------------------------------------
+   Earnings calculator
+   -------------------------------------------------------------------------- */
+.af-calc-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:26px;}
+.af-note{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--amber-bg);border:1px solid var(--amber-line);color:var(--amber);
+  font-size:12.5px;font-weight:600;padding:9px 14px;border-radius:999px;
+}
+.af-note i{width:14px;height:14px;flex-shrink:0;}
+.af-calc{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);
+  padding:10px;box-shadow:0 2px 4px rgba(15,23,42,.03),0 24px 56px -20px rgba(15,23,42,.16);
+}
+.af-calc-inner{background:var(--surface);border-radius:16px;padding:30px 32px;display:flex;gap:40px;}
+.af-calc-controls{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:26px;}
+.af-field-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px;}
+.af .af-field-label{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.45px;color:var(--tx-3);}
+.af-field-value{font-family:'Poppins','Inter',sans-serif;font-size:24px;font-weight:700;color:var(--tx);}
+.af-range{width:100%;accent-color:var(--green-deep);height:6px;}
+.af-range-ends{display:flex;justify-content:space-between;margin-top:7px;font-size:12px;color:var(--tx-3);}
+.af-plans{display:flex;gap:10px;flex-wrap:wrap;}
+.af-plan{
+  font-family:'Poppins','Inter',sans-serif;font-size:16px;font-weight:700;
+  padding:12px 20px;border-radius:11px;cursor:pointer;
+  background:var(--surface);color:var(--tx);border:1.5px solid var(--line);
+  transition:background .15s,border-color .15s,color .15s;
+}
+.af-plan small{font-weight:500;font-size:12.5px;}
+.af-plan[aria-pressed="true"]{background:var(--green-deep);color:#fff;border-color:var(--green-deep);}
+.af-calc-foot{
+  display:flex;align-items:flex-start;gap:10px;
+  background:var(--surface-soft);border:1px solid var(--line);border-radius:12px;padding:13px 16px;
+}
+.af-calc-foot i{width:16px;height:16px;color:var(--tx-3);flex-shrink:0;margin-top:1px;}
+.af .af-calc-foot span{font-size:13px;line-height:1.5;color:var(--tx-2);}
+.af-calc-foot b{color:var(--tx);}
+.af-calc-out{
+  width:360px;flex-shrink:0;background:var(--green-tint);border:1px solid var(--green-line);
+  border-radius:16px;padding:26px 28px;display:flex;flex-direction:column;justify-content:center;gap:22px;
+}
+.af .af-out-label{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.45px;color:var(--green-ink);}
+.af-out-value{
+  font-family:'Poppins','Inter',sans-serif;font-size:42px;font-weight:800;
+  letter-spacing:-1.5px;color:var(--green-ink);line-height:1.1;margin-top:6px;
+}
+.af-out-rule{height:1px;background:var(--green-line);}
+/* Rate not set: the figures are meaningless, so they are visibly withheld
+   rather than computed from a number nobody agreed to. */
+.af-calc--unset .af-out-value{color:var(--tx-3);font-size:30px;letter-spacing:-.8px;}
+
+/* --------------------------------------------------------------------------
+   Terms cards
+   -------------------------------------------------------------------------- */
+.af-terms{margin-top:28px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;}
+.af-term{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px 22px;min-width:0;}
+.af .af-term-k{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.45px;color:var(--tx-3);}
+.af-term-v{
+  font-family:'Poppins','Inter',sans-serif;font-size:30px;font-weight:800;
+  color:var(--green-deep);margin-top:8px;overflow-wrap:anywhere;
+}
+.af-term-v--unset{color:var(--tx-3);font-size:18px;letter-spacing:0;}
+.af .af-term-n{font-size:13px;line-height:1.5;color:var(--tx-2);margin-top:6px;}
+
+/* --------------------------------------------------------------------------
+   Steps
+   -------------------------------------------------------------------------- */
+.af-steps{margin-top:28px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;}
+.af-step{background:var(--surface-soft);border:1px solid var(--line);border-radius:var(--r-lg);padding:28px 26px;min-width:0;}
+.af-band--soft .af-step{background:var(--surface);}
+.af-step-n{
+  width:30px;height:30px;border-radius:9px;background:var(--green-deep);color:#fff;
+  font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;
+}
+.af-step h3{font-size:18.5px;font-weight:700;color:var(--tx);margin-top:18px;}
+.af-step p{margin-top:10px;font-size:14.5px;line-height:1.65;color:var(--tx-2);}
+
+/* --------------------------------------------------------------------------
+   Affiliate vs reseller
+   -------------------------------------------------------------------------- */
+.af-cmp{margin-top:26px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;}
+.af-cmp-row{display:grid;grid-template-columns:1.1fr 1fr 1fr;border-bottom:1px solid var(--line-soft);}
+.af-cmp-row:last-of-type{border-bottom:none;}
+.af-cmp-row--head{background:var(--line-soft);border-bottom:1px solid var(--line);}
+.af-cmp-row > *{padding:17px 24px;min-width:0;}
+.af-cmp-row--head > *{
+  padding:16px 24px;font-size:13px;font-weight:800;color:var(--tx);
+  border-left:1px solid var(--line);
+}
+.af-cmp-row--head > *:first-child{border-left:none;}
+.af-cmp-row--head .af-cmp-aff{color:var(--green-ink);}
+.af-cmp-k{font-size:14px;font-weight:700;color:var(--tx);}
+.af-cmp-v{font-size:14px;line-height:1.5;color:var(--tx-2);border-left:1px solid var(--line-soft);}
+.af-cmp-v--aff{background:var(--green-tint);}
+.af-cmp-foot{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding:20px 24px;background:var(--surface);border-top:1px solid var(--line-soft);
+}
+.af .af-cmp-foot-tx{font-size:14px;color:var(--tx-2);}
+
+/* --------------------------------------------------------------------------
+   Who it suits
+   -------------------------------------------------------------------------- */
+.af-who{margin-top:28px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;}
+.af-who-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px 22px;min-width:0;}
+.af-who-badge{
+  width:38px;height:38px;border-radius:11px;background:var(--green-tint);border:1px solid var(--green-line);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Poppins','Inter',sans-serif;font-size:15px;font-weight:800;color:var(--green-ink);
+}
+.af-who-badge i{width:18px;height:18px;color:var(--green-ink);}
+.af-who-card h3{font-size:16px;font-weight:700;color:var(--tx);margin-top:16px;}
+.af-who-card p{margin-top:8px;font-size:13.5px;line-height:1.6;color:var(--tx-2);}
+
+/* --------------------------------------------------------------------------
+   What partners get (dark band)
+   -------------------------------------------------------------------------- */
+.af-gets{margin-top:30px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;}
+.af-get{
+  background:rgba(255,255,255,.05);border:1px solid var(--ink-line);border-radius:14px;
+  padding:22px 20px;display:flex;gap:14px;align-items:flex-start;min-width:0;
+}
+.af-get i{width:18px;height:18px;color:var(--green);flex-shrink:0;margin-top:2px;}
+.af-get-t{font-size:15px;font-weight:700;color:var(--tx-inv);}
+.af .af-get-b{margin-top:6px;font-size:13.5px;line-height:1.6;color:var(--tx-inv-2);}
+
+/* --------------------------------------------------------------------------
+   Testimonials
+   -------------------------------------------------------------------------- */
+.af-quotes{margin-top:26px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;}
+.af-quote{
+  background:var(--surface-soft);border:1px solid var(--line);border-radius:16px;padding:26px 24px;
+  display:flex;flex-direction:column;gap:18px;min-width:0;
+}
+.af .af-quote-tx{font-size:14.5px;line-height:1.7;color:var(--tx);}
+.af-quote-by{display:flex;align-items:center;gap:12px;margin-top:auto;}
+.af-quote-av{
+  width:38px;height:38px;border-radius:50%;background:var(--line);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--tx-2);
+  object-fit:cover;
+}
+.af-quote-n{font-size:13.5px;font-weight:700;color:var(--tx);}
+.af-quote-r{font-size:12.5px;color:var(--tx-3);}
+
+/* --------------------------------------------------------------------------
+   FAQ
+   -------------------------------------------------------------------------- */
+.af-faq{margin-top:26px;border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;background:var(--surface);}
+.af-faq-item{border-bottom:1px solid var(--line-soft);}
+.af-faq-item:last-child{border-bottom:none;}
+.af-faq-q{
+  width:100%;background:none;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;gap:18px;
+  padding:20px 24px;text-align:left;font-family:inherit;
+  font-size:15.5px;font-weight:600;color:var(--tx);
+}
+.af-faq-q i{width:17px;height:17px;color:var(--green-deep);flex-shrink:0;transition:transform .25s;}
+.af-faq-item.open .af-faq-q i{transform:rotate(45deg);}
+.af-faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+.af-faq-item.open .af-faq-a{max-height:460px;}
+.af-faq-a p{padding:0 24px 22px;font-size:14.5px;line-height:1.75;color:var(--tx-2);}
+
+/* --------------------------------------------------------------------------
+   Closing CTA
+   -------------------------------------------------------------------------- */
+.af-cta{padding:76px 20px;background:var(--surface);}
+.af-cta-card{
+  max-width:760px;margin:0 auto;background:var(--green-tint);border:1px solid var(--green-line);
+  border-radius:20px;padding:44px 40px;text-align:center;
+  box-shadow:0 18px 40px -26px rgba(31,122,46,.5);
+}
+.af-cta-card h2{font-size:clamp(24px,3.4vw,32px);font-weight:800;letter-spacing:-.7px;color:var(--green-ink);}
+.af .af-cta-tx{margin:14px auto 0;max-width:520px;font-size:15.5px;line-height:1.7;color:var(--tx-2);}
+.af-cta-note{display:block;margin-top:13px;font-size:12.5px;color:var(--tx-3);}
+
+/* --------------------------------------------------------------------------
+   Application form
+   -------------------------------------------------------------------------- */
+.af-apply-card{
+  max-width:720px;margin:0 auto;background:var(--surface);border:1px solid var(--line);
+  border-radius:20px;padding:44px 40px;text-align:center;
+  box-shadow:0 2px 4px rgba(15,23,42,.03),0 24px 56px -20px rgba(15,23,42,.16);
+}
+.af-apply-card h2{font-size:clamp(24px,3.4vw,32px);font-weight:800;letter-spacing:-.7px;color:var(--tx);}
+.af-form{margin-top:26px;text-align:left;display:flex;flex-direction:column;gap:16px;}
+.af-form-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;}
+.af-form-field{display:flex;flex-direction:column;gap:6px;min-width:0;}
+.af-form-field label{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.45px;color:var(--tx-3);}
+/* Specific enough to beat the theme's sitewide input rules, which set their
+   own border on focus at (0,1,1). */
+.af .af-form-field input,
+.af .af-form-field textarea{
+  border:1.5px solid var(--line);border-radius:var(--r-sm);
+  padding:13px 14px;font-family:inherit;font-size:15px;font-weight:500;color:var(--tx);
+  background:var(--surface);outline:0;width:100%;
+  transition:border-color .15s,box-shadow .15s;
+}
+.af .af-form-field textarea{resize:vertical;min-height:110px;line-height:1.6;}
+.af .af-form-field input:focus,
+.af .af-form-field textarea:focus{
+  border-color:var(--green-deep);box-shadow:0 0 0 3px rgba(31,122,46,.14);
+}
+.af-form-submit{margin-top:4px;width:100%;}
+.af-form .af-cta-note{text-align:center;}
+/* Off-screen rather than display:none: a bot reading the DOM still finds it,
+   and a screen reader skips it because the wrapper is aria-hidden. */
+.af-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;}
+.af-errors{
+  margin-top:20px;text-align:left;background:#fef2f2;border:1px solid #fecaca;
+  border-radius:12px;padding:14px 18px;
+}
+.af-errors ul{margin:0;padding-left:18px;}
+.af-errors li{font-size:13.5px;line-height:1.6;color:#b91c1c;}
+.af-applied{
+  display:flex;align-items:flex-start;gap:12px;text-align:left;
+  background:var(--green-tint);border:1px solid var(--green-line);
+  border-radius:14px;padding:20px 22px;
+}
+.af-applied i{width:20px;height:20px;color:var(--green-ink);flex-shrink:0;margin-top:1px;}
+.af-applied span{font-size:15px;line-height:1.65;color:var(--green-ink);font-weight:600;}
+
+/* --------------------------------------------------------------------------
+   Reveal on scroll. The hidden state is gated behind .af-js, which the
+   page's own script adds, so with JavaScript off nothing is stuck at
+   opacity:0 and the page still reads.
+   -------------------------------------------------------------------------- */
+.af-js .af-rv{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease;}
+.af-js .af-rv.in{opacity:1;transform:none;}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+@media(max-width:1000px){
+  .af-terms{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .af-who{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .af-gets{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .af-quotes{grid-template-columns:1fr;}
+  .af-steps{grid-template-columns:1fr;}
+  .af-calc-inner{flex-direction:column;gap:26px;}
+  .af-calc-out{width:100%;}
+}
+@media(max-width:760px){
+  .af-band,.af-cta{padding:52px 16px;}
+  .af-hero{padding:52px 16px 48px;}
+  .af-terms{grid-template-columns:1fr;}
+  .af-who{grid-template-columns:1fr;}
+  .af-gets{grid-template-columns:1fr;}
+  .af-calc-inner{padding:22px 18px;}
+  .af-hero-row{flex-direction:column;}
+  .af-hero-row .af-btn{width:100%;}
+  .af-trust{gap:12px 20px;}
+  .af-cta-card,.af-apply-card{padding:32px 24px;}
+  .af-form-row{grid-template-columns:1fr;}
+  .af-discount{margin-top:-20px;}
+  .af-discount-card{flex-direction:column;align-items:flex-start;gap:16px;padding:22px 20px;}
+  .af-plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));}
+  .af-plan{padding:12px 6px;text-align:center;}
+
+  /* The comparison table becomes stacked cards: three columns cannot hold
+     readable text at this width. */
+  .af-cmp{border:none;background:none;}
+  .af-cmp-row--head{display:none;}
+  .af-cmp-row{
+    display:block;background:var(--surface);border:1px solid var(--line);
+    border-radius:14px;margin-bottom:10px;padding:16px 18px;
+  }
+  .af-cmp-row > *{padding:0;border-left:none;}
+  .af-cmp-v{background:none;margin-top:10px;padding-left:46px;position:relative;}
+  .af-cmp-v::before{
+    position:absolute;left:0;top:0;
+    font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;
+    padding:3px 7px;border-radius:6px;
+  }
+  .af-cmp-v--aff::before{content:'Aff';color:var(--green-ink);background:var(--green-tint);border:1px solid var(--green-line);}
+  .af-cmp-v--res::before{content:'Res';color:var(--tx-2);background:var(--line-soft);border:1px solid var(--line);}
+  .af-cmp-foot{border:1px solid var(--line);border-radius:14px;}
+}

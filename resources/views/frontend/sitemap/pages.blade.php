@@ -59,6 +59,12 @@
 <priority>0.80</priority>
 </url>
 
+<url>
+<loc>{{ url('/affiliate') }}</loc>
+<lastmod>{{ now()->toAtomString() }}</lastmod>
+<priority>0.80</priority>
+</url>
+
  @foreach ($pages as $post)
 <url>
 <loc>{{ url('/'.$post->slug) }}</loc>
