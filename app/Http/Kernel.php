@@ -14,6 +14,9 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
+        // First in the stack: /index.php is a duplicate of the home page and
+        // should never be served, so it is refused before any other work.
+        \App\Http\Middleware\BlockIndexPhp::class,
         \App\Http\Middleware\TrustProxies::class,
         \Fruitcake\Cors\HandleCors::class,
         \App\Http\Middleware\CheckForMaintenanceMode::class,

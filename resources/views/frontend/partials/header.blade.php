@@ -10,7 +10,13 @@
 <head>
 
 @php
-    $canonical = url()->current(); // removes query string automatically
+    // url()->current() echoes back whatever path was requested, so a hit on
+    // /index.php emitted a canonical pointing at /index.php and invited search
+    // engines to index a second copy of the page. BlockIndexPhp refuses that
+    // URL outright, and this strips it here too, so neither layer failing on
+    // its own can produce a duplicate.
+    $canonical = preg_replace('#/index\.php(?=/|$)#i', '', url()->current());
+    $canonical = $canonical ?: url('/'); // removes query string automatically
 @endphp
 
 {{-- Canonical (always clean) --}}
