@@ -31,11 +31,21 @@
     ];
 @endphp
 
-    {{-- Homepage. No lastmod: the home page is assembled from hardcoded
-         markup and several unrelated records, so there is no single honest
+    {{-- Homepage.
+
+         The trailing slash is deliberate. url('/') returns the base address
+         without one, so this listed https://www.go4database.com while Google
+         had indexed https://www.go4database.com/ . Those are the same page,
+         but Search Console matches a URL to its sitemap by exact string, so
+         the home page reported "No referring sitemaps detected" despite
+         sitting at the top of this file. rtrim first, so this still emits
+         exactly one slash if url('/') ever starts returning its own.
+
+         No lastmod: the home page is assembled from hardcoded markup and
+         several unrelated records, so there is no single honest
          "changed on" date to give. --}}
     <url>
-        <loc>{{ url('/') }}</loc>
+        <loc>{{ rtrim(url('/'), '/') . '/' }}</loc>
         <priority>0.80</priority>
     </url>
 
