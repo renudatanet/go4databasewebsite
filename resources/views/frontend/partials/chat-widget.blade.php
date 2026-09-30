@@ -3,13 +3,21 @@
     $g4chat = fn($k) => \App\Http\Controllers\ChatWidgetSettingsController::value($k);
 @endphp
 
-@push('styles')
 <style>
 /* ==========================================================================
-   Floating chat launcher + panel. Styles are inlined rather than shipped as a
-   separate stylesheet on purpose: the live server's assets folder is a real
-   directory instead of a link to Laravel's, so a separate file would have to be
-   copied across by hand on every deploy and would silently fall out of step.
+   Floating chat launcher + panel.
+
+   Styles are inlined rather than shipped as a separate stylesheet on purpose:
+   the live server's assets folder is a real directory instead of a link to
+   Laravel's, so a separate file would have to be copied across by hand on
+   every deploy and would silently fall out of step.
+
+   They are also printed here rather than pushed to the head stack. This
+   partial is included from the footer so the widget reaches every page, and
+   by then the head's @stack('styles') has already been rendered, so a push
+   would be silently dropped and the widget would appear completely unstyled.
+   The rules sit immediately above the markup they style, so there is no flash
+   of unstyled content either.
    ========================================================================== */
 .g4chat{
   --accent:{{ $g4chat('color') ?: '#6fd943' }};
@@ -96,6 +104,77 @@
 }
 .g4chat-launcher:hover .g4chat-tip{opacity:1;transform:translateY(-50%) translateX(0);}
 .g4chat.is-open .g4chat-tip{display:none;}
+
+/* --- teaser --------------------------------------------------------------
+   The nudge that appears beside the launcher before anyone clicks. It sits
+   outside the launcher button: nesting it would make the whole bubble part of
+   the button's hit area, so its close control could not be clicked without
+   also opening the panel. */
+.g4chat-teaser{
+  position:absolute;
+  right:0;
+  bottom:76px;
+  width:266px;
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:16px 16px 4px 16px;
+  padding:14px 14px 14px 15px;
+  box-shadow:0 10px 34px -8px rgba(11,19,42,.28);
+  opacity:0;
+  visibility:hidden;
+  transform:translateY(8px) scale(.96);
+  transform-origin:100% 100%;
+  transition:opacity .28s ease, transform .28s cubic-bezier(.22,1,.36,1), visibility .28s;
+}
+.g4chat-teaser.show{opacity:1;visibility:visible;transform:translateY(0) scale(1);}
+.g4chat.is-open .g4chat-teaser{opacity:0;visibility:hidden;transform:translateY(8px) scale(.96);}
+.g4chat-teaser-av{
+  flex-shrink:0;width:30px;height:30px;border-radius:50%;
+  background:var(--accent);color:var(--accent-ink);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:13px;
+}
+/* It is a real <button> so it is keyboard reachable, but the theme styles
+   every button on the site, so the chrome has to be reset explicitly or the
+   message renders inside a grey box with a border. */
+.g4chat-teaser-tx{
+  flex:1;min-width:0;
+  border:0;background:none;padding:0;margin:0;box-shadow:none;
+  font-family:inherit;font-size:13.5px;font-weight:500;line-height:1.5;
+  color:var(--tx);text-align:left;cursor:pointer;
+}
+.g4chat-teaser-tx:hover{color:var(--ink);}
+.g4chat-teaser-x{
+  flex-shrink:0;width:22px;height:22px;padding:0;margin:-4px -4px 0 0;
+  border:0;background:none;cursor:pointer;color:var(--tx-2);
+  display:flex;align-items:center;justify-content:center;border-radius:6px;
+  transition:background .15s ease,color .15s ease;
+}
+.g4chat-teaser-x:hover{background:var(--bot-bg);color:var(--tx);}
+.g4chat-teaser-x svg{width:13px;height:13px;}
+
+/* --- suggestion chips ----------------------------------------------------
+   Shown under the greeting on first open, so the visitor can see what the
+   assistant actually answers instead of guessing. */
+.g4chat-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;}
+.g4chat-chip{
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--tx);
+  font-family:inherit;
+  font-size:12.5px;
+  font-weight:600;
+  line-height:1.3;
+  padding:8px 13px;
+  border-radius:999px;
+  cursor:pointer;
+  transition:border-color .15s ease, background .15s ease, transform .12s ease;
+}
+.g4chat-chip:hover{border-color:var(--accent);background:#f6fdf2;}
+.g4chat-chip:active{transform:scale(.97);}
 
 /* --- panel --------------------------------------------------------------- */
 .g4chat-panel{
@@ -292,7 +371,6 @@
   .g4chat *::before{animation:none !important;transition-duration:.01ms !important;}
 }
 </style>
-@endpush
 
 <div class="g4chat" id="g4chat" data-endpoint="{{ route('frontend.chat.send') }}" data-token="{{ csrf_token() }}">
 
@@ -324,6 +402,20 @@
             </button>
         </form>
     </div>
+
+@php
+    $g4chat_teaser = trim((string) $g4chat('teaser_text'));
+    $g4chat_teaser_on = $g4chat('teaser_status') !== '0' && $g4chat_teaser !== '';
+@endphp
+@if($g4chat_teaser_on)
+    <div class="g4chat-teaser" id="g4chat-teaser" hidden>
+        <span class="g4chat-teaser-av" aria-hidden="true">G</span>
+        <button type="button" class="g4chat-teaser-tx" id="g4chat-teaser-open">{{ $g4chat_teaser }}</button>
+        <button type="button" class="g4chat-teaser-x" id="g4chat-teaser-close" aria-label="Dismiss">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+    </div>
+@endif
 
     <button type="button" class="g4chat-launcher" id="g4chat-launcher"
             aria-expanded="false" aria-controls="g4chat-panel" aria-label="{{ $g4chat('launcher_label') }}">
@@ -357,7 +449,10 @@
         HUMAN    = @json($g4chat('human_note')),
         SID_KEY  = 'g4chat_sid',
         LOG_KEY  = 'g4chat_log',
-        LOG_MAX  = 40;
+        TEASE_KEY= 'g4chat_teased',
+        LOG_MAX  = 40,
+        TEASE_MS = (parseInt(@json($g4chat('teaser_delay')), 10) || 0) * 1000,
+        CHIPS    = @json($g4chat('suggestions')).split('|').map(function (c) { return c.trim(); }).filter(Boolean);
 
     var busy = false;
 
@@ -420,9 +515,36 @@
 
         if (saved && saved.length) {
             saved.forEach(function (m) { bubble(m.who, m.tx, true); });
-        } else if (GREETING) {
-            bubble('bot', GREETING);
+        } else {
+            if (GREETING) { bubble('bot', GREETING); }
+            showChips();
         }
+    }
+
+    /* One-tap openers, shown only on a fresh conversation. They are not saved
+       to the transcript: they are UI, not something anyone said. */
+    function showChips() {
+        if (!CHIPS.length) { return; }
+        var wrap = document.createElement('div');
+        wrap.className = 'g4chat-chips';
+        CHIPS.forEach(function (text) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'g4chat-chip';
+            b.textContent = text;
+            b.addEventListener('click', function () {
+                wrap.remove();
+                send(text);
+            });
+            wrap.appendChild(b);
+        });
+        log.appendChild(wrap);
+        log.scrollTop = log.scrollHeight;
+    }
+
+    function clearChips() {
+        var c = log.querySelector('.g4chat-chips');
+        if (c) { c.remove(); }
     }
 
     /* --- open / close ---------------------------------------------------- */
@@ -460,12 +582,13 @@
 
     form.addEventListener('submit', function (e) { e.preventDefault(); send(); });
 
-    function send() {
-        var text = input.value.trim();
+    function send(preset) {
+        var text = (preset !== undefined ? preset : input.value).trim();
         if (!text || busy) { return; }
 
+        clearChips();
         bubble('me', text);
-        input.value = '';
+        if (preset === undefined) { input.value = ''; }
         autoGrow();
 
         busy = true;
@@ -513,6 +636,53 @@
             input.focus();
         });
     }
+
+    /* --- teaser ----------------------------------------------------------
+       Appears once per browser. Dismissing it, or opening the chat at all,
+       stops it coming back, so it nudges rather than nags. */
+    (function teaser() {
+        var el = document.getElementById('g4chat-teaser');
+        if (!el) { return; }
+
+        if (recall(TEASE_KEY)) { return; }
+
+        // Not "is there a transcript" - restore() saves the bot's own greeting,
+        // so that was true on every page view after the first and the teaser
+        // never appeared for anyone. Only a message the visitor actually sent
+        // counts as having chatted.
+        var spoken = false;
+        try {
+            spoken = (JSON.parse(recall(LOG_KEY) || '[]') || []).some(function (m) { return m.who === 'me'; });
+        } catch (e) {}
+        if (spoken) { return; }
+
+        var hide = function (remember) {
+            el.classList.remove('show');
+            if (remember) { store(TEASE_KEY, '1'); }
+            setTimeout(function () { el.hidden = true; }, 300);
+        };
+
+        setTimeout(function () {
+            // Not if they already opened the chat while we were waiting.
+            if (root.classList.contains('is-open')) { return; }
+            el.hidden = false;
+            // A short timeout, not requestAnimationFrame: rAF is paused in a
+            // background tab, so a visitor who opened the site in one would get
+            // an un-hidden but never-animated teaser, invisible for good. The
+            // delay only has to outlast one style recalculation.
+            setTimeout(function () { el.classList.add('show'); }, 30);
+        }, TEASE_MS);
+
+        document.getElementById('g4chat-teaser-open').addEventListener('click', function () {
+            hide(true);
+            open();
+        });
+        document.getElementById('g4chat-teaser-close').addEventListener('click', function (e) {
+            e.stopPropagation();
+            hide(true);
+        });
+        launcher.addEventListener('click', function () { hide(true); });
+    })();
 
     restore();
 })();

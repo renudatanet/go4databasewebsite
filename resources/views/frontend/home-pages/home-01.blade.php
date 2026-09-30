@@ -1698,4 +1698,3 @@
   {{-- Bump ?v= on every home-01.js change: LiteSpeed serves JS with a one-year immutable cache --}}
   <script src="{{ asset('assets/frontend/js/home-01.js') }}?v=8" defer></script>
 @include('frontend.partials.contact-section')
-@include('frontend.partials.chat-widget')

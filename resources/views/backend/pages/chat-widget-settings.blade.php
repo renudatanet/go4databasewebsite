@@ -147,6 +147,44 @@
                             <div class="form-group">
                                 <label for="chat_widget_greeting">{{__('Opening Message')}}</label>
                                 <textarea name="chat_widget_greeting" class="form-control" rows="2">{{$cw('greeting')}}</textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="chat_widget_suggestions">{{__('Suggested Questions')}}</label>
+                                <input type="text" name="chat_widget_suggestions" id="chat_widget_suggestions" class="form-control"
+                                       placeholder="What do you do?|How much does it cost?" value="{{$cw('suggestions')}}">
+                                <small class="text-muted">{{__('One-tap buttons shown under the opening message, separated by a | character. They tell a visitor what the assistant can actually answer instead of leaving them to guess. Leave blank to show none.')}}</small>
+                            </div>
+
+                            <hr>
+                            <h5 class="mt-3">{{__('Pop-up Nudge')}}</h5>
+                            <p class="text-muted">{{__('A small message that slides out beside the chat button before anyone clicks it. It appears once per visitor and stops coming back as soon as they dismiss it or open the chat.')}}</p>
+
+                            <div class="form-group">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="chat_widget_teaser_status"
+                                           name="chat_widget_teaser_status" @if($cw('teaser_status') !== '0') checked @endif>
+                                    <label class="custom-control-label" for="chat_widget_teaser_status">{{__('Show the pop-up nudge')}}</label>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <div class="form-group">
+                                        <label for="chat_widget_teaser_text">{{__('Nudge Message')}}</label>
+                                        <input type="text" name="chat_widget_teaser_text" id="chat_widget_teaser_text" class="form-control"
+                                               value="{{$cw('teaser_text')}}">
+                                        <small class="text-muted">{{__('Keep it short and offer something. Leave blank to hide the nudge entirely.')}}</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="chat_widget_teaser_delay">{{__('Delay (seconds)')}}</label>
+                                        <input type="number" min="0" max="120" name="chat_widget_teaser_delay" id="chat_widget_teaser_delay"
+                                               class="form-control" value="{{$cw('teaser_delay')}}">
+                                        <small class="text-muted">{{__('How long after the page loads.')}}</small>
+                                    </div>
+                                </div>
                                 <small class="text-muted">{{__('Shown before the visitor types anything. It is written by the website, not sent to your chat server.')}}</small>
                             </div>
 

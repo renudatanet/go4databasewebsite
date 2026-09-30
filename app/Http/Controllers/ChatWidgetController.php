@@ -23,6 +23,7 @@ class ChatWidgetController extends Controller
      * hand-rolled chat endpoints as well as OpenAI-style responses.
      */
     private const REPLY_CANDIDATES = [
+        'reply.content', 'reply.text',
         'reply', 'message', 'response', 'answer', 'text', 'output', 'content',
         'data.reply', 'data.message', 'data.response', 'data.answer', 'data.text',
         'result.reply', 'result.message', 'result.response', 'result.answer',
@@ -31,6 +32,7 @@ class ChatWidgetController extends Controller
 
     /** Field names a chat backend might use to hand back its own session id. */
     private const SESSION_CANDIDATES = [
+        'visitor_token', 'visitorToken',
         'session_id', 'sessionId', 'session', 'conversation_id', 'conversationId',
         'chat_id', 'chatId', 'thread_id', 'threadId',
         'data.session_id', 'data.sessionId', 'data.conversation_id', 'data.chat_id',
@@ -55,9 +57,13 @@ class ChatWidgetController extends Controller
 
         $body = [
             ChatWidgetSettingsController::value('message_field') => $request->input('message'),
-            // Conversation ids are capped at 64 characters by the chat API,
-            // which rejects anything longer outright.
-            ChatWidgetSettingsController::value('session_field') => mb_substr((string) $request->input('session_id'), 0, 64) ?: null,
+            // Sent whole, never truncated. The old .in chat API rejected ids
+            // longer than 64 characters, so this used to cut them short; the
+            // in-house chatbot issues 48 character tokens and a trimmed token
+            // is simply an invalid one, which would silently start a new
+            // conversation on every message. Length is bounded by the
+            // validation rule above instead.
+            ChatWidgetSettingsController::value('session_field') => $request->input('session_id') ?: null,
         ];
 
         if (ChatWidgetSettingsController::value('send_page_url') === '1') {
@@ -69,7 +75,15 @@ class ChatWidgetController extends Controller
             $body = array_merge($body, $extra);
         }
 
-        $headers = ['Accept' => 'application/json'];
+        // This call is made by the web server, not the browser, so the chat
+        // backend would otherwise see this server's IP for every visitor and
+        // its country reporting would be worthless. Forward the real one.
+        // Harmless if the backend ignores these headers.
+        $headers = [
+            'Accept' => 'application/json',
+            'X-Forwarded-For' => $request->ip(),
+            'X-Real-IP' => $request->ip(),
+        ];
         $auth = trim(ChatWidgetSettingsController::value('auth_value'));
         if ($auth !== '') {
             $headers[ChatWidgetSettingsController::value('auth_header') ?: 'Authorization'] = $auth;

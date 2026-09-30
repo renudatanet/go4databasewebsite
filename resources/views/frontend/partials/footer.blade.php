@@ -230,5 +230,11 @@
 // });
 </script>
 
+{{-- Chat widget. Lives here rather than in home-01 so it reaches every
+     page: both frontend-master and frontend-page-master include this
+     footer. It renders nothing at all unless it is switched on in the
+     admin panel. --}}
+@include('frontend.partials.chat-widget')
+
 </body>
 </html>

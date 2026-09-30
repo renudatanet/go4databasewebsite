@@ -32,12 +32,18 @@ class ChatWidgetSettingsController extends Controller
                timeout defaults to 30s because the chat API caps its own
                generation at 25s. A shorter cut-off would abandon answers
                that were about to arrive. */
-            'api_url' => '',
+            'api_url' => 'https://app.go4database.com/chatbot/web/message',
             'auth_header' => 'X-API-Key',
+            // The in-house chatbot is public and needs no key. A value here is
+            // sent as a header on every request, so leave it empty.
             'auth_value' => '',
             'message_field' => 'message',
-            'session_field' => 'session_id',
-            'reply_path' => '',
+            // The chatbot issues a visitor_token on the first reply and expects
+            // it back on every message after; that is what keeps one visitor's
+            // conversation, and their captured name, together.
+            'session_field' => 'visitor_token',
+            // Its reply is nested: {"reply": {"content": "..."}}
+            'reply_path' => 'reply.content',
             'extra_payload' => '',
             'send_page_url' => '1',
             'timeout' => '30',
@@ -54,6 +60,19 @@ class ChatWidgetSettingsController extends Controller
             // The chat API's own fallback already says a person has been
             // alerted, so this adds a second route rather than repeating it.
             'human_note' => "If you'd rather not wait, email info@go4database.com and we'll pick it up from there.",
+
+            /* --- the nudge that appears before anyone clicks ------------
+               A visitor who never opens the panel never learns the bot is
+               there. This pops out beside the launcher once, is dismissable,
+               and stays dismissed for that browser. */
+            'teaser_status' => '1',
+            'teaser_text' => "Hi! I can help you find the right contacts, or explain pricing. What are you looking for?",
+            'teaser_delay' => '5',
+
+            /* Shown as one-tap chips on first open. They answer the visitor's
+               real first question, which is "what can I even ask this thing".
+               Pipe separated; leave blank to show none. */
+            'suggestions' => 'What do you do?|How much does it cost?|What data do you have?',
             'color' => '#6fd943',
         ];
     }
@@ -99,6 +118,9 @@ class ChatWidgetSettingsController extends Controller
             'chat_widget_busy_text' => 'nullable|string|max:500',
             'chat_widget_human_note' => 'nullable|string|max:500',
             'chat_widget_color' => 'nullable|string|max:30',
+            'chat_widget_teaser_text' => 'nullable|string|max:200',
+            'chat_widget_teaser_delay' => 'nullable|integer|min:0|max:120',
+            'chat_widget_suggestions' => 'nullable|string|max:400',
         ]);
 
         // The chat API answers plain http:// with a 301, and most HTTP clients
@@ -126,7 +148,7 @@ class ChatWidgetSettingsController extends Controller
         }
 
         foreach (array_keys(self::defaults()) as $key) {
-            if (in_array($key, ['status', 'send_page_url'], true)) {
+            if (in_array($key, ['status', 'send_page_url', 'teaser_status'], true)) {
                 continue;
             }
             update_static_option('chat_widget_' . $key, $request->input('chat_widget_' . $key));
@@ -134,6 +156,7 @@ class ChatWidgetSettingsController extends Controller
 
         update_static_option('chat_widget_status', $request->has('chat_widget_status') ? '1' : '0');
         update_static_option('chat_widget_send_page_url', $request->has('chat_widget_send_page_url') ? '1' : '0');
+        update_static_option('chat_widget_teaser_status', $request->has('chat_widget_teaser_status') ? '1' : '0');
 
         return redirect()->back()->with(['msg' => __('Chat Widget Settings Updated...'), 'type' => 'success']);
     }
