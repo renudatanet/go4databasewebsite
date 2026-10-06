@@ -53,4 +53,10 @@ return [
         'url' => 'https://app.go4database.com/api/website/leads',
         'local_proxy' => env('WEBSITE_LEADS_LOCAL_PROXY', false),
     ],
+
+    // Shared secret the AI Blog Agent sends to publish posts (routes/api.php).
+    'blog_agent' => [
+        'token' => env('BLOG_AGENT_TOKEN'),
+    ],
+
 ];

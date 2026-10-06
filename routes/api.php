@@ -18,3 +18,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+// AI Blog Agent: publishes finished posts straight into the blog (see BlogAgentController).
+Route::middleware('throttle:30,1')->group(function () {
+    Route::get('/blog-agent/options', [\App\Http\Controllers\BlogAgentController::class, 'options']);
+    Route::post('/blog-agent/publish', [\App\Http\Controllers\BlogAgentController::class, 'publish']);
+});
