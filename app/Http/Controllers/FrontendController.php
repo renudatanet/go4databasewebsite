@@ -1001,6 +1001,11 @@ $blog_post->increment('total_visitors');
 {
    $matches = [];
 preg_match_all('/<(h[1])[^>]*>(.*?)<\/\1>/', $content, $matches);
+// Posts written with H2 section headings (no H1 inside the content, e.g. the
+// ones published by the AI Blog Agent) get their table of contents from the H2s.
+if (empty($matches[2])) {
+    preg_match_all('/<(h[2])[^>]*>(.*?)<\/\1>/', $content, $matches);
+}
 
 $toc = [];
 
