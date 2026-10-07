@@ -23,3 +23,6 @@ Route::middleware('throttle:30,1')->group(function () {
     Route::get('/blog-agent/options', [\App\Http\Controllers\BlogAgentController::class, 'options']);
     Route::post('/blog-agent/publish', [\App\Http\Controllers\BlogAgentController::class, 'publish']);
 });
+
+// Subscriber Agent: reads the newsletter subscribers (see NewsletterApiController).
+Route::middleware('throttle:30,1')->get('/newsletter-subscribers', [\App\Http\Controllers\NewsletterApiController::class, 'index']);

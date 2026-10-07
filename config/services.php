@@ -59,4 +59,9 @@ return [
         'token' => env('BLOG_AGENT_TOKEN'),
     ],
 
+    // Shared secret the Subscriber Agent sends to read newsletter subscribers (routes/api.php).
+    'subscriber_agent' => [
+        'token' => env('SUBSCRIBER_AGENT_TOKEN'),
+    ],
+
 ];
