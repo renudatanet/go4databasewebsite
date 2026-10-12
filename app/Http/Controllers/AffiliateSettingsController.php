@@ -37,7 +37,10 @@ class AffiliateSettingsController extends Controller
             'cookie_days' => '',          // e.g. "90 days"
             'payout_method' => '',        // e.g. "PayPal"
             'payout_minimum' => '',       // e.g. "$50"
-            'apply_url' => '',            // where the Apply button goes
+            // Where every Apply button goes: the real signup form on the app.
+            // Clearing this in the admin panel falls back to the application
+            // form further down the page instead.
+            'apply_url' => 'https://app.go4database.com/affiliate/apply',
             // Who gets told when someone applies. Blank means nobody is
             // emailed and applications are only seen in the admin panel.
             'notify_email' => '',
