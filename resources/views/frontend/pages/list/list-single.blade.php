@@ -19,7 +19,7 @@
 @push('styles')
     {{-- Bump ?v= on every list.css change: LiteSpeed serves it with a one-year
          immutable cache, so returning visitors keep the old file otherwise. --}}
-    <link rel="stylesheet" href="{{ asset('assets/frontend/css/list.css') }}?v=4">  
+    <link rel="stylesheet" href="{{ asset('assets/frontend/css/list.css') }}?v=5">  
 @endpush
 @php
 use App\Services;
@@ -450,7 +450,7 @@ use App\Services;
 
         <div class="why-card">
           <h3>Precision Targeting</h3>
-          <p>Focus on high-intent dental decision makers</p>
+          <p>Focus on high-intent {{ $baseTitle }} decision makers</p>
         </div>
 
         <div class="why-card">
@@ -516,9 +516,9 @@ use App\Services;
       <h2 class="title">
         Simple steps to get free {{ $contactDatabaseTitle }}
       </h2>
-@if(!empty(env('VIDEO_CDN')))
-<video width="100%" controls class="video-box">
-    <source src="{{ env('VIDEO_CDN') }}" type="video/mp4">
+@if(!empty(config('app.video_cdn')))
+<video width="100%" controls class="video-box" preload="none">
+    <source src="{{ config('app.video_cdn') }}" type="video/mp4">
 </video>
 @endif
 

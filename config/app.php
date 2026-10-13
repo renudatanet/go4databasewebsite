@@ -17,6 +17,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Product video CDN
+    |--------------------------------------------------------------------------
+    |
+    | Read through config() rather than env() directly in the view: once
+    | config is cached, env() returns null outside config files and the
+    | video would silently disappear from every list page.
+    |
+    */
+
+    'video_cdn' => env('VIDEO_CDN'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |
