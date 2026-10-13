@@ -763,10 +763,12 @@
 .ratings-flex { margin-top: 20px; align-items: stretch; }
 .ratings-flex .trust {
   margin-top: 0;
-  height: 100%;
-  align-content: stretch;
+  align-content: start;
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
+/* Stretching these to the form's full height left them hollow; letting them
+   size to content left a deep gap underneath. A floor splits the difference. */
+.ratings-flex .trust-item { min-height: 116px; justify-content: center; }
 .ratings-flex .right { display: flex; }
 .ratings-flex .side-card { flex: 1; max-width: none; }
 @media (max-width: 1024px) { .ratings-flex .trust { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
