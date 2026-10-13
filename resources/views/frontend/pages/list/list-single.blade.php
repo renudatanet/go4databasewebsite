@@ -628,7 +628,7 @@ Use it then Believe it
         Simple steps to get free {{ $contactDatabaseTitle }}
       </h2>
 @if(!empty(config('app.video_cdn')))
-<video width="100%" controls class="video-box" preload="none" poster="{{ asset('assets/uploads/product/list.png') }}">
+<video width="100%" controls class="video-box" preload="none" poster="{{ asset('assets/uploads/product/list.webp') }}">
     <source src="{{ config('app.video_cdn') }}" type="video/mp4">
 </video>
 @endif
