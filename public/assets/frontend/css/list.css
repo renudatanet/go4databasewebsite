@@ -490,6 +490,50 @@
 /* --------------------------------------------------------------------------
    Description paragraph
    -------------------------------------------------------------------------- */
+/* Prose and the four qualifiers share a row: the paragraph keeps a readable
+   measure instead of running the full width with dead space beside it. */
+.description-block {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 44px;
+  align-items: flex-start;
+  margin-top: var(--list-section-gap);
+}
+.description-main { flex: 1 1 440px; min-width: 0; max-width: 650px; }
+.description-block .description { margin-top: 26px; max-width: none; }
+.description-block .tags {
+  flex: 0 1 430px;
+  min-width: 260px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 0;
+  align-content: start;
+}
+@media (max-width: 900px) {
+  .description-main { flex: 0 0 auto; width: 100%; }
+  .description-block .tags { flex: 0 0 auto; width: 100%; }
+}
+.section-eyebrow {
+  display: block;
+  font-size: 11.5px; font-weight: 700; letter-spacing: .8px;
+  text-transform: uppercase; color: var(--list-green-dark);
+}
+.description-title {
+  font-family: var(--heading-font);
+  margin: 12px 0 0;
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  color: var(--list-ink);
+}
+.section-rule { display: flex; align-items: center; margin-top: 20px; }
+.section-rule span {
+  flex: 0 0 auto; width: 56px; height: 3px; border-radius: 2px;
+  background: linear-gradient(90deg, var(--list-green-dark), var(--list-green));
+}
+.section-rule::after { content: ""; flex: 1 1 auto; height: 1px; background: #eef2f6; }
+
 .description {
   font-size: 16px;
   color: var(--list-ink-soft);

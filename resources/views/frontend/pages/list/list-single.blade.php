@@ -19,7 +19,7 @@
 @push('styles')
     {{-- Bump ?v= on every list.css change: LiteSpeed serves it with a one-year
          immutable cache, so returning visitors keep the old file otherwise. --}}
-    <link rel="stylesheet" href="{{ asset('assets/frontend/css/list.css') }}?v=3">  
+    <link rel="stylesheet" href="{{ asset('assets/frontend/css/list.css') }}?v=4">  
 @endpush
 @php
 use App\Services;
@@ -299,8 +299,26 @@ use App\Services;
 
   <!-- DESCRIPTION -->
 
-  <p class="description"> {{ strip_tags($service_item->description) }}
-  </p>
+  <div class="description-block">
+
+    <div class="description-main">
+      <span class="section-eyebrow">The data</span>
+      <h2 class="description-title">What is in this list</h2>
+      <div class="section-rule"><span></span></div>
+      <p class="description"> {{ strip_tags($service_item->description) }}
+      </p>
+    </div>
+
+        <div class="tags">
+
+          <div class="tag"><img src="{{asset('assets/uploads/product/Verified Contacts.png')}}" width="46">Verified Contacts</div>
+          <div class="tag"><img src="{{asset('assets/uploads/product/Decision Makers.png')}}"  width="46">Decision Makers</div>
+          <div class="tag"><img src="{{asset('assets/uploads/product/GEO Targeting.png')}}"  width="46">GEO Targeting</div>
+          <div class="tag"><img src="{{asset('assets/uploads/product/High ROI Driven.png')}}"  width="46">High ROI Driven</div>
+
+        </div>
+
+  </div>
 
   <!-- GREEN BANNER -->
 
@@ -327,14 +345,6 @@ use App\Services;
         Get Instant Access to 1200+ {{ $mailingTitle }}
       </h2>
 
-      <div class="tags">
-
-        <div class="tag"><img src="{{asset('assets/uploads/product/Verified Contacts.png')}}" width="46">Verified Contacts</div>
-        <div class="tag"><img src="{{asset('assets/uploads/product/Decision Makers.png')}}"  width="46">Decision Makers</div>
-        <div class="tag"><img src="{{asset('assets/uploads/product/GEO Targeting.png')}}"  width="46">GEO Targeting</div>
-        <div class="tag"><img src="{{asset('assets/uploads/product/High ROI Driven.png')}}"  width="46">High ROI Driven</div>
-
-      </div>
 
     </div>
 
