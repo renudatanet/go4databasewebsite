@@ -19,7 +19,7 @@
 @push('styles')
     {{-- Bump ?v= on every list.css change: LiteSpeed serves it with a one-year
          immutable cache, so returning visitors keep the old file otherwise. --}}
-    <link rel="stylesheet" href="{{ asset('assets/frontend/css/list.css') }}?v=10">  
+    <link rel="stylesheet" href="{{ asset('assets/frontend/css/list.css') }}?v=11">  
 @endpush
 @php
 use App\Services;

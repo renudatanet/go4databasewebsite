@@ -86,13 +86,18 @@
 .hero-intro {
   display: flex;
   gap: 28px;
-  align-items: flex-start;
+  /* The custom-list card is taller than the heading block -- more so on rows
+     with no excerpt -- so pinning to the top left a deep well under the
+     buttons. Centring balances the two against each other. */
+  align-items: center;
   margin-bottom: 30px;
 }
 .hero-intro-main { flex: 1 1 520px; min-width: 0; }
 .hero-intro .side-card { flex: 0 0 380px; }
 @media (max-width: 900px) {
-  .hero-intro { flex-direction: column; }
+  /* align-items switches to the horizontal axis once this is a column, so the
+     centring above has to be undone or both children stop filling the width. */
+  .hero-intro { flex-direction: column; align-items: stretch; }
   /* flex-basis is the main axis, so the 520px basis above becomes a height
      once this stacks -- it left a tall gap under the buttons. */
   .hero-intro-main { flex: 0 0 auto; width: 100%; }
@@ -315,15 +320,16 @@
 @media (max-width: 900px) { .side-card { max-width: none; } }
 .side-heading, .side-card-heading {
   font-family: var(--heading-font);
-  font-size: 23px;
-  line-height: 1.28;
+  font-size: 22px;
+  line-height: 1.26;
   font-weight: 800;
   color: #fff;
-  margin: 0 0 14px;
+  margin: 0 0 12px;
 }
 .side-card p { font-size: 14.5px; line-height: 1.7; color: #cfe4c9; margin: 0 0 20px; }
-.feature-list { list-style: none; margin: 0 0 24px; padding: 0; }
-.feature-list li { display: flex; align-items: center; gap: 10px; font-size: 15px; color: #eaf5e6; margin-bottom: 12px; }
+.feature-list { list-style: none; margin: 0 0 20px; padding: 0; }
+.feature-list li { display: flex; align-items: center; gap: 10px; font-size: 15px; color: #eaf5e6; margin-bottom: 9px; }
+.feature-list li img { width: 22px !important; height: 22px; object-fit: contain; flex-shrink: 0; }
 .feature-list li img { flex: 0 0 auto; }
 .custom-btn, .side-card button {
   display: block;
