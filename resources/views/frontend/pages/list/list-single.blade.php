@@ -128,7 +128,7 @@ use App\Services;
         @endif
 
         <div class="hero-actions">
-          <a href="https://app.go4database.com/register?utm_source=ProductPage&amp;utm_medium=Internal&amp;utm_campaign=hero_free_leads" class="hero-btn" target="_blank" rel="noopener">Get 100 free leads</a>
+          <a href="https://app.go4database.com/register?utm_source=ProductPage&amp;utm_medium=Internal&amp;utm_campaign=hero_free_leads" class="hero-btn" target="_blank" rel="noopener">Get 1200 free leads</a>
           <a href="#lead-form" class="hero-btn-ghost">Talk to a data expert</a>
         </div>
 
@@ -1848,7 +1848,7 @@ $titles = [
 <div class="cta">
 
 <h2>
-Try Book Your Data with 100 Free Credits, no Credit Card Required.
+Try Book Your Data with 1200 Free Credits, no Credit Card Required.
 </h2>
 
 <p>
@@ -1861,7 +1861,7 @@ Discover the power of 95% accurate, laser targeted data on your terms.
 <input name="email" type="text" placeholder="Enter your work email">
 
 <button class="orange-btn">
-Get 100 Free Leads
+Get 1200 Free Leads
 </button>
 </form>
 <span>OR</span>
