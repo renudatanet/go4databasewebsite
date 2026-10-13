@@ -2487,13 +2487,73 @@ $all_testimonial = Testimonial::where('lang', $lang)->orderBy('id', 'desc')->tak
     {
         $default_lang = Language::where('default', 1)->first();
         $lang = !empty(session()->get('lang')) ? session()->get('lang') : $default_lang->slug;
-      $list_item = B2BList::where('lang', $lang)->pluck('slug')
-    ->map(function ($slug) {
-        return ltrim($slug, '/');
-    })
-    ->toArray();
-        $category_item = ListCategory::where('lang', $lang)->paginate(12);
-        return view('frontend.pages.list.list')->with(['all_list' => $category_item,'allowedSlugs' => $list_item]);
+
+        $query = trim((string) request('q', ''));
+
+        $category_item = ListCategory::where('lang', $lang)->orderBy('name')->get();
+
+        // One pass over the lists gives every category its count and a few
+        // sample pages, cached for an hour so 5000 rows are not walked on
+        // every view. Clear the cache after an import.
+        $digest = \Illuminate\Support\Facades\Cache::remember(
+            'b2blist_category_digest_' . $lang,
+            3600,
+            function () use ($lang) {
+                $out = [];
+                B2BList::where('lang', $lang)
+                    ->where(function ($q) {
+                        $q->whereNull('status')->orWhere('status', '!=', 'draft');
+                    })
+                    ->orderBy('id')
+                    ->select('title', 'slug', 'categories_id')
+                    ->chunk(500, function ($rows) use (&$out) {
+                        foreach ($rows as $row) {
+                            $cid = (string) $row->categories_id;
+                            if (!isset($out[$cid])) {
+                                $out[$cid] = ['count' => 0, 'samples' => []];
+                            }
+                            $out[$cid]['count']++;
+                            if (count($out[$cid]['samples']) < 6 && !empty($row->title) && !empty($row->slug)) {
+                                $out[$cid]['samples'][] = [
+                                    'title' => $row->title,
+                                    'slug'  => ltrim($row->slug, '/'),
+                                ];
+                            }
+                        }
+                    });
+                return $out;
+            }
+        );
+
+        // The search runs against the database rather than shipping every
+        // title to the browser, so it still works once there are thousands.
+        $results = collect();
+        $result_total = 0;
+        if ($query !== '') {
+            $base = B2BList::where('lang', $lang)
+                ->where(function ($q) {
+                    $q->whereNull('status')->orWhere('status', '!=', 'draft');
+                })
+                ->where('title', 'LIKE', '%' . $query . '%');
+
+            $result_total = (clone $base)->count();
+            $results = $base->orderBy('title')->limit(60)->get(['title', 'slug', 'categories_id']);
+        }
+
+        $list_item = B2BList::where('lang', $lang)->pluck('slug')
+            ->map(function ($slug) {
+                return ltrim($slug, '/');
+            })
+            ->toArray();
+
+        return view('frontend.pages.list.list')->with([
+            'all_list'      => $category_item,
+            'allowedSlugs'  => $list_item,
+            'digest'        => $digest,
+            'search_query'  => $query,
+            'results'       => $results,
+            'result_total'  => $result_total,
+        ]);
     }
      
 public function list_single($service_slug)
