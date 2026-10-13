@@ -80,9 +80,73 @@
 .breadcrumb-item a { color: var(--list-ink-soft); text-decoration: none; }
 .breadcrumb-item a:hover { color: var(--list-green-dark); text-decoration: underline; }
 .breadcrumb-item.active { color: var(--list-ink); font-weight: 600; }
+/* --------------------------------------------------------------------------
+   Hero intro: heading block beside the custom-list card, search table below
+   -------------------------------------------------------------------------- */
+.hero-intro {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+  margin-bottom: 30px;
+}
+.hero-intro-main { flex: 1 1 520px; min-width: 0; }
+.hero-intro .side-card { flex: 0 0 380px; }
+@media (max-width: 900px) {
+  .hero-intro { flex-direction: column; }
+  /* flex-basis is the main axis, so the 520px basis above becomes a height
+     once this stacks -- it left a tall gap under the buttons. */
+  .hero-intro-main { flex: 0 0 auto; width: 100%; }
+  .hero-intro .side-card { flex: 0 0 auto; max-width: none; width: 100%; }
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #fff;
+  border: 1px solid #cfe8c6;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 12px; font-weight: 700; letter-spacing: .3px;
+  color: var(--list-green-dark);
+  text-transform: uppercase;
+}
+.hero-badge-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--list-green);
+  box-shadow: 0 0 0 3px rgba(111, 217, 67, .25);
+}
+.hero-sub {
+  margin: 16px 0 0;
+  font-size: 16.5px;
+  line-height: 1.7;
+  color: var(--list-ink-soft);
+  max-width: 560px;
+}
+.hero-actions { display: flex; flex-wrap: wrap; gap: 11px; margin-top: 24px; }
+.hero-btn, .hero-btn-ghost {
+  display: inline-block;
+  border-radius: 11px;
+  padding: 14px 26px;
+  font-size: 15.5px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.hero-btn {
+  background: var(--list-green-dark);
+  color: #fff;
+  box-shadow: 0 10px 24px -12px rgba(20, 90, 11, .7);
+}
+.hero-btn:hover { background: var(--list-green-deep); color: #fff; }
+.hero-btn-ghost {
+  background: #fff;
+  border: 1px solid #dbe4e0;
+  color: var(--list-ink);
+  font-weight: 600;
+}
+.hero-btn-ghost:hover { background: var(--list-tint); color: var(--list-ink); }
+
 .hero-title {
   font-family: var(--heading-font);
-  text-align: center;
+  text-align: left;
+  margin-top: 18px;
   font-size: clamp(28px, 4vw, 44px);
   font-weight: 800;
   letter-spacing: -.3px;

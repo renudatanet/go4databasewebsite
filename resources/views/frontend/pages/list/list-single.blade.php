@@ -19,7 +19,7 @@
 @push('styles')
     {{-- Bump ?v= on every list.css change: LiteSpeed serves it with a one-year
          immutable cache, so returning visitors keep the old file otherwise. --}}
-    <link rel="stylesheet" href="{{ asset('assets/frontend/css/list.css') }}?v=2">  
+    <link rel="stylesheet" href="{{ asset('assets/frontend/css/list.css') }}?v=3">  
 @endpush
 @php
 use App\Services;
@@ -29,6 +29,9 @@ use App\Services;
 
   @php
     use Illuminate\Support\Str;
+    // Same value the stats strip shows, so the hero badge and "Last updated"
+    // can never disagree.
+    $heroUpdated = now()->subDays(10 + ($service_item->id % 6));
 @endphp
     <section class="hero-section">
   
@@ -64,10 +67,55 @@ use App\Services;
 
     </ul>
 </nav>
-    <h1 class="hero-title">
-     {{$service_item->title}}
-    </h1>
+    <div class="hero-intro">
 
+      <div class="hero-intro-main">
+
+        <span class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          {{ $industry->name }} &middot; Updated {{ $heroUpdated->format('d M Y') }}
+        </span>
+
+        <h1 class="hero-title">{{ $service_item->title }}</h1>
+
+        @if(!empty(trim(strip_tags($service_item->excerpt ?? ''))))
+        <p class="hero-sub">{{ strip_tags($service_item->excerpt) }}</p>
+        @endif
+
+        <div class="hero-actions">
+          <a href="https://app.go4database.com/register?utm_source=ProductPage&amp;utm_medium=Internal&amp;utm_campaign=hero_free_leads" class="hero-btn" target="_blank" rel="noopener">Get 100 free leads</a>
+          <a href="#lead-form" class="hero-btn-ghost">Talk to a data expert</a>
+        </div>
+
+      </div>
+
+      <!-- SIDE CARD -->
+
+      <div class="side-card">
+
+        <div class="side-heading">Need a Custom B2B Contact List?</div>
+
+   <p>
+          Find your ideal prospects by:
+      </p>
+
+      <ul class="feature-list">
+          <li>
+           <img src="{{asset('assets/uploads/icon.webp')}}"  width="25">Job Title</li>
+          <li>
+           <img src="{{asset('assets/uploads/icon.webp')}}"  width="25">Industry</li>
+          <li>
+           <img src="{{asset('assets/uploads/icon.webp')}}"  width="25">Company</li>
+          <li>
+           <img src="{{asset('assets/uploads/icon.webp')}}"  width="25">Location</li>
+      </ul>
+    <a href="https://app.go4database.com/register" class="custom-btn">
+          Request a Custom List
+      </a>
+
+      </div>
+
+    </div>
 
   <!-- HERO -->
 
@@ -155,31 +203,6 @@ use App\Services;
 
     </div>
 
-    <!-- SIDE CARD -->
-
-    <div class="side-card">
-
-      <div class="side-heading">Need a Custom B2B Contact List?</div>
-
- <p>
-        Find your ideal prospects by:
-    </p>
-
-    <ul class="feature-list">
-        <li>
-         <img src="{{asset('assets/uploads/icon.webp')}}"  width="25">Job Title</li>
-        <li>
-         <img src="{{asset('assets/uploads/icon.webp')}}"  width="25">Industry</li>
-        <li>
-         <img src="{{asset('assets/uploads/icon.webp')}}"  width="25">Company</li>
-        <li>
-         <img src="{{asset('assets/uploads/icon.webp')}}"  width="25">Location</li>
-    </ul>
-  <a href="https://app.go4database.com/register" class="custom-btn">
-        Request a Custom List
-    </a>
-
-    </div>
 
   </div>
 
@@ -209,8 +232,7 @@ use App\Services;
     </div>
     @endif
 @php
-    $randomDays = 10 + ($service_item->id % 6); // 10-15 days
-   $lastUpdated = now()->subDays($randomDays);
+    $lastUpdated = $heroUpdated;
 @endphp
 
 
@@ -499,7 +521,7 @@ use App\Services;
 
     <div class="right">
 
-      <div class="side-card">
+      <div class="side-card" id="lead-form">
            <div class="side-card-heading">Talk to marketing expert to get precise targeted mailing list</div>
 @if(session('success'))
     <div class="alert alert-success">
