@@ -402,90 +402,133 @@
 .section-flex:first-child { margin-top: 0; }
 
 /* --------------------------------------------------------------------------
-   Stats bar + trust badges strip
+   Coverage block: records panel, accuracy ring, refresh card, trust row
    -------------------------------------------------------------------------- */
-/* Two bands in one card: figures + scrolling logos on top, compliance on a
-   tinted strip underneath. `.logos` is display:contents so its two children
-   join the flex row directly -- the compliance strip can then take a full
-   row of its own without moving anything in the blade. */
-.stats {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  background: #fff;
-  border: 1px solid var(--list-border);
-  border-radius: 16px;
-  padding: 0;
+.stats-grid { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 32px; }
+
+.stat-feature {
+  flex: 1 1 440px; min-width: 0;
+  position: relative; overflow: hidden;
+  background: linear-gradient(140deg, #0c2a14 0%, #145a0b 55%, #0d3a24 100%);
+  border-radius: 18px;
+  padding: 24px 26px;
+  color: #fff;
+}
+.stat-feature::after {
+  content: ""; position: absolute; right: -80px; top: -80px;
+  width: 280px; height: 280px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(111, 217, 67, .3), transparent 68%);
+}
+.stat-feature > * { position: relative; z-index: 1; }
+.stat-feature-head { display: flex; align-items: center; gap: 10px; }
+.stat-feature-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 8px;
+  background: rgba(111, 217, 67, .16);
+  border: 1px solid rgba(111, 217, 67, .32);
+}
+.stat-feature-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .8px;
+  text-transform: uppercase; color: rgba(255, 255, 255, .62);
+}
+.stat-feature-num {
+  font-family: var(--heading-font);
+  font-size: clamp(32px, 4.4vw, 42px); font-weight: 800;
+  letter-spacing: -.045em; line-height: 1; margin-top: 14px;
+}
+.stat-feature-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.stat-feature-chips span {
+  display: inline-flex; align-items: center;
+  background: rgba(255, 255, 255, .08);
+  border: 1px solid rgba(255, 255, 255, .16);
+  border-radius: 999px; padding: 5px 12px;
+  font-size: 12px; font-weight: 600; color: rgba(255, 255, 255, .88);
+}
+
+.stat-card {
+  flex: 1 1 200px; min-width: 0;
+  background: var(--list-card-bg);
+  border: 1px solid #eaf1e6;
+  border-radius: 18px;
+  padding: 20px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center;
+}
+.stat-card p { margin: 12px 0 0; font-size: 13px; font-weight: 600; color: var(--list-ink); }
+.stat-refresh-icon {
+  position: relative; display: inline-flex;
+  width: 50px; height: 50px; border-radius: 14px;
+  background: #fff; border: 1px solid #e0eedb;
+  align-items: center; justify-content: center;
+}
+.stat-refresh-dot {
+  position: absolute; top: -2px; right: -2px;
+  width: 13px; height: 13px; border-radius: 50%;
+  background: var(--list-green);
+  border: 2px solid var(--list-card-bg);
+  animation: statPulse 2.4s ease-out infinite;
+}
+@keyframes statPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(111, 217, 67, .55); }
+  70%  { box-shadow: 0 0 0 9px rgba(111, 217, 67, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(111, 217, 67, 0); }
+}
+@media (prefers-reduced-motion: reduce) { .stat-refresh-dot { animation: none; } }
+.stat-refresh-date {
+  font-family: var(--heading-font);
+  font-size: 20px; font-weight: 800; letter-spacing: -.03em;
+  color: var(--list-ink); margin-top: 12px;
+}
+
+.trust-row {
+  flex: 0 0 100%;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 18px;
+  background: linear-gradient(100deg, #f1f9ee 0%, #ffffff 42%, #eef7f6 100%);
+  border: 1px solid #e6efe2;
+  border-radius: 14px;
+  padding: 12px 18px;
   overflow: hidden;
-  margin-top: 32px;
-  box-shadow: 0 1px 2px rgba(16, 36, 26, .04), 0 18px 40px -30px rgba(16, 36, 26, .4);
 }
-.stat { text-align: left; padding: 20px 26px; border-right: 1px solid #eef2f6; }
-.stat span { font-family: var(--heading-font); display: block; color: var(--list-ink); font-size: 23px; font-weight: 800; letter-spacing: -.03em; margin-bottom: 6px; }
-/* Counted from the end so it still hits the date when data_counts is absent
-   and only two figures render. */
-.stats .stat:nth-last-child(3) span { font-size: 17px; letter-spacing: -.02em; }
-.stat p { font-size: 10.5px; color: #94a3b8; margin: 0; text-transform: uppercase; letter-spacing: .75px; font-weight: 700; }
-.logos { display: contents; }
-/* Narrow screens: the figures wrap, so the vertical dividers would leave
-   dangling rules at the end of each row -- swap them for horizontal ones and
-   give the scrolling logos a row of their own. */
-@media (max-width: 760px) {
-  .stat { flex: 1 1 40%; border-right: 0; border-bottom: 1px solid #eef2f6; padding: 14px 20px; }
-  .stat span { font-size: 20px; }
-  .stats .stat:nth-last-child(3) span { font-size: 15px; }
-  .logo-slider-viewport { flex: 0 0 100%; padding: 16px 20px; }
-  .stats-cmp-main { padding: 12px 20px; }
+.stats-cmp-main { display: flex; flex-wrap: wrap; gap: 9px; flex-shrink: 0; }
+.stat-comp {
+  display: flex; align-items: center; gap: 8px;
+  border-radius: 999px; padding: 6px 14px 6px 7px;
+  background: #ecfdf3; border: 1px solid #bde3c9;
 }
-/* Clips and fades only the scrolling logo row. This has to be its own
-   wrapper, separate from .logos: the fade is a horizontal mask, and .logos
-   also holds the GDPR/CCPA/ISO row underneath -- masking the shared parent
-   faded the compliance badges near the edges too, which was never the
-   intent (the badges don't scroll, only the logo strip does). */
+.stats-cmp-main .stat-comp:nth-child(2) { background: #ecfdff; border-color: #b2e2ea; }
+.stats-cmp-main .stat-comp:nth-child(3) { background: #f1f2ff; border-color: #c9ccf7; }
+.stat-comp-icon {
+  width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, #166534, #1b8a3c);
+  display: flex; align-items: center; justify-content: center;
+}
+.stats-cmp-main .stat-comp:nth-child(2) .stat-comp-icon { background: linear-gradient(135deg, #0e7490, #0d8ba6); }
+.stats-cmp-main .stat-comp:nth-child(3) .stat-comp-icon { background: linear-gradient(135deg, #4338ca, #5558e0); }
+.stat-comp-icon img { width: 13px !important; height: 13px; object-fit: contain; }
+.stat-comp p { margin: 0; font-size: 12.5px; font-weight: 600; color: #15803d; white-space: nowrap; }
+.stats-cmp-main .stat-comp:nth-child(2) p { color: #0e7490; }
+.stats-cmp-main .stat-comp:nth-child(3) p { color: #4338ca; }
+
 .logo-slider-viewport {
-  flex: 1 1 280px;
-  min-width: 0;
-  padding: 0 24px;
-  overflow: hidden;
+  flex: 1 1 260px; min-width: 0; overflow: hidden;
   -webkit-mask-image: linear-gradient(to right, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%);
   mask-image: linear-gradient(to right, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%);
 }
 .logo-slider { display: flex; align-items: center; gap: 42px; width: max-content; animation: scrollLogo 32s linear infinite; }
 .logo-slider:hover { animation-play-state: paused; }
-/* The source logos are all 66px tall but range from 64px to 268px wide, so
-   size on height and let width follow -- a shared width squashes the square
-   marks. */
+/* Every badge file is 66px tall but 64-268px wide, so size on height: a
+   shared width stretches the square marks. */
 .logo-slider img { height: 22px; width: auto; object-fit: contain; opacity: .86; transition: opacity .2s; }
 .logo-slider img:hover { opacity: 1; }
 @keyframes scrollLogo { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) { .logo-slider { animation: none; } }
-
-.stats-cmp-main {
-  flex: 0 0 100%;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 9px;
-  background: #fafcfa;
-  border-top: 1px solid #f1f5f9;
-  padding: 12px 24px;
+@media (max-width: 760px) {
+  .trust-row { gap: 12px; }
+  /* flex-shrink:0 above keeps the badges on one line; without releasing it
+     here the last one is clipped by the row's overflow instead of wrapping. */
+  .stats-cmp-main { flex: 1 1 100%; }
+  .logo-slider-viewport { flex: 0 0 100%; }
 }
-.stat-comp {
-  display: flex; align-items: center; gap: 8px;
-  border-radius: 999px;
-  padding: 6px 14px 6px 7px;
-  background: #ecfdf3; border: 1px solid #bde3c9;
-}
-/* One accent each so the three badges read as three separate certifications
-   rather than one repeated tick. */
-.stats-cmp-main .stat-comp:nth-child(2) { background: #ecfdff; border-color: #b2e2ea; }
-.stats-cmp-main .stat-comp:nth-child(3) { background: #f1f2ff; border-color: #c9ccf7; }
-.stat-comp-icon { width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, #166534, #1b8a3c); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.stats-cmp-main .stat-comp:nth-child(2) .stat-comp-icon { background: linear-gradient(135deg, #0e7490, #0d8ba6); }
-.stats-cmp-main .stat-comp:nth-child(3) .stat-comp-icon { background: linear-gradient(135deg, #4338ca, #5558e0); }
-.stat-comp-icon img { width: 13px !important; height: 13px; object-fit: contain; }
-.stat-comp p { font-size: 12.5px; color: #15803d; margin: 0; font-weight: 600; white-space: nowrap; }
-.stats-cmp-main .stat-comp:nth-child(2) p { color: #0e7490; }
-.stats-cmp-main .stat-comp:nth-child(3) p { color: #4338ca; }
 
 /* --------------------------------------------------------------------------
    Description paragraph

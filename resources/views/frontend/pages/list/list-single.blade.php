@@ -19,7 +19,7 @@
 @push('styles')
     {{-- Bump ?v= on every list.css change: LiteSpeed serves it with a one-year
          immutable cache, so returning visitors keep the old file otherwise. --}}
-    <link rel="stylesheet" href="{{ asset('assets/frontend/css/list.css') }}?v=6">  
+    <link rel="stylesheet" href="{{ asset('assets/frontend/css/list.css') }}?v=7">  
 @endpush
 @php
 use App\Services;
@@ -223,35 +223,83 @@ use App\Services;
 
   <!-- STATS -->
 
-  <div class="stats">
-
-    @if(!empty($service_item->data_counts))
-    <div class="stat">
-      <span>{{$service_item->data_counts}}</span>
-      <p>Data Counts</p>
-    </div>
-    @endif
 @php
     $lastUpdated = $heroUpdated;
+
+    // accuracy_commitment has existed on b2blist all along but no view read it;
+    // the ring is drawn from it, so a list carrying a different figure shows it.
+    $accuracy = (int) preg_replace('/\D/', '', (string) ($service_item->accuracy_commitment ?: ''));
+    if ($accuracy < 1 || $accuracy > 100) { $accuracy = 95; }
+    $ringR = 33;
+    $ringCirc = round(2 * M_PI * $ringR, 1);
+    $ringDash = round($ringCirc * $accuracy / 100, 1);
+
+    $segmentChip = trim(preg_replace('/^' . preg_quote($industry->name, '/') . '\s*/i', '', $baseTitle));
 @endphp
 
+  <div class="stats-grid">
 
-    <div class="stat">
-      <span>{{ $lastUpdated->format('d-F-Y') }}</span>
-      <p>Last updated</p>
+    @if(!empty($service_item->data_counts))
+    <div class="stat-feature">
+      <div class="stat-feature-head">
+        <span class="stat-feature-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6fd943" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>
+        </span>
+        <span class="stat-feature-label">Total verified records</span>
+      </div>
+      <div class="stat-feature-num">{{ $service_item->data_counts }}</div>
+      <div class="stat-feature-chips">
+        <span>{{ $industry->name }}</span>
+        @if($segmentChip !== '' && strcasecmp($segmentChip, $industry->name) !== 0)
+        <span>{{ $segmentChip }}</span>
+        @endif
+      </div>
     </div>
+    @endif
 
-    <div class="stat">
-      <span>95%</span>
+    <div class="stat-card">
+      <svg class="accuracy-ring" width="92" height="92" viewBox="0 0 80 80" role="img" aria-label="{{ $accuracy }} percent accuracy commitment">
+        <defs>
+          <linearGradient id="accuracyRing" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#145a0b"/>
+            <stop offset="1" stop-color="#6fd943"/>
+          </linearGradient>
+        </defs>
+        <circle cx="40" cy="40" r="{{ $ringR }}" fill="none" stroke="#e6efe2" stroke-width="8"/>
+        <circle cx="40" cy="40" r="{{ $ringR }}" fill="none" stroke="url(#accuracyRing)" stroke-width="8" stroke-linecap="round" stroke-dasharray="{{ $ringDash }} {{ $ringCirc }}" transform="rotate(-90 40 40)"/>
+        <text x="40" y="40" text-anchor="middle" dominant-baseline="central" font-family="Poppins, sans-serif" font-size="19" font-weight="800" fill="#10241a">{{ $accuracy }}%</text>
+      </svg>
       <p>Accuracy Commitment</p>
     </div>
 
-    <div class="logos">
+    <div class="stat-card">
+      <span class="stat-refresh-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#145a0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>
+        <span class="stat-refresh-dot"></span>
+      </span>
+      <div class="stat-refresh-date">{{ $lastUpdated->format('d M Y') }}</div>
+      <p>Last updated</p>
+    </div>
 
-  <div class="logo-slider-viewport">
-  <div class="logo-slider">
+    <div class="trust-row">
 
-    <!-- Original Logos -->
+      <div class="stats-cmp-main">
+        <div class="stat-comp">
+          <div class="stat-comp-icon"><img src="{{asset('assets/uploads/icon.webp')}}" alt="" width="30"></div>
+          <p>GDPR Compliance</p>
+        </div>
+        <div class="stat-comp">
+          <div class="stat-comp-icon"><img src="{{asset('assets/uploads/icon.webp')}}" alt="" width="30"></div>
+          <p>CCPA Compliance</p>
+        </div>
+        <div class="stat-comp">
+          <div class="stat-comp-icon"><img src="{{asset('assets/uploads/icon.webp')}}" alt="" width="30"></div>
+          <p>ISO certified</p>
+        </div>
+      </div>
+
+      <div class="logo-slider-viewport">
+        <div class="logo-slider">
     <img src="{{asset('assets/uploads/product/Candela.png')}}" width="92">
     <img src="{{asset('assets/uploads/product/Tecan.png')}}" width="89">
     <img src="{{asset('assets/uploads/product/Westin.png')}}"  width="66">
@@ -259,8 +307,6 @@ use App\Services;
     <img src="{{asset('assets/uploads/product/Shopify.png')}}" width="46">
     <img src="{{asset('assets/uploads/product/MIQ.png')}}"   width="68">
     <img src="{{asset('assets/uploads/product/J Pocker.png')}}"  width="68">
-
-    <!-- Duplicate Logos -->
     <img src="{{asset('assets/uploads/product/Candela.png')}}"  width="92">
     <img src="{{asset('assets/uploads/product/Tecan.png')}}" width="89">
     <img src="{{asset('assets/uploads/product/Westin.png')}}" width="66">
@@ -268,33 +314,10 @@ use App\Services;
     <img src="{{asset('assets/uploads/product/Shopify.png')}}" width="46">
     <img src="{{asset('assets/uploads/product/MIQ.png')}}"  width="68">
     <img src="{{asset('assets/uploads/product/J Pocker.png')}}"  width="68">
+        </div>
+      </div>
 
-  </div>
-  </div>
-  <div class="stats-cmp-main">
-<div class="stat-comp">
-      <div class="stat-comp-icon">
-        <img src="{{asset('assets/uploads/icon.webp')}}"  width="30">   
     </div>
-      <p>GDPR Compliance</p>
-    </div>
-
-    <div class="stat-comp">
-     <div class="stat-comp-icon">
-        <img src="{{asset('assets/uploads/icon.webp')}}"  width="30">   
-    </div>
-      <p>CCPA Compliance</p>
-    </div>
-
-    <div class="stat-comp">
-     <div class="stat-comp-icon">
-         <img src="{{asset('assets/uploads/icon.webp')}}"  width="30">
-    </div>
-      <p>ISO certified</p>
-    </div>
-
-</div>
-</div>
   </div>
 
   <!-- DESCRIPTION -->
