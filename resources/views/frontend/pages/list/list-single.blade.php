@@ -123,9 +123,18 @@ use App\Services;
         @endphp
         <h1 class="hero-title">{{ $titleHead }}@if($titleTail !== '') <span class="hero-title-accent">{{ $titleTail }}</span>@endif</h1>
 
-        @if(!empty(trim(strip_tags($service_item->excerpt ?? ''))))
-        <p class="hero-sub">{{ strip_tags($service_item->excerpt) }}</p>
-        @endif
+        @php
+            // Most rows carry no excerpt, which left the heading column with
+            // nothing between the title and the buttons. Fall back to a line
+            // built from the row's own figures rather than leaving a hole.
+            $heroSub = trim(preg_replace('/\s+/', ' ', strip_tags($service_item->excerpt ?? '')));
+            if ($heroSub === '') {
+                $heroSub = !empty($service_item->data_counts)
+                    ? 'Reach ' . $service_item->data_counts . ' verified ' . $titleHead . ' contacts, each checked before it reaches you. Searching is free &mdash; credits are only spent when you reveal a contact.'
+                    : 'Search the full ' . $titleHead . ' database free &mdash; credits are only spent when you reveal a contact.';
+            }
+        @endphp
+        <p class="hero-sub">{!! $heroSub !!}</p>
 
         <div class="hero-actions">
           <a href="https://app.go4database.com/register?utm_source=ProductPage&amp;utm_medium=Internal&amp;utm_campaign=hero_free_leads" class="hero-btn" target="_blank" rel="noopener">Get 1200 free leads</a>
