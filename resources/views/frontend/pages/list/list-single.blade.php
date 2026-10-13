@@ -19,7 +19,7 @@
 @push('styles')
     {{-- Bump ?v= on every list.css change: LiteSpeed serves it with a one-year
          immutable cache, so returning visitors keep the old file otherwise. --}}
-    <link rel="stylesheet" href="{{ asset('assets/frontend/css/list.css') }}?v=12">  
+    <link rel="stylesheet" href="{{ asset('assets/frontend/css/list.css') }}?v=13">  
 @endpush
 @php
 use App\Services;
@@ -76,7 +76,17 @@ use App\Services;
           {{ $industry->name }} &middot; Updated {{ $heroUpdated->format('d M Y') }}
         </span>
 
-        <h1 class="hero-title">{{ $service_item->title }}</h1>
+        @php
+            // Split off the trailing list-type words so they can carry the accent;
+            // a title that does not end in one simply renders whole.
+            $titleHead = $service_item->title;
+            $titleTail = '';
+            if (preg_match('/^(.*?)\s+(Email List|Mailing List|Contact List|Contact Database|Database)$/i', $service_item->title, $m)) {
+                $titleHead = $m[1];
+                $titleTail = $m[2];
+            }
+        @endphp
+        <h1 class="hero-title">{{ $titleHead }}@if($titleTail !== '') <span class="hero-title-accent">{{ $titleTail }}</span>@endif</h1>
 
         @if(!empty(trim(strip_tags($service_item->excerpt ?? ''))))
         <p class="hero-sub">{{ strip_tags($service_item->excerpt) }}</p>
