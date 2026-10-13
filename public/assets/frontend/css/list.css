@@ -591,7 +591,10 @@
 .section-flex {
   display: flex;
   gap: 36px;
-  align-items: flex-start;
+  /* stretch, not flex-start: .related-box, .slider-container and .small-card
+     all ask for height:100%, which flex-start silently ignored -- that is why
+     each of them sat short and left a gap down the side of its row. */
+  align-items: stretch;
 }
 .section-flex .left { flex: 1 1 62%; min-width: 0; }
 .section-flex .right { flex: 1 1 34%; min-width: 280px; }
@@ -662,6 +665,18 @@
   background: #fff; border: 1px solid var(--list-border); color: var(--list-ink-soft);
 }
 .related-header .nav-link.active { background: var(--list-green-dark); border-color: var(--list-green-dark); color: #fff; }
+/* Fifteen related links made this card far taller than the column beside it.
+   Capping the scroll keeps every link in the markup for crawlers while the
+   card stays the height of its row. */
+.related-box .tab-pane > ul {
+  max-height: 232px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0 4px 0 0;
+  list-style: none;
+}
+.related-box .tab-pane > ul::-webkit-scrollbar { width: 6px; }
+.related-box .tab-pane > ul::-webkit-scrollbar-thumb { background: #d8e2d4; border-radius: 3px; }
 .related-box ul { list-style: none; margin: 0; padding: 0; }
 .related-box li { margin-bottom: 4px; }
 .related-box li a {
@@ -748,6 +763,8 @@
 .ratings-flex { margin-top: 20px; align-items: stretch; }
 .ratings-flex .trust {
   margin-top: 0;
+  height: 100%;
+  align-content: stretch;
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .ratings-flex .right { display: flex; }
@@ -1026,6 +1043,9 @@
    Related blogs carousel
    -------------------------------------------------------------------------- */
 .related-blogs { background: #fafafa; border-radius: var(--list-radius); }
+/* With three posts this changes nothing; with one it stops the single card
+   hugging the left edge of an otherwise empty row. */
+.related-blogs .carousel-item .row { justify-content: center; }
 .blog-title { font-family: var(--heading-font); font-size: clamp(22px, 3vw, 28px); font-weight: 800; color: var(--list-ink); margin: 0; }
 .carousel-btn {
   width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center;
