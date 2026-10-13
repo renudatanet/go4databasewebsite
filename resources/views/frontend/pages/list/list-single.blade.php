@@ -19,7 +19,7 @@
 @push('styles')
     {{-- Bump ?v= on every list.css change: LiteSpeed serves it with a one-year
          immutable cache, so returning visitors keep the old file otherwise. --}}
-    <link rel="stylesheet" href="{{ asset('assets/frontend/css/list.css') }}?v=11">  
+    <link rel="stylesheet" href="{{ asset('assets/frontend/css/list.css') }}?v=12">  
 @endpush
 @php
 use App\Services;
@@ -618,7 +618,7 @@ Use it then Believe it
         Simple steps to get free {{ $contactDatabaseTitle }}
       </h2>
 @if(!empty(config('app.video_cdn')))
-<video width="100%" controls class="video-box" preload="none">
+<video width="100%" controls class="video-box" preload="none" poster="{{ asset('assets/uploads/product/list.png') }}">
     <source src="{{ config('app.video_cdn') }}" type="video/mp4">
 </video>
 @endif

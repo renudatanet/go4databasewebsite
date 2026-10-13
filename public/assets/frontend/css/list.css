@@ -754,8 +754,13 @@
    -------------------------------------------------------------------------- */
 .video-box {
   width: 100%;
+  /* preload="none" means no frame is fetched until play, so without a fixed
+     ratio the element collapsed to a short black strip. The poster fills it. */
+  aspect-ratio: 16 / 9;
+  height: auto;
+  object-fit: cover;
   border-radius: var(--list-radius);
-  background: #000;
+  background: #10241a;
   display: block;
 }
 
