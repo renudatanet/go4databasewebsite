@@ -2530,11 +2530,14 @@ $all_testimonial = Testimonial::where('lang', $lang)->orderBy('id', 'desc')->tak
         $results = collect();
         $result_total = 0;
         if ($query !== '') {
+            // % and _ are LIKE wildcards, so searching "50%" matched every row.
+            $needle = addcslashes($query, '%_\\');
+
             $base = B2BList::where('lang', $lang)
                 ->where(function ($q) {
                     $q->whereNull('status')->orWhere('status', '!=', 'draft');
                 })
-                ->where('title', 'LIKE', '%' . $query . '%');
+                ->where('title', 'LIKE', '%' . $needle . '%');
 
             $result_total = (clone $base)->count();
             $results = $base->orderBy('title')->limit(60)->get(['title', 'slug', 'categories_id']);
