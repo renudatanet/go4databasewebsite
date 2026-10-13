@@ -667,6 +667,22 @@
   display: block;
 }
 
+/* The steps/video block no longer carries the lead form, so its single
+   column takes the whole row instead of leaving 38% empty beside it. */
+.steps-flex .left { flex: 1 1 100%; }
+
+/* Ratings sit beside the lead form under the ROI banner -- the conversion
+   block from the approved design. Two columns, not four: at 62% width four
+   cards are too narrow for the wordmarks. */
+.ratings-flex { margin-top: 20px; align-items: stretch; }
+.ratings-flex .trust {
+  margin-top: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.ratings-flex .right { display: flex; }
+.ratings-flex .side-card { flex: 1; max-width: none; }
+@media (max-width: 1024px) { .ratings-flex .trust { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
 /* --------------------------------------------------------------------------
    Trust badges strip
    -------------------------------------------------------------------------- */

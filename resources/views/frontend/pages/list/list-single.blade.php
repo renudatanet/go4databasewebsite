@@ -19,7 +19,7 @@
 @push('styles')
     {{-- Bump ?v= on every list.css change: LiteSpeed serves it with a one-year
          immutable cache, so returning visitors keep the old file otherwise. --}}
-    <link rel="stylesheet" href="{{ asset('assets/frontend/css/list.css') }}?v=5">  
+    <link rel="stylesheet" href="{{ asset('assets/frontend/css/list.css') }}?v=6">  
 @endpush
 @php
 use App\Services;
@@ -507,91 +507,6 @@ use App\Services;
 
   </div>
 
-  <!-- VIDEO -->
-
-  <div class="section-flex"  >
-
-    <div class="left">
-
-      <h2 class="title">
-        Simple steps to get free {{ $contactDatabaseTitle }}
-      </h2>
-@if(!empty(config('app.video_cdn')))
-<video width="100%" controls class="video-box" preload="none">
-    <source src="{{ config('app.video_cdn') }}" type="video/mp4">
-</video>
-@endif
-
-
-      <!-- <div class="video-box" style="background-image: url({{asset('assets/uploads/product/list.png')}});">
-        ▶
-      </div> -->
-
-    </div>
-
-    <div class="right">
-
-      <div class="side-card" id="lead-form">
-           <div class="side-card-heading">Talk to marketing expert to get precise targeted mailing list</div>
-@if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
-  <form action="{{ route('service-lead.submit') }}" method="POST">
-        @csrf
-
-        <input type="text" name="name" placeholder="Name" required>
-
-        <input type="text" name="phone" placeholder="Phone" required>
-
-        <input type="email" name="email" placeholder="Email" required>
-
-        <input type="text" name="business_details" placeholder="Website/Business Details">
-
-        <button type="submit">Continue</button>
-    </form>
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- TRUST -->
-
-  <div class="trust">
-
-    <div class="trust-item">
-      <img src="{{asset('assets/uploads/product/Trustpilot.webp')}}">
-      <div class="rating-box">
-      <div class="rating-text"> 4.5 </div><div class="stars">★★★★★</div>
-    </div>
-    </div>
-    <div class="trust-item">
-     <img src="{{asset('assets/uploads/product/G2.webp')}}" alt="G2">
-    <div class="rating-box">
-      <div class="rating-text"> 4.5 </div><div class="stars">★★★★★</div>
-    </div>
-   </div>
-
-    <div class="trust-item">
-      <img src="{{asset('assets/uploads/product/datarade.webp')}}">
- <div class="rating-box">
-      <div class="rating-text"> 4.5 </div><div class="stars">★★★★★</div>
-    </div>
-</div>
-
-    <div class="trust-item">
-      <img src="{{asset('assets/uploads/product/BBB.webp')}}">
-   <div class="rating-box">
-      <div class="rating-text"> 4.5 </div><div class="stars">★★★★★</div>
-    </div>
-  </div>
-
-  </div>
-
-
 <!-- DECISION MAKERS -->
 
 <div class="section">
@@ -669,6 +584,70 @@ Use it then Believe it
 
 </div>
 
+  <!-- STEPS -->
+
+  <div class="section-flex steps-flex">
+
+    <div class="left">
+
+      <h2 class="title">
+        Simple steps to get free {{ $contactDatabaseTitle }}
+      </h2>
+@if(!empty(config('app.video_cdn')))
+<video width="100%" controls class="video-box" preload="none">
+    <source src="{{ config('app.video_cdn') }}" type="video/mp4">
+</video>
+@endif
+
+
+      <!-- <div class="video-box" style="background-image: url({{asset('assets/uploads/product/list.png')}});">
+        ▶
+      </div> -->
+
+    </div>
+
+  </div>
+
+<!-- BENEFITS -->
+
+<div class="section">
+
+<h2 class="section-title">
+Who Can Benefit from Our {{ $mailingTitle }} to Boost ROI?
+</h2>
+
+<div class="benefits">
+@php
+    $buyers = array_filter(
+        array_map('trim', explode(';', $service_item->buyerlist ?? ''))
+    );
+
+    $chunks = array_chunk(
+        $buyers,
+        max(1, ceil(count($buyers) / 2))
+    );
+@endphp
+
+@if(count($buyers))
+    @foreach($chunks as $chunk)
+        <div class="benefit-card">
+            <ul>
+                @foreach($chunk as $item)
+                    <li>{{ $item }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endforeach
+@else
+    <div class="benefit-card">
+        <p>No entries available.</p>
+    </div>
+@endif
+
+</div>
+
+</div>
+
 <!-- ROI SECTION -->
 
 <div class="roi-section">
@@ -720,96 +699,135 @@ Have you requested for free sample data yet?
 
 </div>
 
-<!-- BENEFITS -->
 
-<div class="section">
+  <!-- RATINGS + LEAD FORM -->
 
-<h2 class="section-title">
-Who Can Benefit from Our {{ $mailingTitle }} to Boost ROI?
-</h2>
+  <div class="section-flex ratings-flex">
 
-<div class="benefits">
-@php
-    $buyers = array_filter(
-        array_map('trim', explode(';', $service_item->buyerlist ?? ''))
-    );
+    <div class="left">
 
-    $chunks = array_chunk(
-        $buyers,
-        max(1, ceil(count($buyers) / 2))
-    );
-@endphp
+    <!-- TRUST -->
 
-@if(count($buyers))
-    @foreach($chunks as $chunk)
-        <div class="benefit-card">
-            <ul>
-                @foreach($chunk as $item)
-                    <li>{{ $item }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endforeach
-@else
-    <div class="benefit-card">
-        <p>No entries available.</p>
+    <div class="trust">
+
+      <div class="trust-item">
+        <img src="{{asset('assets/uploads/product/Trustpilot.webp')}}">
+        <div class="rating-box">
+        <div class="rating-text"> 4.5 </div><div class="stars">★★★★★</div>
+      </div>
+      </div>
+      <div class="trust-item">
+       <img src="{{asset('assets/uploads/product/G2.webp')}}" alt="G2">
+      <div class="rating-box">
+        <div class="rating-text"> 4.5 </div><div class="stars">★★★★★</div>
+      </div>
+     </div>
+
+      <div class="trust-item">
+        <img src="{{asset('assets/uploads/product/datarade.webp')}}">
+   <div class="rating-box">
+        <div class="rating-text"> 4.5 </div><div class="stars">★★★★★</div>
+      </div>
+  </div>
+
+      <div class="trust-item">
+        <img src="{{asset('assets/uploads/product/BBB.webp')}}">
+     <div class="rating-box">
+        <div class="rating-text"> 4.5 </div><div class="stars">★★★★★</div>
+      </div>
     </div>
-@endif
+
+    </div>
+
+
+
+    </div>
+
+    <div class="right">
+
+        <div class="side-card" id="lead-form">
+             <div class="side-card-heading">Talk to marketing expert to get precise targeted mailing list</div>
+  @if(session('success'))
+      <div class="alert alert-success">
+          {{ session('success') }}
+      </div>
+  @endif
+    <form action="{{ route('service-lead.submit') }}" method="POST">
+          @csrf
+
+          <input type="text" name="name" placeholder="Name" required>
+
+          <input type="text" name="phone" placeholder="Phone" required>
+
+          <input type="email" name="email" placeholder="Email" required>
+
+          <input type="text" name="business_details" placeholder="Website/Business Details">
+
+          <button type="submit">Continue</button>
+      </form>
+
+        </div>
+
+    </div>
+
+  </div>
+
+<!-- FAQ -->
+<!-- FAQ SECTION -->
+
+<div class="faq-section">
+
+    <h2 class="faq-title">
+        Frequently Asked Questions
+    </h2>
+
+    <p class="faq-subtitle">
+        You might have these questions in your mind?
+    </p>
+
+
+<div class="faq-wrapper">
+
+    @if(!empty($service_item->faqs))
+
+        @foreach($service_item->faqs as $key => $faq)
+
+            <div class="faq-item {{ $key == 0 ? 'active' : '' }}">
+
+                <button class="faq-question">
+
+                    <h3>
+                        {{ $faq['question'] }}
+                    </h3>
+
+                    <span class="faq-icon">+</span>
+
+                </button>
+
+                <div class="faq-answer">
+
+                    <div class="faq-answer-content">
+
+                        {{ $faq['answer'] }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        @endforeach
+
+    @else
+
+        <p>No FAQ Found</p>
+
+    @endif
 
 </div>
-
 </div>
 
-<!-- CTA -->
-
-<div class="cta">
-
-<h2>
-Try Book Your Data with 100 Free Credits, no Credit Card Required.
-</h2>
-
-<p>
-No subscription commitments or mandatory demos.
-Discover the power of 95% accurate, laser targeted data on your terms.
-</p>
-
-<div class="cta-form">
-<form action="https://app.go4database.com/register" method="get">
-<input name="email" type="text" placeholder="Enter your work email">
-
-<button class="orange-btn">
-Get 100 Free Leads
-</button>
-</form>
-<span>OR</span>
-
-<a href="https://app.go4database.com/login?utm_source=ProductPage&amp;utm_medium=Internal&amp;utm_campaign=app_login" class="demo-btn">
-Book a Demo
-</a>
-
-</div>
-
-<div class="cta-features">
-
-<div class="cta-feature">
-<div class="check"><img src="{{asset('assets/uploads/icon.webp')}}"  width="30"></div>
-Real time email verification
-</div>
-
-<div class="cta-feature">
-<div class="check"><img src="{{asset('assets/uploads/icon.webp')}}"  width="30"></div>
-95% data accuracy guarantee
-</div>
-
-<div class="cta-feature">
-<div class="check"><img src="{{asset('assets/uploads/icon.webp')}}"  width="30"></div>
-GDPR & CCPA compliant
-</div>
-
-</div>
-
-</div>
-
+<!-- FAQ SCRIPT -->
 
 <!-- SECTION -->
 
@@ -1756,62 +1774,56 @@ $titles = [
 </div>
 
 
-<!-- FAQ -->
-<!-- FAQ SECTION -->
+<!-- CTA -->
 
-<div class="faq-section">
+<div class="cta">
 
-    <h2 class="faq-title">
-        Frequently Asked Questions
-    </h2>
+<h2>
+Try Book Your Data with 100 Free Credits, no Credit Card Required.
+</h2>
 
-    <p class="faq-subtitle">
-        You might have these questions in your mind?
-    </p>
+<p>
+No subscription commitments or mandatory demos.
+Discover the power of 95% accurate, laser targeted data on your terms.
+</p>
 
+<div class="cta-form">
+<form action="https://app.go4database.com/register" method="get">
+<input name="email" type="text" placeholder="Enter your work email">
 
-<div class="faq-wrapper">
+<button class="orange-btn">
+Get 100 Free Leads
+</button>
+</form>
+<span>OR</span>
 
-    @if(!empty($service_item->faqs))
-
-        @foreach($service_item->faqs as $key => $faq)
-
-            <div class="faq-item {{ $key == 0 ? 'active' : '' }}">
-
-                <button class="faq-question">
-
-                    <h3>
-                        {{ $faq['question'] }}
-                    </h3>
-
-                    <span class="faq-icon">+</span>
-
-                </button>
-
-                <div class="faq-answer">
-
-                    <div class="faq-answer-content">
-
-                        {{ $faq['answer'] }}
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        @endforeach
-
-    @else
-
-        <p>No FAQ Found</p>
-
-    @endif
+<a href="https://app.go4database.com/login?utm_source=ProductPage&amp;utm_medium=Internal&amp;utm_campaign=app_login" class="demo-btn">
+Book a Demo
+</a>
 
 </div>
+
+<div class="cta-features">
+
+<div class="cta-feature">
+<div class="check"><img src="{{asset('assets/uploads/icon.webp')}}"  width="30"></div>
+Real time email verification
 </div>
 
-<!-- FAQ SCRIPT -->
+<div class="cta-feature">
+<div class="check"><img src="{{asset('assets/uploads/icon.webp')}}"  width="30"></div>
+95% data accuracy guarantee
+</div>
+
+<div class="cta-feature">
+<div class="check"><img src="{{asset('assets/uploads/icon.webp')}}"  width="30"></div>
+GDPR & CCPA compliant
+</div>
+
+</div>
+
+</div>
+
 
 <!-- SAMPLE DATA -->
 
