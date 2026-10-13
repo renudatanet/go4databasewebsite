@@ -675,11 +675,39 @@
    page (a deliberate accent), everything else around it stays quieter so
    this still reads as a highlight rather than one green box among many.
    -------------------------------------------------------------------------- */
-.why-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-@media (max-width: 560px) { .why-grid { grid-template-columns: 1fr; } }
-.why-card { background: var(--list-green-dark); color: #fff; border-radius: var(--list-radius); padding: 28px; }
-.why-card h3 { font-family: var(--heading-font); font-size: 20px; margin: 0 0 8px; color: #fff; font-weight: 800; }
-.why-card p { color: #cfe4c9; line-height: 1.6; margin: 0; font-size: 14.5px; }
+/* Bento, per the design: the lead reason takes a tall tile and the other
+   three stack beside it, instead of four identical squares. */
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.why-card {
+  position: relative; overflow: hidden;
+  background: var(--list-green-dark); color: #fff;
+  border-radius: 16px; padding: 20px 22px;
+}
+.why-card:first-child {
+  grid-column: 1; grid-row: 1 / span 3;
+  padding: 30px 28px;
+  display: flex; flex-direction: column; justify-content: center;
+  background: linear-gradient(145deg, #0e4408 0%, #145a0b 60%, #0c3a1c 100%);
+}
+.why-card:first-child::after {
+  content: ""; position: absolute; right: -70px; top: -70px;
+  width: 240px; height: 240px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(111, 217, 67, .22), transparent 70%);
+}
+.why-card:first-child > * { position: relative; z-index: 1; }
+.why-card:nth-child(n+2) { grid-column: 2; }
+.why-card h3 { font-family: var(--heading-font); font-size: 17px; margin: 0 0 7px; color: #fff; font-weight: 800; }
+.why-card:first-child h3 { font-size: 22px; margin-bottom: 10px; }
+.why-card p { color: #cfe4c9; line-height: 1.6; margin: 0; font-size: 14px; }
+.why-card:first-child p { font-size: 15px; }
+@media (max-width: 700px) {
+  .why-grid { grid-template-columns: 1fr; }
+  .why-card:first-child, .why-card:nth-child(n+2) { grid-column: 1; grid-row: auto; }
+}
 
 /* Testimonial slider */
 .slider-container { background: var(--list-card-bg); border: 1px solid var(--list-border); padding: 22px; border-radius: var(--list-radius); height: 100%; display: flex; flex-direction: column; }
