@@ -340,39 +340,88 @@
 /* --------------------------------------------------------------------------
    Stats bar + trust badges strip
    -------------------------------------------------------------------------- */
+/* Two bands in one card: figures + scrolling logos on top, compliance on a
+   tinted strip underneath. `.logos` is display:contents so its two children
+   join the flex row directly -- the compliance strip can then take a full
+   row of its own without moving anything in the blade. */
 .stats {
   display: flex;
   flex-wrap: wrap;
-  gap: 28px;
-  justify-content: space-between;
   align-items: center;
   background: #fff;
   border: 1px solid var(--list-border);
-  border-radius: var(--list-radius);
-  padding: 22px 28px;
+  border-radius: 16px;
+  padding: 0;
+  overflow: hidden;
   margin-top: 32px;
+  box-shadow: 0 1px 2px rgba(16, 36, 26, .04), 0 18px 40px -30px rgba(16, 36, 26, .4);
 }
-.stat { text-align: left; }
-.stat span { font-family: var(--heading-font); display: block; color: var(--list-green-dark); font-size: 21px; font-weight: 800; margin-bottom: 4px; }
-.stat p { font-size: 13px; color: var(--list-ink-soft); margin: 0; text-transform: uppercase; letter-spacing: .3px; }
-.logos { flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+.stat { text-align: left; padding: 20px 26px; border-right: 1px solid #eef2f6; }
+.stat span { font-family: var(--heading-font); display: block; color: var(--list-ink); font-size: 23px; font-weight: 800; letter-spacing: -.03em; margin-bottom: 6px; }
+/* Counted from the end so it still hits the date when data_counts is absent
+   and only two figures render. */
+.stats .stat:nth-last-child(3) span { font-size: 17px; letter-spacing: -.02em; }
+.stat p { font-size: 10.5px; color: #94a3b8; margin: 0; text-transform: uppercase; letter-spacing: .75px; font-weight: 700; }
+.logos { display: contents; }
+/* Narrow screens: the figures wrap, so the vertical dividers would leave
+   dangling rules at the end of each row -- swap them for horizontal ones and
+   give the scrolling logos a row of their own. */
+@media (max-width: 760px) {
+  .stat { flex: 1 1 40%; border-right: 0; border-bottom: 1px solid #eef2f6; padding: 14px 20px; }
+  .stat span { font-size: 20px; }
+  .stats .stat:nth-last-child(3) span { font-size: 15px; }
+  .logo-slider-viewport { flex: 0 0 100%; padding: 16px 20px; }
+  .stats-cmp-main { padding: 12px 20px; }
+}
 /* Clips and fades only the scrolling logo row. This has to be its own
    wrapper, separate from .logos: the fade is a horizontal mask, and .logos
    also holds the GDPR/CCPA/ISO row underneath -- masking the shared parent
    faded the compliance badges near the edges too, which was never the
    intent (the badges don't scroll, only the logo strip does). */
 .logo-slider-viewport {
+  flex: 1 1 280px;
+  min-width: 0;
+  padding: 0 24px;
   overflow: hidden;
   -webkit-mask-image: linear-gradient(to right, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%);
   mask-image: linear-gradient(to right, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%);
 }
-.logo-slider { display: flex; align-items: center; gap: 24px; width: max-content; animation: scrollLogo 30s linear infinite; opacity: .8; }
-.logo-slider img { object-fit: contain; }
+.logo-slider { display: flex; align-items: center; gap: 42px; width: max-content; animation: scrollLogo 32s linear infinite; }
+.logo-slider:hover { animation-play-state: paused; }
+/* The source logos are all 66px tall but range from 64px to 268px wide, so
+   size on height and let width follow -- a shared width squashes the square
+   marks. */
+.logo-slider img { height: 22px; width: auto; object-fit: contain; opacity: .86; transition: opacity .2s; }
+.logo-slider img:hover { opacity: 1; }
 @keyframes scrollLogo { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-.stats-cmp-main { display: flex; flex-wrap: wrap; gap: 20px; }
-.stat-comp { display: flex; align-items: center; gap: 8px; }
-.stat-comp-icon { width: 26px; height: 26px; border-radius: 50%; background: var(--list-green-dark); display: flex; align-items: center; justify-content: center; }
-.stat-comp p { font-size: 13px; color: var(--list-ink-soft); margin: 0; font-weight: 600; }
+@media (prefers-reduced-motion: reduce) { .logo-slider { animation: none; } }
+
+.stats-cmp-main {
+  flex: 0 0 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  background: #fafcfa;
+  border-top: 1px solid #f1f5f9;
+  padding: 12px 24px;
+}
+.stat-comp {
+  display: flex; align-items: center; gap: 8px;
+  border-radius: 999px;
+  padding: 6px 14px 6px 7px;
+  background: #ecfdf3; border: 1px solid #bde3c9;
+}
+/* One accent each so the three badges read as three separate certifications
+   rather than one repeated tick. */
+.stats-cmp-main .stat-comp:nth-child(2) { background: #ecfdff; border-color: #b2e2ea; }
+.stats-cmp-main .stat-comp:nth-child(3) { background: #f1f2ff; border-color: #c9ccf7; }
+.stat-comp-icon { width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, #166534, #1b8a3c); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.stats-cmp-main .stat-comp:nth-child(2) .stat-comp-icon { background: linear-gradient(135deg, #0e7490, #0d8ba6); }
+.stats-cmp-main .stat-comp:nth-child(3) .stat-comp-icon { background: linear-gradient(135deg, #4338ca, #5558e0); }
+.stat-comp-icon img { width: 13px !important; height: 13px; object-fit: contain; }
+.stat-comp p { font-size: 12.5px; color: #15803d; margin: 0; font-weight: 600; white-space: nowrap; }
+.stats-cmp-main .stat-comp:nth-child(2) p { color: #0e7490; }
+.stats-cmp-main .stat-comp:nth-child(3) p { color: #4338ca; }
 
 /* --------------------------------------------------------------------------
    Description paragraph
@@ -443,11 +492,13 @@
 
 .tags { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 24px; }
 .tag {
-  display: flex; align-items: center; gap: 10px;
+  display: flex; align-items: center; gap: 11px;
   background: var(--list-tint);
-  border-radius: 40px; padding: 10px 18px;
+  border: 1px solid #e3eede;
+  border-radius: 40px; padding: 8px 20px 8px 9px;
   font-size: 14.5px; font-weight: 600; color: var(--list-ink);
 }
+.tag img { width: 38px !important; height: 38px; object-fit: contain; flex-shrink: 0; }
 
 /* Related list / industry list tab card */
 .related-box { background: var(--list-card-bg); border: 1px solid var(--list-border); border-radius: var(--list-radius); padding: 22px; height: 100%; }
@@ -512,21 +563,30 @@
    Trust badges strip
    -------------------------------------------------------------------------- */
 .trust {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 36px;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+@media (max-width: 700px) { .trust { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.trust-item {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
   background: #fff;
   border: 1px solid var(--list-border);
-  border-radius: var(--list-radius);
-  padding: 26px 30px;
+  border-radius: 14px;
+  padding: 18px 20px;
+  min-width: 0;
 }
-.trust-item { display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: .9; }
-.trust-item img { width: 120px; object-fit: contain; }
-.rating-box { display: flex; align-items: center; gap: 8px; }
-.rating-text { font-size: 14px; font-weight: 700; color: var(--list-ink-soft); }
-.stars { color: #f5b301; letter-spacing: 2px; font-size: 15px; }
+/* Every badge file is 66px tall but the widths run 64px to 268px -- Trustpilot
+   is a wordmark, G2 is a square mark. Sizing on height keeps them all at the
+   same optical weight; a shared width stretched G2 across its whole card. */
+.trust-item img { height: 26px; width: auto; max-width: 100%; object-fit: contain; }
+.trust .trust-item:nth-child(2) img { height: 32px; }
+.rating-box { display: flex; align-items: baseline; gap: 8px; }
+.rating-text { font-family: var(--heading-font); font-size: 21px; font-weight: 800; color: var(--list-ink); }
+.stars { color: #f59e0b; letter-spacing: 1px; font-size: 13px; }
 
 /* --------------------------------------------------------------------------
    Key Decision Makers table + small brand card
@@ -538,9 +598,11 @@
   border-radius: var(--list-radius-sm);
   overflow: hidden;
 }
-.table-row { display: grid; grid-template-columns: 40% 1fr; border-bottom: 1px solid var(--list-border); }
+.table-row { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--list-border); }
 .table-row:last-child { border-bottom: none; }
-.table-label { background: var(--list-green-dark); padding: 14px; color: #fff; font-weight: 700; text-align: center; }
+/* Was a solid dark-green slab across 40% of the table; both halves are job
+   titles, so they now carry equal width and the label side is a tint. */
+.table-label { background: #f6faf4; padding: 15px 18px; color: var(--list-green-dark); font-weight: 700; text-align: left; }
 .table-value { padding: 14px 18px; background: #fff; color: var(--list-ink); display: flex; align-items: center; }
 
 .small-card { background: var(--list-card-bg); border: 1px solid var(--list-border); border-radius: var(--list-radius); padding: 26px; height: 100%; display: flex; flex-direction: column; }
@@ -569,11 +631,19 @@
    full-bleed-dark moment on the page.
    -------------------------------------------------------------------------- */
 .roi-section {
-  background: var(--list-green-deep);
-  border-radius: var(--list-radius);
-  padding: clamp(30px, 5vw, 56px);
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(150deg, #0e4408 0%, #145a0b 58%, #0c3a1c 100%);
+  border-radius: 18px;
+  padding: clamp(30px, 5vw, 48px);
   color: #fff;
   text-align: center;
+}
+.roi-section > * { position: relative; }
+.roi-section::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: radial-gradient(520px 260px at 50% -10%, rgba(111, 217, 67, .26), transparent 70%);
 }
 .roi-section span { display: block; font-size: 15px; font-weight: 700; opacity: .8; margin-bottom: 6px; }
 .roi-section h2 { font-family: var(--heading-font); font-size: clamp(24px, 3.5vw, 32px); font-weight: 800; margin: 0 0 10px; color: #fff; }
@@ -584,6 +654,7 @@
 .icon-item p { font-size: 15px; font-weight: 700; color: #fff; margin: 0; }
 .roi-btn {
   display: inline-block;
+  text-decoration: none;
   min-width: 280px;
   padding: 16px 24px;
   background: var(--list-green);
@@ -597,7 +668,7 @@
    -------------------------------------------------------------------------- */
 .benefits { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
 @media (max-width: 700px) { .benefits { grid-template-columns: 1fr; } }
-.benefit-card { background: var(--list-card-bg); border: 1px solid var(--list-border); border-radius: var(--list-radius); padding: 28px; }
+.benefit-card { background: var(--list-card-bg); border: 1px solid var(--list-border); border-radius: 14px; padding: 26px 28px; }
 .benefit-card ul { list-style: none; margin: 0; padding: 0; }
 .benefit-card li {
   position: relative;

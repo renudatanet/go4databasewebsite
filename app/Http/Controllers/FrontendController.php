@@ -2505,19 +2505,30 @@ public function list_single($service_slug)
         ? session()->get('lang')
         : $default_lang->slug;
 
+    // Drafts must not be reachable from the front end. Imported rows carry
+    // status "1" rather than "publish" (ListController@import), so exclude
+    // drafts rather than requiring "publish" -- matching on "publish" would
+    // 404 every list created through the Excel importer.
+    $service_item = B2BList::where('slug', '/'.$service_slug)
+        ->where(function ($query) {
+            $query->whereNull('status')
+                  ->orWhere('status', '!=', 'draft');
+        })
+        ->first();
+
+     if (empty($service_item)) {
+            return redirect_404_page();
+        }
+
+    $list_item = $service_item;
+
     $service_category = ListCategory::where([
         'status' => 'publish',
         'lang' => $lang
     ])->get();
-    
+
     $all_serviceCat = ListCategory::where('lang', $lang)->get();
-    // FIRST get service items
-    
-    $service_item = B2BList::where('slug', '/'.$service_slug)->first();
-    $list_item = B2BList::where('slug', '/'.$service_slug)->first();
-     if (empty($service_item)) {
-            return redirect_404_page();
-        }
+
     $industry = ListCategory::find($service_item->categories_id);
      if (empty($industry)) {
             return redirect_404_page();
@@ -2530,15 +2541,23 @@ $relatedServices = B2BList::where('id', '!=', $service_item->id)
     ->get();
 
     // THEN use it
-    $price_plan = !empty($service_item->price_plan)
-        ? PricePlan::find(unserialize($service_item->price_plan))
-        : '';
+    $price_plan = '';
+    if (!empty($service_item->price_plan)) {
+        $plan_ids = @unserialize($service_item->price_plan, ['allowed_classes' => false]);
+        if ($plan_ids !== false) {
+            $price_plan = PricePlan::find($plan_ids);
+        }
+    }
+
+ // Narrow to blogs whose serialised categories_id mentions this category before
+ // unserialising, so the whole blogs table is no longer loaded on every view.
  $relatedBlogs = Blog::where('lang', $lang)
     ->where('status', 'publish')
+    ->where('categories_id', 'LIKE', '%"'.$service_item->categories_id.'"%')
     ->get()
     ->filter(function ($blog) use ($service_item) {
 
-        $categories = @unserialize($blog->categories_id);
+        $categories = @unserialize($blog->categories_id, ['allowed_classes' => false]);
 
         if (!is_array($categories)) {
             return false;

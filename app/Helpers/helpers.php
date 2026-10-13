@@ -52,6 +52,9 @@ function set_static_option($key, $value)
 
 function get_static_option($key,$default = null)
 {
+    if (!\Illuminate\Support\Facades\Schema::hasTable('static_options')) {
+        return $default;
+    }
     global $option_name;
     $option_name = $key;
     $value = \Illuminate\Support\Facades\Cache::remember($option_name,6400, function () {
@@ -1770,7 +1773,7 @@ function get_paytm_environment()
 
 function redirect_404_page()
 {
-    return view('frontend.pages.404');
+    return response()->view('frontend.pages.404', [], 404);
 }
 function get_future_date($current_days, $days)
 {

@@ -746,7 +746,10 @@ public function importCsv(Request $request)
             'meta_tag' => $data['Meta Title'] ?? null,
             'meta_description' => $data['Meta Description'] ?? null,
             'excerpt' => $data['Excerpt'] ?? null,
-            'status' => $data['Status'] ?? 1,
+            // The admin form only ever stores 'publish' or 'draft'; the old
+            // default of 1 meant imported rows matched neither, which is why
+            // the front end excludes drafts instead of requiring 'publish'.
+            'status' => $data['Status'] ?? 'publish',
 
 
             'description' => $data['Product Description'] ?? '',

@@ -535,7 +535,7 @@ use App\Services;
     </div>
     </div>
     <div class="trust-item">
-     <img src="{{asset('assets/uploads/product/G2.webp')}}"   style="width:40px!important;">
+     <img src="{{asset('assets/uploads/product/G2.webp')}}" alt="G2">
     <div class="rating-box">
       <div class="rating-text"> 4.5 </div><div class="stars">★★★★★</div>
     </div>
@@ -680,7 +680,7 @@ Choose data as per your specific criteria
 
 </div>
 
-<a href="https://app.go4database.com/login?utm_source=ProductPage&amp;utm_medium=Internal&amp;utm_campaign=app_login" class="read-btn" target="_blank" class="roi-btn">
+<a href="https://app.go4database.com/login?utm_source=ProductPage&amp;utm_medium=Internal&amp;utm_campaign=app_login" class="roi-btn" target="_blank">
 Have you requested for free sample data yet?
 </a>
 
