@@ -116,7 +116,7 @@ use App\Services;
             // a title that does not end in one simply renders whole.
             $titleHead = $service_item->title;
             $titleTail = '';
-            if (preg_match('/^(.*?)\s+(Email List|Mailing List|Contact List|Contact Database|Database)$/i', $service_item->title, $m)) {
+            if (preg_match('/^(.*?)\s+(Email Lists?|Mailing Lists?|Contact Lists?|Contact Databases?|Email Databases?|Databases?|Lists?)$/i', $service_item->title, $m)) {
                 $titleHead = $m[1];
                 $titleTail = $m[2];
             }
@@ -264,7 +264,7 @@ use App\Services;
   <div class="container">
 @php
     $baseTitle = preg_replace(
-        '/\s+(Email List|Mailing List|Contact List|Contact Database)$/i',
+        '/\s+(Email Lists?|Mailing Lists?|Contact Lists?|Contact Databases?|Email Databases?|Databases?|Lists?)$/i',
         '',
         $service_item->title
     );
