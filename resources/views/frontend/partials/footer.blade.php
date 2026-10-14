@@ -60,7 +60,7 @@
     .g4f-social svg{width:16px;height:16px;fill:currentColor;}
     .g4f-col{min-width:0;}
     .g4f-head{font-size:13px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;
-      color:#10241a;margin:0;}
+      color:#10241a;margin:0;min-height:2.6em;}
     .g4f-head-rule{display:block;margin-top:8px;width:24px;height:2px;border-radius:2px;
       background:linear-gradient(90deg,#145a0b,#6fd943);}
     .g4f-col ul{margin:16px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;}
@@ -119,21 +119,10 @@
  <!-- Copyright Bar -->
     <div style="background:#6fd943;padding:22px 40px">
       <div
-        style="max-width:1300px;margin:0 auto;display:flex;align-items:center;justify-content:space-around;flex-wrap:wrap;gap:12px">
+        style="max-width:1300px;margin:0 auto;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px">
         <div style="color:#0b132a;font-size:14.5px;font-weight:700;">{!! get_footer_copyright_text() !!}
         </div>
-        <div style="display:flex;align-items:center;gap:16px">
-          <!-- Twitter / X -->
-             @foreach($all_social_item as $data)
-          <a href="{{$data->url}}" target="_blank" rel="noopener noreferrer"
-            aria-label="Go4Database Twitter Profile"
-            style="width:32px;height:32px;border-radius:50%;background:rgba(11,19,42,0.12);display:flex;align-items:center;justify-content:center;transition:background 0.2s">
-             
-              {!! fa_class_to_svg($data->icon) !!}
-              </a>
-             @endforeach
-         
-        </div>
+
       </div>
     </div>
 @if(preg_match('/(xgenious)/',url('/')))
