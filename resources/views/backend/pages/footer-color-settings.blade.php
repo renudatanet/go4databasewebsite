@@ -18,6 +18,53 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
+                        <h4 class="header-title">{{__('Footer Columns')}}</h4>
+                        <p class="text-muted">{{__('Each column is a menu. Edit the links themselves in Appearance Settings / Menus Manage.')}}</p>
+                        <form action="{{route('admin.footer.settings')}}" method="post">
+                            @csrf
+                            <div class="row">
+                                @foreach(['one' => 'Column 1', 'two' => 'Column 2', 'three' => 'Column 3', 'four' => 'Column 4'] as $key => $label)
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label for="footer_column_{{$key}}_title">{{__($label.' heading')}}</label>
+                                        <input type="text" class="form-control" id="footer_column_{{$key}}_title"
+                                               name="footer_column_{{$key}}_title"
+                                               value="{{get_static_option('footer_column_'.$key.'_title')}}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="footer_column_{{$key}}_menu_id">{{__($label.' menu')}}</label>
+                                        <select class="form-control" id="footer_column_{{$key}}_menu_id" name="footer_column_{{$key}}_menu_id">
+                                            <option value="">{{__('-- hide this column --')}}</option>
+                                            @foreach($all_menus as $menu)
+                                                <option value="{{$menu->id}}"
+                                                    @if((string) get_static_option('footer_column_'.$key.'_menu_id') === (string) $menu->id) selected @endif>
+                                                    {{$menu->title}}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                @endforeach
+
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="footer_about_text">{{__('Short line under the logo')}}</label>
+                                        <textarea class="form-control" id="footer_about_text" name="footer_about_text" rows="2">{{get_static_option('footer_about_text')}}</textarea>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12">
+                                    <button type="submit" class="btn btn-primary">{{__('Save Footer Columns')}}</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
                         <h4 class="header-title">{{__('Footer Color  Settings')}}</h4>
                         <form action="{{route('admin.footer.settings')}}" method="post">
                             @csrf

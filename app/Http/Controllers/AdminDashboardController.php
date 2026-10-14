@@ -382,7 +382,9 @@ class AdminDashboardController extends Controller
     }
 
     public function footer_settings(){
-        return view('backend.pages.footer-color-settings');
+        return view('backend.pages.footer-color-settings')->with([
+            'all_menus' => \App\Menu::orderBy('title')->get(),
+        ]);
     }
 
     public function update_footer_settings(Request $request){
@@ -393,7 +395,16 @@ class AdminDashboardController extends Controller
             'footer_widget_icon_color' => 'nullable|string|max:191',
             'footer_copyright_area_background_color' => 'nullable|string|max:191',
             'footer_copyright_area_text_color' => 'nullable|string|max:191',
-            'footer_background_color' => 'nullable|string|max:191'
+            'footer_background_color' => 'nullable|string|max:191',
+            'footer_column_one_menu_id' => 'nullable|string|max:191',
+            'footer_column_two_menu_id' => 'nullable|string|max:191',
+            'footer_column_three_menu_id' => 'nullable|string|max:191',
+            'footer_column_four_menu_id' => 'nullable|string|max:191',
+            'footer_column_one_title' => 'nullable|string|max:191',
+            'footer_column_two_title' => 'nullable|string|max:191',
+            'footer_column_three_title' => 'nullable|string|max:191',
+            'footer_column_four_title' => 'nullable|string|max:191',
+            'footer_about_text' => 'nullable|string|max:500'
         ]);
 
         $fields = [
@@ -404,6 +415,12 @@ class AdminDashboardController extends Controller
             'footer_copyright_area_background_color',
             'footer_copyright_area_text_color',
             'footer_background_color',
+            // Which menu feeds each footer column, and its heading.
+            'footer_column_one_menu_id',   'footer_column_one_title',
+            'footer_column_two_menu_id',   'footer_column_two_title',
+            'footer_column_three_menu_id', 'footer_column_three_title',
+            'footer_column_four_menu_id',  'footer_column_four_title',
+            'footer_about_text',
         ];
         foreach ($fields as $field){
             update_static_option($field,$request->$field);

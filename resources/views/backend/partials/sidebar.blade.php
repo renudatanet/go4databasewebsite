@@ -1630,7 +1630,7 @@
                                 <li class="{{active_menu('admin-home/appearance-setting/footer-settings')}}">
                                     <a href="{{route('admin.footer.settings')}}"
                                        aria-expanded="true">
-                                        {{__('Footer Color Settings')}}
+                                        {{__('Footer Settings')}}
                                     </a>
                                 </li>
                             @endif

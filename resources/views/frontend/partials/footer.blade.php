@@ -5,148 +5,117 @@
 @if(!in_array(Route::currentRouteName(),['frontend.course.lesson','frontend.course.lesson.start']))
  <!-- Footer -->
   
-    <div style="background:#f8faf9;padding:64px 40px 48px;border-top:1px solid #f1f5f9">
-      <div class="footer-grid"
-        style="max-width:1300px;margin:0 auto;display:grid;grid-template-columns:repeat(4, 1fr);gap:40px">
-        <!-- Column 1: Product Features -->
-        <div>
-          <div style="font-size:17px;font-weight:800;color:#111;margin-bottom:22px">Product Features</div>
-          <div style="display:flex;flex-direction:column;gap:16px">
-            <a href="#features" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; B2B Prospecting
-              Search</a>
-            <a href="#features" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Real-Time Email
-              Verification</a>
-            <a href="#features" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Buyer Intent Data</a>
-            <a href="#features" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Technographics
-              Search</a>
-            <a href="#features" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Chrome Extension</a>
-            <a href="#features" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Contact Database
-              Enrichment</a>
-            <a href="#features" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; CRM Integrations</a>
-            <a href="#features" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Developer API
-              Access</a>
-            <a href="#features" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Lookalike Audience
-              Builder</a>
-            <a href="{{ route('frontend.jobs') }}" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Career
-              Opportunities</a>
-          </div>
-        </div>
+  @php
+      // Each column is a menu chosen in Appearance Settings > Footer Settings.
+      // A column with no menu set, or an empty menu, is simply left out.
+      $footerCols = [];
+      foreach (['one', 'two', 'three', 'four'] as $slot) {
+          $menuId = get_static_option('footer_column_' . $slot . '_menu_id');
+          if (empty($menuId)) { continue; }
+          $menuRow = \App\Menu::find($menuId);
+          if (is_null($menuRow)) { continue; }
+          $items = json_decode($menuRow->content, true);
+          if (!is_array($items)) { continue; }
+          $links = [];
+          foreach ($items as $it) {
+              if (!is_array($it) || empty($it)) { continue; }
+              $label = trim((string) ($it['menutitle'] ?? '')) ?: trim((string) ($it['pname'] ?? ''));
+              if ($label === '') { continue; }
+              $href = (string) ($it['purl'] ?? '');
+              $href = $href !== '' ? str_replace('@url', rtrim(url('/'), '/'), $href) : '#';
+              $links[] = ['label' => $label, 'href' => $href, 'target' => (string) ($it['antarget'] ?? '')];
+          }
+          if (empty($links)) { continue; }
+          $footerCols[] = [
+              'title' => get_static_option('footer_column_' . $slot . '_title'),
+              'links' => $links,
+          ];
+      }
+      // Falls back to the site's own meta description rather than inventing a
+      // tagline; set a shorter one in Footer Settings to override it.
+      $footerAbout = get_static_option('footer_about_text');
+      if (empty($footerAbout)) {
+          $footerAbout = get_static_option('site_' . $user_select_lang_slug . '_meta_description');
+      }
+      $footerAbout = \Illuminate\Support\Str::limit(strip_tags((string) $footerAbout), 150);
+  @endphp
 
-        <!-- Column 2: Popular Datasets -->
-        <div>
-          <div style="font-size:17px;font-weight:800;color:#111;margin-bottom:22px">Popular Datasets</div>
-          <div style="display:flex;flex-direction:column;gap:16px">
-            <a href="#search-section" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; CEO &amp; Executive
-              Email List</a>
-            <a href="#search-section" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Hospital Mailing
-              List</a>
-            <a href="#search-section" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Physicians &amp;
-              Doctors List</a>
-            <a href="#search-section" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; VP Sales &amp;
-              Marketing List</a>
-            <a href="#search-section" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; CTO &amp; IT Decision
-              Makers</a>
-            <a href="#search-section" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Real Estate Agents
-              List</a>
-            <a href="#search-section" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; HR &amp; Recruiter
-              Email List</a>
-            <a href="#search-section" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Software Engineering
-              Leads</a>
-            <a href="#search-section" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Construction
-              Companies</a>
-            <a href="#search-section" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Finance &amp; CFO
-              Email List</a>
-          </div>
-        </div>
+  {{-- Inlined on purpose, as the chat widget is: production's public_html/assets
+       is a real directory rather than a link to @core/public/assets, so a separate
+       stylesheet would need copying by hand on every deploy. --}}
+  <style>
+    .g4f{background:#fbfcfa;border-top:1px solid #eaf1e6;padding:54px 0 40px;}
+    .g4f-inner{max-width:1240px;margin:0 auto;padding:0 32px;display:grid;
+      grid-template-columns:1.35fr repeat(4,1fr);gap:40px 32px;}
+    .g4f-brand{min-width:0;}
+    .g4f-logo{display:inline-block;max-width:190px;}
+    .g4f-logo img{max-width:190px;height:auto;}
+    .g4f-logo span{font-size:19px;font-weight:800;color:#10241a;}
+    .g4f-about{margin:16px 0 0;font-size:14px;line-height:1.7;color:#4c5a52;max-width:290px;}
+    .g4f-social{margin-top:20px;display:flex;flex-wrap:wrap;gap:9px;}
+    .g4f-social a{width:38px;height:38px;border-radius:10px;border:1px solid #e3e8e0;background:#fff;
+      color:#4c5a52;display:flex;align-items:center;justify-content:center;
+      transition:background .15s,border-color .15s,color .15s;}
+    .g4f-social a:hover{background:#145a0b;border-color:#145a0b;color:#fff;}
+    .g4f-social svg{width:16px;height:16px;fill:currentColor;}
+    .g4f-col{min-width:0;}
+    .g4f-head{font-size:13px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;
+      color:#10241a;margin:0;}
+    .g4f-head-rule{display:block;margin-top:8px;width:24px;height:2px;border-radius:2px;
+      background:linear-gradient(90deg,#145a0b,#6fd943);}
+    .g4f-col ul{margin:16px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;}
+    .g4f-col a{font-size:13.5px;line-height:1.5;color:#4c5a52;text-decoration:none;transition:color .15s;}
+    .g4f-col a:hover{color:#145a0b;}
+    @media (max-width:1080px){
+      .g4f-inner{grid-template-columns:repeat(3,minmax(0,1fr));}
+      .g4f-brand{grid-column:1/-1;}
+    }
+    @media (max-width:720px){ .g4f-inner{grid-template-columns:repeat(2,minmax(0,1fr));gap:32px 24px;} }
+    @media (max-width:460px){ .g4f-inner{grid-template-columns:1fr;} }
+  </style>
 
-        <!-- Column 3: Healthcare Industry Lists -->
-        <div>
-          <div style="font-size:17px;font-weight:800;color:#111;margin-bottom:22px">Healthcare Industry Lists</div>
-          <div style="display:flex;flex-direction:column;gap:16px">
-            <a href="#search-section" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Hospitals Mailing
-              List</a>
-            <a href="#search-section" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Medical Industry
-              Mailing List</a>
-            <a href="#search-section" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Physicians Mailing
-              List</a>
-            <a href="#search-section" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Cardiologists Mailing
-              List</a>
-            <a href="#search-section" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Healthcare Companies
-              List</a>
-            <a href="#search-section" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Dentists Mailing
-              List</a>
-            <a href="#search-section" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Nurse Practitioners
-              List</a>
-            <a href="#search-section" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Chiropractors Email
-              List</a>
-            <a href="#search-section" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Pharmacies &amp;
-              Pharmacists</a>
-            <a href="#search-section" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Veterinary Medicine
-              List</a>
-          </div>
-        </div>
+  <footer class="g4f">
+    <div class="g4f-inner">
 
-        <!-- Column 4: Compliances -->
-        <div>
-          <div style="font-size:17px;font-weight:800;color:#111;margin-bottom:22px">Compliances</div>
-          <div style="display:flex;flex-direction:column;gap:16px">
-            <a href="{{ route('frontend.dynamic.page', ['slug' => 'privacy-policy']) }}" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Privacy Policy</a>
-            <a href="{{ route('frontend.dynamic.page', ['slug' => 'terms-of-services']) }}" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Terms of Services</a>
-            <a href="{{ route('frontend.dynamic.page', ['slug' => 'gdpr-ccpa']) }}" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; GDPR - CCPA</a>
-            <a href="{{ route('frontend.dynamic.page', ['slug' => 'iso']) }}" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; ISO &amp; SO2</a>
-            <a href="{{ route('frontend.dynamic.page', ['slug' => 'reseller']) }}" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Reseller</a>
-            <a href="{{ route('frontend.dynamic.page', ['slug' => 'vendor-code-of-conduct']) }}" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Vendor Code of
-              Conduct</a>
-            <a href="{{ route('frontend.dynamic.page', ['slug' => 'database-affiliate']) }}" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Database
-              Affiliate</a>
-            <a href="{{ route('frontend.price.plan') }}" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Pricing</a>
-            <a href="https://paypal.com/" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Customized
-              Payment</a>
-            <a href="{{ route('frontend.contact') }}" class="g4d-footlink"
-              style="display:flex;align-items:center;gap:8px;color:#555;font-size:14.5px">&rsaquo; Contact</a>
-          </div>
+      <div class="g4f-brand">
+        <a class="g4f-logo" href="{{ url('/') }}">
+          @if(!empty(get_static_option('site_logo')))
+            {!! render_image_markup_by_attachment_id(get_static_option('site_logo'), '', 'full') !!}
+          @else
+            <span>{{ get_static_option('site_' . $user_select_lang_slug . '_title') }}</span>
+          @endif
+        </a>
+
+        @if(!empty($footerAbout))
+          <p class="g4f-about">{{ $footerAbout }}</p>
+        @endif
+
+        @if(!empty($all_social_item) && count($all_social_item))
+        <div class="g4f-social">
+          @foreach($all_social_item as $data)
+            <a href="{{ $data->url }}" target="_blank" rel="noopener noreferrer" aria-label="{{ $data->title ?? 'Social profile' }}">
+              {!! fa_class_to_svg($data->icon) !!}
+            </a>
+          @endforeach
         </div>
+        @endif
       </div>
+
+      @foreach($footerCols as $col)
+        <nav class="g4f-col" aria-label="{{ $col['title'] }}">
+          <h2 class="g4f-head">{{ $col['title'] }}</h2>
+          <span class="g4f-head-rule"></span>
+          <ul>
+            @foreach($col['links'] as $link)
+              <li><a href="{{ $link['href'] }}" @if($link['target'] !== '') target="{{ $link['target'] }}" rel="noopener" @endif>{{ $link['label'] }}</a></li>
+            @endforeach
+          </ul>
+        </nav>
+      @endforeach
+
     </div>
+  </footer>
+
  <!-- Copyright Bar -->
     <div style="background:#6fd943;padding:22px 40px">
       <div
