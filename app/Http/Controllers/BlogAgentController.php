@@ -47,8 +47,11 @@ class BlogAgentController extends Controller
             'title' => 'required|string|max:500',
             'content' => 'required|string',
             'excerpt' => 'required|string',
-            'category_id' => 'required|integer|exists:blog_categories,id',
-            'author_id' => 'required|integer|exists:author_new,id',
+            'category_id' => 'required_without:category_name|nullable|integer|exists:blog_categories,id',
+            'author_id' => 'required_without:author_name|nullable|integer|exists:author_new,id',
+            // or a NEW category / author by name: reused when one with that name exists
+            'category_name' => 'nullable|string|max:191',
+            'author_name' => 'nullable|string|max:191',
             'slug' => 'nullable|string|max:191',
             'meta_tags' => 'nullable|string',
             'meta_description' => 'nullable|string',
@@ -61,6 +64,12 @@ class BlogAgentController extends Controller
             'show_on_homepage' => 'nullable|boolean',
         ]);
 
+        if (empty($data['category_id'])) {
+            $data['category_id'] = $this->categoryByName($data['category_name']);
+        }
+        if (empty($data['author_id'])) {
+            $data['author_id'] = $this->authorByName($data['author_name']);
+        }
         $slug = $this->uniqueSlug($data['slug'] ?? $data['title']);
         $imageId = !empty($data['image_url']) ? $this->storeImage($data['image_url'], $data['image_alt'] ?? $data['title']) : null;
         $author = Author::find($data['author_id']);
@@ -94,6 +103,28 @@ class BlogAgentController extends Controller
             'url' => route('frontend.blog.single', $blog->slug),
             'image_id' => $imageId,
         ], 201);
+    }
+
+    /** Existing category with this name, or a new published one (as Blogs > Category would add). */
+    private function categoryByName(string $name): int
+    {
+        $name = trim($name);
+        $cat = BlogCategory::whereRaw('LOWER(name) = ?', [mb_strtolower($name)])->where('lang', 'en_US')->first();
+        if (!$cat) {
+            $cat = BlogCategory::create(['name' => $name, 'slug' => Str::slug($name), 'lang' => 'en_US', 'status' => 'publish']);
+        }
+        return $cat->id;
+    }
+
+    /** Existing author with this name, or a new one (as Authors > Add New would add). */
+    private function authorByName(string $name): int
+    {
+        $name = trim($name);
+        $author = Author::whereRaw('LOWER(name) = ?', [mb_strtolower($name)])->first();
+        if (!$author) {
+            $author = Author::create(['name' => $name, 'slug' => Str::slug($name), 'lang' => 'en_US', 'status' => 'publish']);
+        }
+        return $author->id;
     }
 
     private function uniqueSlug(string $source): string
