@@ -19,7 +19,7 @@
 @push('styles')
     {{-- Bump ?v= on every list.css change: LiteSpeed serves it with a one-year
          immutable cache, so returning visitors keep the old file otherwise. --}}
-    <link rel="stylesheet" href="{{ asset('assets/frontend/css/list.css') }}?v=15">  
+    <link rel="stylesheet" href="{{ asset('assets/frontend/css/list.css') }}?v=49">  
 @endpush
 @php
 use App\Services;
@@ -78,7 +78,9 @@ use App\Services;
 <nav aria-label="breadcrumb">
     <ul class="breadcrumb">
 
-        <li class="breadcrumb-item">
+        <li class="breadcrumb-item breadcrumb-home">
+            <svg class="breadcrumb-home-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.2 12 3l9 7.2"/><path d="M5 9.6V20h14V9.6"/></svg>
+            <span class="breadcrumb-home-rule" aria-hidden="true"></span>
             <a href="{{ url('/') }}">Home</a>
         </li>
 
@@ -106,9 +108,8 @@ use App\Services;
 
       <div class="hero-intro-main">
 
-        <span class="hero-badge">
-          <span class="hero-badge-dot"></span>
-          {{ $industry->name }} &middot; Updated {{ $heroUpdated->format('d M Y') }}
+        <span class="hero-chips">
+          <span class="hero-badge hero-badge-muted">Last updated {{ $heroUpdated->format('d M Y') }}</span>
         </span>
 
         @php
@@ -121,52 +122,7 @@ use App\Services;
                 $titleTail = $m[2];
             }
         @endphp
-        <h1 class="hero-title">{{ $titleHead }}@if($titleTail !== '') <span class="hero-title-accent">{{ $titleTail }}</span>@endif</h1>
-
-        @php
-            // Most rows carry no excerpt, which left the heading column with
-            // nothing between the title and the buttons. Fall back to a line
-            // built from the row's own figures rather than leaving a hole.
-            $heroSub = trim(preg_replace('/\s+/', ' ', strip_tags($service_item->excerpt ?? '')));
-            if ($heroSub === '') {
-                $heroSub = !empty($service_item->data_counts)
-                    ? 'Reach ' . $service_item->data_counts . ' verified ' . $titleHead . ' contacts, each checked before it reaches you. Searching is free &mdash; credits are only spent when you reveal a contact.'
-                    : 'Search the full ' . $titleHead . ' database free &mdash; credits are only spent when you reveal a contact.';
-            }
-        @endphp
-        <p class="hero-sub">{!! $heroSub !!}</p>
-
-        <div class="hero-actions">
-          <a href="https://app.go4database.com/register?utm_source=ProductPage&amp;utm_medium=Internal&amp;utm_campaign=hero_free_leads" class="hero-btn" target="_blank" rel="noopener">Get 1200 free leads</a>
-          <a href="#lead-form" class="hero-btn-ghost">Talk to a data expert</a>
-        </div>
-
-      </div>
-
-      <!-- SIDE CARD -->
-
-      <div class="side-card">
-
-        <div class="side-heading">Need a Custom B2B Contact List?</div>
-
-   <p>
-          Find your ideal prospects by:
-      </p>
-
-      <ul class="feature-list">
-          <li>
-           <img src="{{asset('assets/uploads/icon.webp')}}"  width="25">Job Title</li>
-          <li>
-           <img src="{{asset('assets/uploads/icon.webp')}}"  width="25">Industry</li>
-          <li>
-           <img src="{{asset('assets/uploads/icon.webp')}}"  width="25">Company</li>
-          <li>
-           <img src="{{asset('assets/uploads/icon.webp')}}"  width="25">Location</li>
-      </ul>
-    <a href="https://app.go4database.com/register" class="custom-btn">
-          Request a Custom List
-      </a>
-
+        <h1 class="hero-title">{{ $titleHead }}@if($titleTail !== "") <span class="hero-title-accent">{{ $titleTail }}</span>@endif</h1>
       </div>
 
     </div>
@@ -184,17 +140,24 @@ use App\Services;
     <form onsubmit="return false" autocomplete="off">
       @csrf
       <div class="field-group">
-        <label for="search-title">Job title</label>
-        <input type="text" placeholder="Title" id="search-title" value="{{ $service_item->search_title ?? '' }}">
+        <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg></span>
+        <label class="field-label-sr" for="search-title">Job title</label>
+        <input type="text" placeholder="Job Title" id="search-title" value="{{ $service_item->search_title ?? '' }}">
       </div>
       <div class="field-group">
-        <label for="search-industry">Industry / Business</label>
+        <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V5.5A1.5 1.5 0 0 1 5.5 4h7A1.5 1.5 0 0 1 14 5.5V21"/><path d="M14 10h4.5A1.5 1.5 0 0 1 20 11.5V21"/><path d="M3 21h18"/><path d="M7.5 8h3M7.5 12h3M7.5 16h3"/></svg></span>
+        <label class="field-label-sr" for="search-industry">Industry or business</label>
         <input type="text" placeholder="Industry / Business" id="search-industry" value="{{ trim($service_item->search_industry ?? '') ?: trim($service_item->search_business_category ?? '') }}">
       </div>
       <div class="field-group">
-        <label for="search-location">Location</label>
+        <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10.5c0 5.3-8 11-8 11s-8-5.7-8-11a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10.3" r="2.7"/></svg></span>
+        <label class="field-label-sr" for="search-location">Location</label>
         <input type="text" placeholder="Location" id="search-location" value="{{ $service_item->search_location ?? '' }}">
       </div>
+      <a class="credits-btn credits-btn-inline" href="https://app.go4database.com/register?utm_source=ProductPage&amp;utm_medium=Internal&amp;utm_campaign=search_free_credits" target="_blank" rel="noopener">
+        <svg class="credits-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M14.6 9.4a3.4 3.4 0 1 0 0 5.2"/></svg>
+        Get 1200 free credits
+      </a>
       <button type="button" id="search-leads-btn">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2.3"/>
@@ -247,11 +210,44 @@ use App\Services;
             </ul>
  </nav>
         
-        <button class="download-btn">
-         <!-- DOWNLOAD ICON -->
-<a href="https://app.go4database.com/login" target="_blank"  >
-<i class="fa fa-download"></i>  Download List</a>
-        </button>
+
+        <!-- STATS -->
+
+@php
+    // accuracy_commitment has existed on b2blist all along; the ring is drawn
+    // from it, so a list carrying a different figure shows that figure.
+    $accuracy = (int) preg_replace('/\D/', '', (string) ($service_item->accuracy_commitment ?: ''));
+    if ($accuracy < 1 || $accuracy > 100) { $accuracy = 95; }
+    $ringR = 21;
+    $ringCirc = round(2 * M_PI * $ringR, 1);
+    $ringDash = round($ringCirc * $accuracy / 100, 1);
+@endphp
+
+    <div class="stats-band">
+
+      <div class="stats-band-cell stats-band-lead">
+        <span class="stats-band-label">Verified records</span>
+        <span class="stats-band-num">{{ $service_item->data_counts ?: '—' }}</span>
+      </div>
+
+      <div class="stats-band-cell">
+        <svg class="stats-band-ring" width="54" height="54" viewBox="0 0 54 54" role="img" aria-label="{{ $accuracy }} percent accuracy commitment">
+          <circle cx="27" cy="27" r="{{ $ringR }}" fill="none" stroke="#e6efe2" stroke-width="5"/>
+          <circle cx="27" cy="27" r="{{ $ringR }}" fill="none" stroke="#2f8f14" stroke-width="5" stroke-linecap="round" stroke-dasharray="{{ $ringDash }} {{ $ringCirc }}" transform="rotate(-90 27 27)"/>
+          <text x="27" y="27" text-anchor="middle" dominant-baseline="central" font-family="Poppins, sans-serif" font-size="14" font-weight="800" fill="#10241a">{{ $accuracy }}%</text>
+        </svg>
+        <span class="stats-band-cap">Accuracy commitment</span>
+      </div>
+
+    </div>
+
+        <div class="table-footer-actions">
+          <button class="download-btn">
+            <a href="https://app.go4database.com/login" target="_blank">
+              <svg class="download-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v11"/><path d="m7.5 10.5 4.5 4.5 4.5-4.5"/><path d="M4.5 19.5h15"/></svg>Download List</a>
+          </button>
+
+        </div>
 
       </div>
 
@@ -275,82 +271,28 @@ use App\Services;
     $contactDatabaseTitle = $baseTitle . ' Contact Database';
 @endphp
 
-  <!-- STATS -->
-
-@php
-    $lastUpdated = $heroUpdated;
-
-    // accuracy_commitment has existed on b2blist all along but no view read it;
-    // the ring is drawn from it, so a list carrying a different figure shows it.
-    $accuracy = (int) preg_replace('/\D/', '', (string) ($service_item->accuracy_commitment ?: ''));
-    if ($accuracy < 1 || $accuracy > 100) { $accuracy = 95; }
-    $ringR = 33;
-    $ringCirc = round(2 * M_PI * $ringR, 1);
-    $ringDash = round($ringCirc * $accuracy / 100, 1);
-
-    $segmentChip = trim(preg_replace('/^' . preg_quote($industry->name, '/') . '\s*/i', '', $baseTitle));
-@endphp
+  <!-- COMPLIANCE -->
 
   <div class="stats-grid">
-
-    @if(!empty($service_item->data_counts))
-    <div class="stat-feature">
-      <div class="stat-feature-head">
-        <span class="stat-feature-icon">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6fd943" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>
-        </span>
-        <span class="stat-feature-label">Total verified records</span>
-      </div>
-      <div class="stat-feature-num">{{ $service_item->data_counts }}</div>
-      <div class="stat-feature-chips">
-        <span>{{ $industry->name }}</span>
-        @if($segmentChip !== '' && strcasecmp($segmentChip, $industry->name) !== 0)
-        <span>{{ $segmentChip }}</span>
-        @endif
-      </div>
-    </div>
-    @endif
-
-    <div class="stat-card">
-      <svg class="accuracy-ring" width="92" height="92" viewBox="0 0 80 80" role="img" aria-label="{{ $accuracy }} percent accuracy commitment">
-        <defs>
-          <linearGradient id="accuracyRing" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#145a0b"/>
-            <stop offset="1" stop-color="#6fd943"/>
-          </linearGradient>
-        </defs>
-        <circle cx="40" cy="40" r="{{ $ringR }}" fill="none" stroke="#e6efe2" stroke-width="8"/>
-        <circle cx="40" cy="40" r="{{ $ringR }}" fill="none" stroke="url(#accuracyRing)" stroke-width="8" stroke-linecap="round" stroke-dasharray="{{ $ringDash }} {{ $ringCirc }}" transform="rotate(-90 40 40)"/>
-        <text x="40" y="40" text-anchor="middle" dominant-baseline="central" font-family="Poppins, sans-serif" font-size="19" font-weight="800" fill="#10241a">{{ $accuracy }}%</text>
-      </svg>
-      <p>Accuracy Commitment</p>
-    </div>
-
-    <div class="stat-card">
-      <span class="stat-refresh-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#145a0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>
-        <span class="stat-refresh-dot"></span>
-      </span>
-      <div class="stat-refresh-date">{{ $lastUpdated->format('d M Y') }}</div>
-      <p>Last updated</p>
-    </div>
 
     <div class="trust-row">
 
       <div class="stats-cmp-main">
         <div class="stat-comp">
-          <div class="stat-comp-icon"><img src="{{asset('assets/uploads/icon.webp')}}" alt="" width="30"></div>
-          <p>GDPR Compliance</p>
+          <svg class="stat-comp-shield" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2 4.6 5.1v6.2c0 4.6 3.1 8.8 7.4 10.5 4.3-1.7 7.4-5.9 7.4-10.5V5.1Z"/><path d="M10.8 14.9 8 12.1l1.2-1.2 1.6 1.6 4-4L16 9.7Z" fill="#fff"/></svg>
+          <p>GDPR Compliant</p>
         </div>
         <div class="stat-comp">
-          <div class="stat-comp-icon"><img src="{{asset('assets/uploads/icon.webp')}}" alt="" width="30"></div>
-          <p>CCPA Compliance</p>
+          <svg class="stat-comp-shield" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2 4.6 5.1v6.2c0 4.6 3.1 8.8 7.4 10.5 4.3-1.7 7.4-5.9 7.4-10.5V5.1Z"/><path d="M10.8 14.9 8 12.1l1.2-1.2 1.6 1.6 4-4L16 9.7Z" fill="#fff"/></svg>
+          <p>CCPA Compliant</p>
         </div>
         <div class="stat-comp">
-          <div class="stat-comp-icon"><img src="{{asset('assets/uploads/icon.webp')}}" alt="" width="30"></div>
-          <p>ISO certified</p>
+          <svg class="stat-comp-shield" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2 4.6 5.1v6.2c0 4.6 3.1 8.8 7.4 10.5 4.3-1.7 7.4-5.9 7.4-10.5V5.1Z"/><path d="M10.8 14.9 8 12.1l1.2-1.2 1.6 1.6 4-4L16 9.7Z" fill="#fff"/></svg>
+          <p>ISO 27001 Certified</p>
         </div>
       </div>
+
+      <span class="trust-rule" aria-hidden="true"></span>
 
       <div class="logo-slider-viewport">
         <div class="logo-slider">
@@ -373,6 +315,7 @@ use App\Services;
 
     </div>
   </div>
+
 
   <!-- DESCRIPTION -->
 
@@ -2197,8 +2140,8 @@ faqItems.forEach(item => {
         (meta ? '<div class="g4d-lead-meta">' + meta + '</div>' : '') + '</div>' +
         '<div class="g4d-lead-person">' + escapeHtml(lead.person_name) + '</div>' +
         '<div class="g4d-lead-title" title="' + title + '">' + title + '</div>' +
-        '<div class="g4d-lead-email"><button type="button" class="g4d-lead-btn verify-email-btn view-btn" data-type="email" data-token="' + token + '" data-available="' + (lead.has_email ? 1 : 0) + '">View Email ' + statusBadge(!!lead.has_email, 'Email') + '</button></div>' +
-        '<div class="g4d-lead-phone"><button type="button" class="g4d-lead-btn view-btn" data-type="contact" data-token="' + token + '" data-available="' + (lead.has_phone ? 1 : 0) + '">View Phone ' + statusBadge(!!lead.has_phone, 'Phone') + '</button></div>' +
+        '<div class="g4d-lead-email"><button type="button" class="g4d-lead-btn verify-email-btn view-btn" data-type="email" data-token="' + token + '" data-available="' + (lead.has_email ? 1 : 0) + '"><svg class=\"g4d-lead-btn-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x=\"3\" y=\"5\" width=\"18\" height=\"14\" rx=\"2.5\"/><path d=\"m3.5 7 8.5 6 8.5-6\"/></svg>View Email ' + statusBadge(!!lead.has_email, 'Email') + '</button></div>' +
+        '<div class="g4d-lead-phone"><button type="button" class="g4d-lead-btn view-btn" data-type="contact" data-token="' + token + '" data-available="' + (lead.has_phone ? 1 : 0) + '"><svg class=\"g4d-lead-btn-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M6.5 3.5h3l1.5 4-2 1.5a12 12 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A17 17 0 0 1 4.5 5.7 2 2 0 0 1 6.5 3.5Z\"/></svg>View Phone ' + statusBadge(!!lead.has_phone, 'Phone') + '</button></div>' +
         '</div>';
     }).join('');
   }

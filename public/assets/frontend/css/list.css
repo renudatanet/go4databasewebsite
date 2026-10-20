@@ -60,36 +60,48 @@
    Hero + breadcrumb
    -------------------------------------------------------------------------- */
 .hero-section {
-  /* Two soft green glows over an almost-white wash, with a faint grid fading
-     out behind the heading -- the flat mint block had no depth to it. */
+  /* A soft green shade across the top that clears to white before the
+     results table, so the heading sits on tint and the data sits on white.
+     Much lighter than the old wash, which carried two radial glows and a
+     grid texture and read as a marketing banner. */
   background:
-    radial-gradient(900px 420px at 18% -8%, rgba(111, 217, 67, .20), transparent 62%),
-    radial-gradient(760px 420px at 88% 4%, rgba(31, 122, 46, .10), transparent 66%),
-    linear-gradient(#fbfdfa, #ffffff);
-  padding: 36px clamp(20px, 8vw, 100px) 44px;
+    radial-gradient(1200px 440px at 8% -12%, rgba(111, 217, 67, .16), transparent 62%),
+    linear-gradient(180deg, #f4faf1 0%, #fbfdfa 34%, #ffffff 62%);
+  /* The bottom padding and .stats-grid's top margin stack into the gap
+     before the compliance row, so both were halved to halve that gap. */
+  padding: 30px clamp(20px, 8vw, 100px) 20px;
   position: relative;
-  overflow: hidden;
-}
-.hero-section::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(16, 36, 26, .045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(16, 36, 26, .045) 1px, transparent 1px);
-  background-size: 56px 56px;
-  -webkit-mask-image: radial-gradient(760px 420px at 30% 0%, #000, transparent 72%);
-  mask-image: radial-gradient(760px 420px at 30% 0%, #000, transparent 72%);
 }
 .hero-section > * { position: relative; z-index: 1; }
 /* The trailing "Email List" / "Mailing List" half of the title. */
 .hero-title-accent {
-  background: linear-gradient(100deg, #1f7a2e, #57c22c 55%, #2f9e8f);
+  display: inline-block;
+  /* Wider than the text so the sweep below has somewhere to travel. */
+  background: linear-gradient(100deg, #1f7a2e 0%, #57c22c 38%, #2f9e8f 62%, #57c22c 100%);
+  background-size: 230% 100%;
+  background-position: 100% 0;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: #1f7a2e;
+  animation: heroSweep 1.4s ease-out .42s both;
+}
+
+/* One page-load entrance, staggered across the heading block: chips, then
+   title, then buttons. Deliberately a single orchestrated moment rather
+   than an effect on every section. */
+.hero-chips { animation: heroRise .55s cubic-bezier(.22, .9, .3, 1) both; }
+@keyframes heroRise {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes heroSweep {
+  from { background-position: 100% 0; }
+  to { background-position: 0 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-chips, .hero-title, .hero-title-accent { animation: none; }
+  .hero-title-accent { background-position: 0 0; }
 }
 .breadcrumb {
   font-size: 13.5px;
@@ -103,48 +115,52 @@
   list-style: none;
 }
 .breadcrumb-item { display: flex; align-items: center; gap: 6px; }
-.breadcrumb-item + .breadcrumb-item::before { content: "/"; margin-right: 6px; color: #b7c7bd; }
+.breadcrumb-home { gap: 10px; color: #5c6760; }
+.breadcrumb-home-icon { flex: 0 0 auto; }
+.breadcrumb-home-rule { width: 1px; height: 15px; background: #dfe3df; display: inline-block; }
+/* A drawn chevron rather than a slash: two borders on a rotated box. */
+.breadcrumb-item + .breadcrumb-item::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-right: 2px solid #b9c2b8;
+  border-bottom: 2px solid #b9c2b8;
+  transform: rotate(-45deg);
+  margin-right: 8px;
+  flex: 0 0 auto;
+}
 .breadcrumb-item a { color: var(--list-ink-soft); text-decoration: none; }
 .breadcrumb-item a:hover { color: var(--list-green-dark); text-decoration: underline; }
 .breadcrumb-item.active { color: var(--list-ink); font-weight: 600; }
 /* --------------------------------------------------------------------------
-   Hero intro: heading block beside the custom-list card, search table below
+   Hero intro: heading block, search table below
    -------------------------------------------------------------------------- */
 .hero-intro {
   display: flex;
   gap: 28px;
-  /* The custom-list card is taller than the heading block -- more so on rows
-     with no excerpt -- so pinning to the top left a deep well under the
-     buttons. Centring balances the two against each other. */
   align-items: center;
   margin-bottom: 30px;
 }
 .hero-intro-main { flex: 1 1 520px; min-width: 0; }
-.hero-intro .side-card { flex: 0 0 380px; }
 @media (max-width: 900px) {
-  /* align-items switches to the horizontal axis once this is a column, so the
-     centring above has to be undone or both children stop filling the width. */
   .hero-intro { flex-direction: column; align-items: stretch; }
   /* flex-basis is the main axis, so the 520px basis above becomes a height
      once this stacks -- it left a tall gap under the buttons. */
   .hero-intro-main { flex: 0 0 auto; width: 100%; }
-  .hero-intro .side-card { flex: 0 0 auto; max-width: none; width: 100%; }
 }
+
+.hero-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .hero-badge {
   display: inline-flex; align-items: center; gap: 8px;
-  background: #fff;
-  border: 1px solid #cfe8c6;
+  background: #e8f7e2;
+  border: 0;
   border-radius: 999px;
-  padding: 7px 14px;
-  font-size: 12px; font-weight: 700; letter-spacing: .3px;
-  color: var(--list-green-dark);
-  text-transform: uppercase;
+  padding: 8px 16px;
+  font-size: 14px; font-weight: 600;
+  color: #1f7a12;
 }
-.hero-badge-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--list-green);
-  box-shadow: 0 0 0 3px rgba(111, 217, 67, .25);
-}
+/* The verified date reads as metadata, not a category, so it is set apart
+   from the industry chip rather than joined to it with a middle dot. */
+.hero-badge-muted { background: #f1f3f1; color: #5c6760; font-weight: 500; }
 .hero-sub {
   margin: 16px 0 0;
   font-size: 16.5px;
@@ -152,40 +168,21 @@
   color: var(--list-ink-soft);
   max-width: 560px;
 }
-.hero-actions { display: flex; flex-wrap: wrap; gap: 11px; margin-top: 24px; }
-.hero-btn, .hero-btn-ghost {
-  display: inline-block;
-  border-radius: 11px;
-  padding: 14px 26px;
-  font-size: 15.5px;
-  font-weight: 700;
-  text-decoration: none;
-}
-.hero-btn {
-  background: var(--list-green-dark);
-  color: #fff;
-  box-shadow: 0 10px 24px -12px rgba(20, 90, 11, .7);
-}
-.hero-btn:hover { background: var(--list-green-deep); color: #fff; }
-.hero-btn-ghost {
-  background: #fff;
-  border: 1px solid #dbe4e0;
-  color: var(--list-ink);
-  font-weight: 600;
-}
-.hero-btn-ghost:hover { background: var(--list-tint); color: var(--list-ink); }
 
 .hero-title {
   font-family: var(--heading-font);
-  text-align: left;
-  margin-top: 18px;
+  text-align: center;
   font-size: clamp(28px, 4vw, 44px);
   font-weight: 800;
   letter-spacing: -.3px;
   color: var(--list-ink);
   line-height: 1.18;
-  margin: 0 0 28px;
+  margin: 4px 0 26px;
+  animation: heroRise .6s cubic-bezier(.22, .9, .3, 1) .06s both;
 }
+/* The chips sit directly above the title, so they centre with it -- left
+   aligned above a centred heading reads as a mistake. */
+.hero-chips { justify-content: center; }
 .hero {
   display: flex;
   gap: 28px;
@@ -207,7 +204,7 @@
    page's palette. Labels are new (the homepage's fields start empty, so a
    placeholder is enough there; this page's fields open pre-filled with a
    real value, so a plain placeholder would never be seen). */
-.filters { margin-bottom: 18px; }
+.filters { margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #ebeeea; }
 .filters form {
   display: flex;
   flex-wrap: wrap;
@@ -218,34 +215,41 @@
   flex: 1 1 160px;
   min-width: 0;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 1px;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
   background: #fff;
-  border: 1.5px solid #d9e1ea;
-  border-radius: 10px;
-  padding: 7px 16px;
+  border: 1px solid #e2e6e1;
+  border-radius: 9px;
+  padding: 0 14px;
+  height: 44px;
   transition: border-color .15s, box-shadow .15s;
+}
+.field-icon { flex: 0 0 auto; display: inline-flex; color: #8a948d; }
+.field-icon svg { width: 16px; height: 16px; display: block; }
+/* The field label is carried by the placeholder now, as the reference
+   design does, but it stays in the DOM for screen readers and for the
+   input's accessible name. */
+.field-label-sr {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 /* The border lives on this wrapper, not the input (the input itself is
    borderless so the label and value can share one box) -- so the focus
    ring has to key off :focus-within, not :focus, or clicking into the
    field gives no visual feedback at all. */
 .field-group:focus-within {
-  border-color: #3b8e15;
-  box-shadow: 0 0 0 3px rgba(59,142,21,0.12);
+  border-color: #2f8f14;
+  box-shadow: 0 0 0 3px rgba(47,143,20,0.12);
 }
-.field-group label {
-  font-size: 10.5px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .4px;
-  color: #8b988e;
-}
+.field-group:focus-within .field-icon { color: #2f8f14; }
 .filters input {
   width: 100%;
   min-width: 0;
-  height: 22px;
+  height: 100%;
   border: none;
   border-radius: 0;
   padding: 0;
@@ -265,31 +269,43 @@
    input, so this one has to unambiguously win: one extra class gives it
    higher specificity than the sitewide rule regardless of load order. */
 .filters .field-group input:focus { border: none; outline: 0; box-shadow: none; }
-.filters input::placeholder { color: #93a89a; font-weight: 500; }
+.filters input { font-size: 14px; font-weight: 500; }
+.filters input::placeholder { color: #9aa69f; font-weight: 400; }
 .filters button {
   flex: 0 0 auto;
-  min-width: 120px;
-  border-radius: 99px;
+  min-width: 106px;
+  height: 44px;
+  border-radius: 9px;
   font-family: var(--body-font);
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 700;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  transition: background .2s, box-shadow .2s;
+  gap: 7px;
+  transition: background .2s;
 }
-.filters button { background: #3b8e15; color: #fff; border: none; box-shadow: 0 8px 20px rgba(59,142,21,0.3); }
-.filters button:hover { background: #34790f; }
-.filters button:focus-visible { outline: 3px solid #3b8e15; outline-offset: 2px; }
+/* Brand green #6FD943 with a dark label: white on it measures 1.80:1 and
+   the #22c55e/white pairing that briefly replaced it measured 2.28:1 --
+   both under the 4.5:1 minimum. Dark ink on #6FD943 measures 9.06:1. */
+.filters button {
+  background: var(--list-green);
+  color: var(--list-ink);
+  border: none;
+  font-size: 13.5px;
+  font-weight: 700;
+  border-radius: 9px;
+}
+.filters button:hover { background: #5fc433; color: var(--list-ink); }
+.filters button:focus-visible { outline: 3px solid var(--list-green-dark); outline-offset: 2px; }
 @media (max-width: 640px) {
   .filters form { flex-direction: column; }
   /* flex: 1 1 160px on .field-group sets flex-basis/grow for the row
      layout's width; once the form switches to a column, that same
      flex-grow stretches each field to fill leftover vertical space
      instead -- reset it so each field is just as tall as its content. */
-  .field-group { flex: 0 0 auto; padding: 10px 16px; }
+  .field-group { flex: 0 0 auto; }
   .filters button { height: 46px; }
 }
 
@@ -307,32 +323,49 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
-  margin-top: 16px;
+  margin-top: 24px;
 }
-.pagination { display: flex; align-items: center; gap: 8px; font-size: 13px; margin: 0; padding: 0; list-style: none; }
+.pagination { display: flex; align-items: center; gap: 9px; margin: 0; padding: 0; list-style: none; }
 .page-link {
-  width: 30px; height: 30px;
+  min-width: 38px; height: 38px;
+  padding: 0 10px;
   display: flex; align-items: center; justify-content: center;
-  border: 1px solid var(--list-border);
-  border-radius: 6px;
-  color: var(--list-ink-soft);
+  border: 1px solid #e2e6e1;
+  border-radius: 9px;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  color: #10241a;
   text-decoration: none;
 }
-.page-item.active .page-link { background: var(--list-green-dark); border-color: var(--list-green-dark); color: #fff; }
+.page-link:hover { border-color: #2f8f14; color: #1f7a12; }
+/* style.css (sitewide) paints the current page with ".page-item.active span"
+   using var(--main-color-one), which is not defined on this page -- the
+   declaration drops and the current page rendered as an empty white box.
+   Pinning both selectors here puts it back regardless of load order. */
+.pagination .page-item.active .page-link,
+.pagination .page-item.active span.page-link {
+  background: #1f7a12;
+  border-color: #1f7a12;
+  color: #fff;
+}
 .page-item.disabled .page-link { opacity: .45; }
 .download-btn {
-  color: var(--list-green-dark);
-  border: 2px solid var(--list-green);
+  color: #1f7a12;
+  border: 1.5px solid #2f8f14;
   background: #fff;
-  height: 40px;
-  padding: 0 18px;
-  border-radius: var(--list-radius-sm);
-  font-size: 13.5px;
-  font-weight: 700;
+  min-height: 42px;
+  padding: 0 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   transition: background .2s, color .2s;
 }
-.download-btn:hover { background: var(--list-green); color: #fff; }
+.download-btn:hover { background: #1f7a12; border-color: #1f7a12; color: #fff; }
 .download-btn a { color: inherit; text-decoration: none; }
 
 .side-card {
@@ -384,7 +417,7 @@
 .side-card input::placeholder { color: #a8c2a1; }
 
 /* Lead result rows (search results table) */
-.g4d-leads-grid { display: grid; grid-template-columns: minmax(0,1.5fr) minmax(0,1.15fr) minmax(0,1.45fr) minmax(150px,1.1fr) 140px; column-gap: 16px; align-items: center; }
+.g4d-leads-grid { display: grid; grid-template-columns: minmax(0,1.5fr) minmax(0,1.1fr) minmax(0,1.4fr) minmax(140px,0.95fr) minmax(140px,0.95fr); column-gap: 16px; align-items: center; }
 /* A grid item's default min-width is auto, i.e. sized to fit its content
    without wrapping -- fine for short labels, but a revealed email has no
    spaces to break at, so the browser lets it overflow its own column
@@ -393,19 +426,38 @@
    min-width:0 forces the column to respect the track's width and lets
    overflow-wrap on the text actually take effect. */
 .g4d-leads-grid > div { min-width: 0; }
-.g4d-leads-head { padding: 14px 20px; background: var(--list-green-dark); font-size: 12.5px; font-weight: 800; letter-spacing: .4px; color: #fff; }
-.g4d-lead { padding: 16px 20px; border-bottom: 1px solid #f1f5f9; font-size: 13.5px; color: #333; }
-.g4d-lead:last-child { border-bottom: 0; }
-.g4d-lead-company, .g4d-lead-person { font-weight: 700; color: #1e293b; font-size: 14px; line-height: 1.35; overflow-wrap: anywhere; }
-.g4d-lead-meta { margin-top: 3px; font-size: 11.5px; color: #64748b; }
-.g4d-lead-title { color: #475569; font-weight: 500; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+/* The head was a dark green band, which fought the table for attention.
+   Light grey lets the rows carry the page. */
+.g4d-leads-head {
+  padding: 12px 18px;
+  /* A green tint rather than near-grey, so the header reads as the table's
+     own band. The original #6b7770 on #f5f7f5 measured 4.34:1, just under
+     the 4.5:1 minimum; this pairing measures 9.98:1. */
+  background: #dfeed7;
+  border-bottom: 1px solid #cadebe;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: .085em;
+  text-transform: uppercase;
+  color: #1c3d20;
+}
+.g4d-lead { padding: 10px 18px; border-top: 1px solid #eef1ee; border-bottom: 0; font-size: 13px; color: #333; }
+.g4d-lead:first-child { border-top: 0; }
+.g4d-lead-company, .g4d-lead-person { font-weight: 700; color: #10241a; font-size: 13.5px; line-height: 1.35; overflow-wrap: anywhere; }
+.g4d-lead-meta { margin-top: 2px; font-size: 11px; color: #7a857f; }
+.g4d-lead-title { color: #5c6760; font-weight: 400; font-size: 13px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+/* The two action columns were left-aligned, which left a gap to the right
+   of each button and made the row look unbalanced. */
+.g4d-lead-email, .g4d-lead-phone { display: flex; justify-content: center; }
+.g4d-leads-head > span:nth-child(4), .g4d-leads-head > span:nth-child(5) { text-align: center; }
 .g4d-lead-btn, .view-btn {
-  display: inline-flex; align-items: center; gap: 8px;
-  border: 1px solid #cbd5e1; background: #fff; border-radius: 8px;
-  padding: 7px 12px; font-size: 12.5px; font-weight: 600; color: #334155;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  border: 1px solid #dde5da; background: #fff; border-radius: 9px;
+  min-height: 34px; padding: 0 12px; font-size: 12.5px; font-weight: 600; color: #10241a;
   cursor: pointer; white-space: nowrap;
 }
-.g4d-lead-btn:hover { border-color: var(--list-green-dark); box-shadow: 0 2px 8px rgba(59,142,21,.15); }
+.g4d-lead-btn-icon { width: 14px; height: 14px; flex: 0 0 auto; color: #2f8f14; }
+.g4d-lead-btn:hover { border-color: #2f8f14; background: #f7fbf5; }
 .g4d-lead-status { width: 16px; height: 16px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .g4d-lead-status.is-yes { background: #dcfce7; color: #15803d; }
 .g4d-lead-status.is-no { background: #fee2e2; color: #dc2626; }
@@ -437,7 +489,7 @@
 /* --------------------------------------------------------------------------
    Coverage block: records panel, accuracy ring, refresh card, trust row
    -------------------------------------------------------------------------- */
-.stats-grid { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 32px; }
+.stats-grid { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 16px; }
 
 .stat-feature {
   flex: 1 1 440px; min-width: 0;
@@ -515,32 +567,23 @@
 
 .trust-row {
   flex: 0 0 100%;
-  display: flex; flex-wrap: wrap; align-items: center; gap: 18px;
-  background: linear-gradient(100deg, #f1f9ee 0%, #ffffff 42%, #eef7f6 100%);
-  border: 1px solid #e6efe2;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 26px;
+  background: #fafbf9;
+  border: 1px solid #ebeee9;
   border-radius: 14px;
-  padding: 12px 18px;
+  padding: 16px 24px;
   overflow: hidden;
 }
-.stats-cmp-main { display: flex; flex-wrap: wrap; gap: 9px; flex-shrink: 0; }
-.stat-comp {
-  display: flex; align-items: center; gap: 8px;
-  border-radius: 999px; padding: 6px 14px 6px 7px;
-  background: #ecfdf3; border: 1px solid #bde3c9;
-}
-.stats-cmp-main .stat-comp:nth-child(2) { background: #ecfdff; border-color: #b2e2ea; }
-.stats-cmp-main .stat-comp:nth-child(3) { background: #f1f2ff; border-color: #c9ccf7; }
-.stat-comp-icon {
-  width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
-  background: linear-gradient(135deg, #166534, #1b8a3c);
-  display: flex; align-items: center; justify-content: center;
-}
-.stats-cmp-main .stat-comp:nth-child(2) .stat-comp-icon { background: linear-gradient(135deg, #0e7490, #0d8ba6); }
-.stats-cmp-main .stat-comp:nth-child(3) .stat-comp-icon { background: linear-gradient(135deg, #4338ca, #5558e0); }
-.stat-comp-icon img { width: 13px !important; height: 13px; object-fit: contain; }
-.stat-comp p { margin: 0; font-size: 12.5px; font-weight: 600; color: #15803d; white-space: nowrap; }
-.stats-cmp-main .stat-comp:nth-child(2) p { color: #0e7490; }
-.stats-cmp-main .stat-comp:nth-child(3) p { color: #4338ca; }
+.stats-cmp-main { display: flex; flex-wrap: wrap; align-items: center; gap: 26px; flex-shrink: 0; }
+/* The pill backgrounds were competing with the white ground the rest of the
+   page now sits on; the shield carries the colour instead of a chip. */
+.stat-comp { display: flex; align-items: center; gap: 9px; }
+.stat-comp-shield { width: 21px; height: 21px; flex-shrink: 0; color: #1b8a3c; }
+.stats-cmp-main .stat-comp:nth-child(2) .stat-comp-shield { color: #2f8fd9; }
+.stats-cmp-main .stat-comp:nth-child(3) .stat-comp-shield { color: #5a52e0; }
+.stat-comp p { margin: 0; font-size: 13.5px; font-weight: 500; color: #5c6760; white-space: nowrap; }
+.stats-cmp-main .stat-comp:nth-child(3) p { color: #4a43cf; font-weight: 600; }
+.trust-rule { width: 1px; align-self: stretch; min-height: 28px; background: #e2e7df; flex: 0 0 auto; }
 
 .logo-slider-viewport {
   flex: 1 1 260px; min-width: 0; overflow: hidden;
@@ -1275,3 +1318,131 @@
 .dir-cta-ghost:hover { background: rgba(255, 255, 255, .16); color: #fff; }
 .dir-cta-notes { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 10px 26px; justify-content: center; }
 .dir-cta-notes span { display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; color: rgba(255, 255, 255, .84); }
+
+.download-btn-icon { width: 16px; height: 16px; flex: 0 0 auto; }
+.download-btn a { display: inline-flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; }
+
+/* --------------------------------------------------------------------------
+   Stats band: verified records, accuracy and the verified date, under the
+   results table. Contents run horizontally inside each cell so the band
+   stays a thin strip -- stacked, it was twice this tall and pulled more
+   attention than the table above it.
+   -------------------------------------------------------------------------- */
+.stats-band {
+  display: flex;
+  flex-wrap: wrap;
+  background: #f8faf7;
+  border: 1px solid #ebeee9;
+  border-radius: 12px;
+  overflow: hidden;
+  /* The compliance row now sits above this, so the gap moved to the top. */
+  margin-top: 14px;
+}
+.stats-band-cell {
+  flex: 1 1 220px;
+  min-width: 0;
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+.stats-band-cell + .stats-band-cell { border-left: 1px solid #e6eae3; }
+.stats-band-lead { flex-direction: column; align-items: flex-start; justify-content: center; gap: 4px; }
+.stats-band-label { font-size: 12.5px; font-weight: 500; color: #5c6760; }
+.stats-band-num {
+  font-size: 30px;
+  line-height: 1.05;
+  font-weight: 800;
+  color: #1f7a12;
+  font-variant-numeric: tabular-nums;
+}
+.stats-band-ring { display: block; flex: 0 0 auto; }
+.stats-band-icon { width: 24px; height: 24px; display: block; flex: 0 0 auto; }
+.stats-band-text { display: flex; flex-direction: column; gap: 1px; }
+.stats-band-date { font-size: 17px; font-weight: 700; color: #10241a; font-variant-numeric: tabular-nums; }
+.stats-band-cap { font-size: 13px; font-weight: 500; color: #5c6760; line-height: 1.4; }
+@media (max-width: 760px) {
+  /* Side-by-side rules read as a broken grid once the cells wrap, so they
+     become horizontal ones between stacked cells instead. */
+  .stats-band-cell { flex: 1 1 100%; justify-content: flex-start; }
+  .stats-band-cell + .stats-band-cell { border-left: 0; border-top: 1px solid #e6eae3; }
+}
+
+/* The free-credits CTA moved out of the hero and now sits beside Download
+   list, so the footer carries both actions. Brand green #6FD943 with a dark
+   label: white on it measures 1.80:1, under the 4.5:1 minimum. */
+.table-footer-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.credits-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+  padding: 0 20px;
+  border-radius: 10px;
+  background: var(--list-green);
+  color: var(--list-ink);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background .2s;
+}
+.credits-btn:hover { background: #5fc433; color: var(--list-ink); }
+.credits-btn:focus-visible { outline: 3px solid var(--list-green-dark); outline-offset: 2px; }
+.credits-btn-icon { width: 16px; height: 16px; flex: 0 0 auto; }
+@media (max-width: 560px) {
+  /* Stacked, both actions go full width so neither looks like the minor one. */
+  .table-footer-actions { width: 100%; }
+  .table-footer-actions .download-btn { flex: 1 1 100%; justify-content: center; }
+}
+
+/* The same CTA inside the search row: matches the field/button height there
+   rather than the footer's, so the row stays one consistent band. */
+.credits-btn-inline {
+  flex: 0 0 auto;
+  min-height: 44px;
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 9px;
+  font-size: 13.5px;
+}
+@media (max-width: 640px) {
+  /* The search form stacks at this width, so the CTA fills the row too. */
+  .credits-btn-inline { width: 100%; justify-content: center; }
+}
+
+/* --------------------------------------------------------------------------
+   Stats band inside the table footer: the panel chrome is dropped here, so
+   it reads as a quiet strip between the pagination and Download list rather
+   than a third card competing with them.
+   -------------------------------------------------------------------------- */
+.table-footer .stats-band {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  overflow: visible;
+  justify-content: center;
+}
+.table-footer .stats-band-cell { flex: 0 1 auto; padding: 0 18px; gap: 10px; }
+.table-footer .stats-band-cell + .stats-band-cell { border-left: 1px solid #e6eae3; }
+.table-footer .stats-band-lead { flex-direction: row; align-items: center; gap: 10px; }
+.table-footer .stats-band-label { font-size: 11.5px; }
+.table-footer .stats-band-num { font-size: 20px; }
+.table-footer .stats-band-ring { width: 42px; height: 42px; }
+.table-footer .stats-band-icon { width: 20px; height: 20px; }
+.table-footer .stats-band-date { font-size: 15px; }
+.table-footer .stats-band-cap { font-size: 11.5px; }
+@media (max-width: 1100px) {
+  /* Three groups will not share one row below this, so the strip takes its
+     own line between the pagination and the buttons. */
+  .table-footer .stats-band { flex: 1 1 100%; order: 1; justify-content: flex-start; }
+  .table-footer-actions { order: 2; }
+}
+@media (max-width: 760px) {
+  .table-footer .stats-band-cell { flex: 1 1 100%; padding: 10px 0; }
+  .table-footer .stats-band-cell + .stats-band-cell { border-left: 0; border-top: 1px solid #e6eae3; }
+}

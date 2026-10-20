@@ -53,7 +53,7 @@ class ListController extends Controller
             'slug' => 'nullable|string',
             'description' => 'required|string',
             'buyers_list'  => 'nullable|string',
-            'excerpt' => 'required|string',
+            'excerpt' => 'nullable|string',
             'meta_tags' => 'nullable|string',
             'meta_description' => 'nullable|string',
             'categories_id' => 'required|string',
@@ -69,7 +69,19 @@ class ListController extends Controller
             'price_plan' => 'nullable',
         ]);
         $price_plan = !empty($request->price_plan) ? $request->price_plan : [];
-        $slug = !empty($request->slug) ? $request->slug : Str::slug($request->title,$request->lang);
+        // A list page is served from /list/{slug} and list_single() looks the
+        // row up by '/' . $slug, so the stored slug has to carry a leading
+        // slash and the category -- without them the new page 404s. Note also
+        // that Str::slug's second argument is the SEPARATOR, not a language:
+        // passing $request->lang turned "Claude Autoslug Email List" into
+        // "claudenautoslugenmailenlist".
+        $slug = trim((string) $request->slug);
+        if ($slug === '') {
+            $slug_category = ListCategory::find($request->categories_id);
+            $slug = '/' . (!empty($slug_category->slug) ? $slug_category->slug . '/' : '') . Str::slug($request->title);
+        } elseif (strpos($slug, '/') !== 0) {
+            $slug = '/' . $slug;
+        }
           $faqs = [];
             if ($request->has('faqs')) {
             $faqs = collect($request->faqs)
@@ -124,7 +136,7 @@ class ListController extends Controller
             'description' => 'required|string',
             'buyers_list'  => 'nullable|string',
             'slug' => 'nullable|string',
-            'excerpt' => 'required|string',
+            'excerpt' => 'nullable|string',
             'meta_tags' => 'nullable|string',
             'meta_description' => 'nullable|string',
             'categories_id' => 'required|string',
@@ -137,7 +149,19 @@ class ListController extends Controller
             'price_plan' => 'nullable',
         ]);
         $price_plan = !empty($request->price_plan) ? $request->price_plan : [];
-        $slug = !empty($request->slug) ? $request->slug : Str::slug($request->title,$request->lang);
+        // A list page is served from /list/{slug} and list_single() looks the
+        // row up by '/' . $slug, so the stored slug has to carry a leading
+        // slash and the category -- without them the new page 404s. Note also
+        // that Str::slug's second argument is the SEPARATOR, not a language:
+        // passing $request->lang turned "Claude Autoslug Email List" into
+        // "claudenautoslugenmailenlist".
+        $slug = trim((string) $request->slug);
+        if ($slug === '') {
+            $slug_category = ListCategory::find($request->categories_id);
+            $slug = '/' . (!empty($slug_category->slug) ? $slug_category->slug . '/' : '') . Str::slug($request->title);
+        } elseif (strpos($slug, '/') !== 0) {
+            $slug = '/' . $slug;
+        }
           $faqs = [];
 
 if ($request->has('faqs')) {
@@ -630,6 +654,10 @@ public function importCsv(Request $request)
 
         // Trim all headers
         $header = array_map('trim', $header);
+        // Imported rows were pinned to 'en_US'. The front end filters on the
+        // site's default language slug, so on any install whose default is not
+        // 'en_US' every imported list rendered as nothing.
+        $import_lang = \App\Language::where('default', 1)->value('slug') ?: 'en_US';
         $count = 0;
        while (($row = fgetcsv($handle, 100000, ',')) !== false) {
 
@@ -733,7 +761,7 @@ public function importCsv(Request $request)
            
             'categories_id' => $category->id,
 
-            'lang' => 'en_US',
+            'lang' => $import_lang,
 
            
             'search_title' => $data['Search Title'] ?? null,
