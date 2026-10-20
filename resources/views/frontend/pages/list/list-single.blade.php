@@ -19,7 +19,7 @@
 @push('styles')
     {{-- Bump ?v= on every list.css change: LiteSpeed serves it with a one-year
          immutable cache, so returning visitors keep the old file otherwise. --}}
-    <link rel="stylesheet" href="{{ asset('assets/frontend/css/list.css') }}?v=49">  
+    <link rel="stylesheet" href="{{ asset('assets/frontend/css/list.css') }}?v=59">  
 @endpush
 @php
 use App\Services;
@@ -538,12 +538,13 @@ use App\Services;
 
 <div class="left">
 
+@if(!empty($service_item->key_decision))
+
 <h2 class="section-title">
 Key Decision Makers in the {{ $emailTitle }}
 </h2>
 
 <div class="decision-table">
-    @if(!empty($service_item->key_decision))
     <div class="vertical-table">
         @foreach(explode(',', $service_item->key_decision) as $pair)
             @php
@@ -778,13 +779,13 @@ Have you requested for free sample data yet?
     <form action="{{ route('service-lead.submit') }}" method="POST">
           @csrf
 
-          <input type="text" name="name" placeholder="Name" required>
+          <input type="text" name="name" placeholder="Name" aria-label="Your name" autocomplete="name" required>
 
-          <input type="text" name="phone" placeholder="Phone" required>
+          <input type="tel" name="phone" placeholder="Phone" aria-label="Phone number" autocomplete="tel" required>
 
-          <input type="email" name="email" placeholder="Email" required>
+          <input type="email" name="email" placeholder="Email" aria-label="Email address" autocomplete="email" required>
 
-          <input type="text" name="business_details" placeholder="Website/Business Details">
+          <input type="text" name="business_details" placeholder="Website/Business Details" aria-label="Website or business details">
 
           <button type="submit">Continue</button>
       </form>
@@ -800,13 +801,21 @@ Have you requested for free sample data yet?
 
 <div class="faq-section">
 
-    <h2 class="faq-title">
-        Frequently Asked Questions
-    </h2>
+    <div class="faq-intro">
 
-    <p class="faq-subtitle">
-        You might have these questions in your mind?
-    </p>
+        <h2 class="faq-title">
+            Frequently Asked Questions
+        </h2>
+
+        <p class="faq-subtitle">
+            You might have these questions in your mind?
+        </p>
+
+        <p class="faq-help">
+            Can&rsquo;t find what you&rsquo;re looking for? <a href="{{ route('frontend.contact') }}">Talk to our data team</a> and we&rsquo;ll answer it.
+        </p>
+
+    </div>
 
 
 <div class="faq-wrapper">
@@ -817,13 +826,13 @@ Have you requested for free sample data yet?
 
             <div class="faq-item {{ $key == 0 ? 'active' : '' }}">
 
-                <button class="faq-question">
+                <button class="faq-question" type="button" aria-expanded="{{ $key == 0 ? 'true' : 'false' }}">
 
                     <h3>
                         {{ $faq['question'] }}
                     </h3>
 
-                    <span class="faq-icon">+</span>
+                    <span class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
 
                 </button>
 
@@ -2056,18 +2065,15 @@ faqItems.forEach(item => {
 
     question.addEventListener('click', () => {
 
-        if(item.classList.contains('active')){
-
-            item.classList.remove('active');
-
-        }else{
-
-            faqItems.forEach(faq => {
-                faq.classList.remove('active');
-            });
-
+        var wasOpen = item.classList.contains('active');
+        faqItems.forEach(faq => {
+            faq.classList.remove('active');
+            var q = faq.querySelector('.faq-question');
+            if (q) q.setAttribute('aria-expanded', 'false');
+        });
+        if (!wasOpen) {
             item.classList.add('active');
-
+            question.setAttribute('aria-expanded', 'true');
         }
 
     });
