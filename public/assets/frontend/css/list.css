@@ -752,6 +752,34 @@
 }
 .green-banner .read-btn:hover { background: var(--list-green); color: #0a2306; }
 
+/* The first banner sits beside the related-lists card, which is far taller
+   than a one-line banner, so the row left a deep gap under it. Here it is a
+   card that grows into the rest of the column, its content stacked and
+   centred, with the sign-up as the one solid button in the row. */
+.section-flex .left > .green-banner--cta {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  column-gap: 18px;
+  row-gap: 8px;
+  align-content: center;
+  padding: 28px 32px;
+  border-radius: var(--list-radius);
+  background: linear-gradient(135deg, #f6fbf3 0%, #fff 72%);
+}
+.green-banner--cta > img { grid-row: 1 / span 3; align-self: start; }
+.green-banner--cta .banner-text { font-size: 19px; line-height: 1.35; }
+.green-banner--cta .banner-sub { margin: 0; font-size: 14.5px; line-height: 1.6; color: var(--list-ink-soft); }
+.green-banner--cta .read-btn {
+  justify-self: start;
+  margin-top: 12px;
+  padding: 12px 26px;
+  background: var(--list-green);
+  color: #0a2306;
+  font-weight: 800;
+}
+.green-banner--cta .read-btn:hover { background: #5fc433; color: #0a2306; }
+
 .tags { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 24px; }
 .tag {
   display: flex; align-items: center; gap: 11px;
@@ -880,16 +908,33 @@
    block from the approved design. Two columns, not four: at 62% width four
    cards are too narrow for the wordmarks. */
 .ratings-flex { margin-top: 20px; align-items: stretch; }
-/* centred, not pinned to the top: the form beside this is much taller, so
-   the slack reads better split above and below than all below. */
+/* The form beside the ratings is much taller than four small cards. The
+   grid fills the column and its two rows share the height, so the cards
+   grow with the form instead of leaving a deep gap underneath. (The old
+   align-content:center never applied: the grid was only as tall as its
+   cards, so there was no slack to centre in.) Logo and score are sized up
+   so the taller cards don't read as hollow. */
 .ratings-flex .trust {
+  flex: 1 1 auto;
   margin-top: 0;
-  align-content: center;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: minmax(116px, 1fr);
 }
-/* Stretching these to the form's full height left them hollow; letting them
-   size to content left a deep gap underneath. A floor splits the difference. */
-.ratings-flex .trust-item { min-height: 116px; justify-content: center; }
+.ratings-flex .trust-item { justify-content: center; gap: 14px; padding: 22px 26px; }
+.ratings-flex .trust-item img { height: 32px; }
+.ratings-flex .trust .trust-item:nth-child(2) img { height: 40px; }
+.ratings-flex .rating-text { font-size: 28px; }
+.ratings-flex .stars { font-size: 16px; }
+/* Two cards across a phone leave about 110px inside each, too narrow for the
+   larger score and stars, which ran out past the card's edge. */
+@media (max-width: 700px) {
+  .ratings-flex .trust-item { padding: 18px 16px; gap: 12px; }
+  .ratings-flex .trust-item img { height: 26px; }
+  .ratings-flex .trust .trust-item:nth-child(2) img { height: 32px; }
+  .ratings-flex .rating-text { font-size: 21px; }
+  .ratings-flex .stars { font-size: 13px; }
+  .ratings-flex .rating-box { flex-wrap: wrap; row-gap: 2px; }
+}
 .ratings-flex .right { display: flex; }
 .ratings-flex .side-card { flex: 1; max-width: none; }
 @media (max-width: 1024px) { .ratings-flex .trust { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

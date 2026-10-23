@@ -161,10 +161,10 @@ search stalls the whole page.
   Leads flagged without an email/phone show "No … available" without a call.
   GA4 events: `view_email`, `view_contact`, `reveal_limit_reached`,
   `see_all_leads`.
-- **List pages** (`list/list-single.blade.php`): still on the old
-  `/api/getleads`, which returns full records including emails, and "View
-  Email" reveals the address. Scheduled to move to the new API once the
-  homepage is proven live.
+- **List pages** (`list/list-single.blade.php`): on the same
+  `/api/website/leads` + `/api/website/leads/contact` click-to-reveal API
+  since commit a4d34c1 (2026-09-16), live as well. The old `/api/getleads`
+  is no longer called from any list page.
 - **Cache busting:** LiteSpeed serves JS with a one-year `immutable` cache, so
   bump the `?v=` on the `home-01.js` script tag in `home-01.blade.php` with
   every change to that file. Production's `public_html/assets` is a separate

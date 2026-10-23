@@ -19,7 +19,7 @@
 @push('styles')
     {{-- Bump ?v= on every list.css change: LiteSpeed serves it with a one-year
          immutable cache, so returning visitors keep the old file otherwise. --}}
-    <link rel="stylesheet" href="{{ asset('assets/frontend/css/list.css') }}?v=59">  
+    <link rel="stylesheet" href="{{ asset('assets/frontend/css/list.css') }}?v=60">  
 @endpush
 @php
 use App\Services;
@@ -354,7 +354,7 @@ use App\Services;
         Get Instant Access to 1200+ {{ $mailingTitle }}
       </h2>
 
-<div class="green-banner">
+<div class="green-banner green-banner--cta">
 
    
        <img src="{{asset('assets/uploads/icon.webp')}}"  width="60">
@@ -362,6 +362,7 @@ use App\Services;
     <div class="banner-text">
         Get Instant Access to {{$service_item->data_counts}} Verified {{ $emailTitle }}
     </div>
+    <p class="banner-sub">Start with 1200 free credits. No credit card required.</p>
 <a href="https://app.go4database.com/login?utm_source=ProductPage&amp;utm_medium=Internal&amp;utm_campaign=app_login" class="read-btn" target="_blank">
    Get 1200 free credits</a>
 </div>
