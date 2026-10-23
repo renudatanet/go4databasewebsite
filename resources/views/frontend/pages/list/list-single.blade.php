@@ -363,7 +363,7 @@ use App\Services;
         Get Instant Access to {{$service_item->data_counts}} Verified {{ $emailTitle }}
     </div>
 <a href="https://app.go4database.com/login?utm_source=ProductPage&amp;utm_medium=Internal&amp;utm_campaign=app_login" class="read-btn" target="_blank">
-   Have you requested for free sample data yet?</a>
+   Get 1200 free credits</a>
 </div>
 
 
@@ -718,7 +718,7 @@ Choose data as per your specific criteria
 </div>
 
 <a href="https://app.go4database.com/login?utm_source=ProductPage&amp;utm_medium=Internal&amp;utm_campaign=app_login" class="roi-btn" target="_blank">
-Have you requested for free sample data yet?
+Get 1200 free credits
 </a>
 
 </div>
@@ -1800,7 +1800,7 @@ $titles = [
         Unlock {{$service_item->data_counts}} Verified {{ $contactListTitle }} Today
     </div>
 <a href="https://app.go4database.com/login?utm_source=ProductPage&amp;utm_medium=Internal&amp;utm_campaign=app_login" class="read-btn" target="_blank">
-   Have you requested for free sample data yet?</a>
+   Get 1200 free credits</a>
 </div>
 
 
