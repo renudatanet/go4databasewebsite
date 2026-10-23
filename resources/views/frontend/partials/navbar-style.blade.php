@@ -511,6 +511,20 @@ html{scroll-padding-top:80px;}
       }
     });
 
+    /* --- clicking a dropdown's own label ---------------------------------- */
+    // home-01.js (homepage only) turns every dropdown label into a
+    // click-to-toggle and cancels its link. A label that is a real page, as
+    // B2B Leads is, should still open that page, the way it does on inner
+    // pages; hovering is what opens its menu. Stopping the click here, on its
+    // way down to the label, keeps it from reaching that handler. A label
+    // that links nowhere ("#") would otherwise jump to the top of the page.
+    menu.addEventListener('click', function (e) {
+      var label = e.target.closest('.nav-dropdown-wrapper > .nav-link-item');
+      if (!label || !menu.contains(label)) { return; }
+      if (pathOf(label.getAttribute('href'))) { e.stopPropagation(); }
+      else if (label.getAttribute('href') === '#') { e.preventDefault(); }
+    }, true);
+
     /* --- icons and descriptions for dropdown items ------------------------ */
     // The menu builder has no description field, so the inner pages' admin
     // menu and the homepage's hardcoded one are matched here, by destination

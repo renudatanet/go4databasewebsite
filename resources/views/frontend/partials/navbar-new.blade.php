@@ -6,6 +6,15 @@
           <img src="{{ asset('assets/frontend/images/logo.png') }}" alt="Go4Database Logo">
         </a>
 
+        {{-- The menu is the one in Appearance Settings > Menus Manage, the same
+             menu every inner page renders through navbar-04, so the homepage
+             can no longer drift from it and B2B Leads gets its mega menu here
+             too. The hardcoded menu below is only a fallback, so the homepage
+             never shows an empty bar if that menu is missing. --}}
+        @php $g4dMenu = render_frontend_menu($primary_menu ?? null); @endphp
+        @if(trim($g4dMenu) !== '')
+        {!! $g4dMenu !!}
+        @else
         <div class="g4d-nav">
 
           <!-- Pricing -->
@@ -64,6 +73,7 @@
             </div>
           </div>
         </div>
+        @endif
 
         <!-- Right Corner CTA Buttons -->
         <div class="g4d-actions">

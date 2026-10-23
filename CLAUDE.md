@@ -99,7 +99,7 @@ anything visible**. Section order and data source, top to bottom:
 | # | Section | Data source | Still admin-editable? |
 |---|---|---|---|
 | 1 | Top support bar | `frontend.partials.homesupportbar` → `supportbar` partial, gated on `navbar_variant` being empty + `home_page_support_bar_section_status` | Yes — Topbar Settings |
-| 2 | Main nav | `frontend.partials.navbar-new` | **No — fully hardcoded**, see "Navbar" below |
+| 2 | Main nav | `frontend.partials.navbar-new` | Menu items **yes** — Menus Manage (same menu as inner pages); logo and Log in / Sign up buttons hardcoded. See "Navbar" below |
 | 3 | Hero, search/demo card, stats strip, trust logos, credits promo, AI-verified tabs, feature grid, comparison table, integration screenshots | plain HTML | **No — hardcoded**, edit the blade file directly |
 | 4 | Testimonials (`#case-studies`) | Eloquent `$all_testimonial` | Content via Testimonial CRUD (not this page's admin section); heading text is hardcoded |
 | 5 | "Most Active Users" mailing list (`#favorite-lists`) | Eloquent `$all_work_category` / `$all_work` (Works model) | Content via Works CRUD; heading text hardcoded |
@@ -225,33 +225,40 @@ a server-side bridge to that API.
   `home-01.blade.php`; move the `@include` into `frontend.partials.footer` to
   put it on every page.
 
-## Navbar — two implementations, only one is live
+## Navbar — one menu, one shared design
 
-- **`resources/views/frontend/partials/navbar-new.blade.php`** — the one
-  `home-01.blade.php` currently includes. 100% hardcoded static HTML: logo
-  is `asset('assets/frontend/images/logo.png')`, nav links are literal
-  `<a href="https://www.go4database.com/...">` tags (some point at the
-  external production site, not internal routes), login/signup buttons
-  point at `https://app.go4database.com/...`. Zero database/admin
-  connection — editing Menus Manage or Site Identity in the admin panel has
-  **no effect** on this navbar.
-- **`resources/views/frontend/partials/navbar.blade.php`** — the original
-  DB-driven navbar. Logo from `site_logo`/`site_white_logo` static options
-  (fallback to site title text), nav links from `render_frontend_menu($primary_menu)`
-  where `$primary_menu` = the default `Menu` record (menu builder in
-  `app/MenuBuilder/`, admin at Appearance Settings → Menus Manage,
-  `MenuController`, table `menus`). Still `@include`d by `home-02`,
-  `home-03`, `home-04.blade.php` (not live today since variant = `01`).
-- **Every inner page** (about, contact, blog, pricing, login, etc., via
-  `frontend-page-master.blade.php`) still uses
-  `frontend.partials.navbar-variant.navbar-{{navbar_variant}}`, which IS
-  wired to the Menu Builder — so the Menu Builder is fully live for the rest
-  of the site, just not the homepage.
-- To make the homepage nav admin-editable again, swap
-  `@include('frontend.partials.navbar-new')` back to
-  `@include('frontend.partials.navbar')` in `home-01.blade.php` line 2 —
-  the required `$global_static_field_data`/`$primary_menu` vars are already
-  injected by `GlobalVariableMiddleware` on every frontend route.
+- **The menu items everywhere come from the Menu Builder**:
+  `render_frontend_menu($primary_menu)`, where `$primary_menu` = the default
+  `Menu` record (`app/MenuBuilder/`, admin at Appearance Settings → Menus
+  Manage, `MenuController`, table `menus`; `$primary_menu` is injected by
+  `GlobalVariableMiddleware`). B2B Leads is a `ServiceMegaMenu` item, which
+  is where its mega menu comes from. Editing Menus Manage changes the
+  homepage and every inner page alike.
+- **`navbar-new.blade.php`** — the homepage's (`home-01`). Renders that menu,
+  but keeps its own hardcoded logo (`assets/frontend/images/logo.png`,
+  linking `#top`) and GA-tagged Log in / Sign up buttons. Its old hardcoded
+  menu is still in the file as a fallback, shown only when the admin menu
+  renders empty (e.g. a local DB with no default menu, which is the case
+  locally today, so the local homepage shows the fallback).
+- **`navbar-variant/navbar-04.blade.php`** — every inner page on live
+  (`frontend-page-master` includes `navbar-{{navbar_variant}}`, and live's
+  `navbar_variant` is `04`). Logo from `site_logo`. Locally `navbar_variant`
+  is empty, so local inner pages render the old theme `navbar-.blade.php`
+  instead and can't be used to preview the live inner-page navbar.
+  `navbar.blade.php` is an unused twin of navbar-04 (home-02/03/04 only).
+- **`navbar-style.blade.php`** — the CSS and JS all three share, inline so
+  it deploys as a view. Everything is scoped to `#g4d-header`, which
+  outranks home.css's old `!important` nav rules and the inline style the
+  menu builder writes onto `.g4d-nav`; those were left in place, not
+  removed. It also: glides a highlight between items and rests it on the
+  current page; adds the icon tile and one-line description to each
+  dropdown item from a path/label map in its script (the menu builder has no
+  description field), drawn via `data-*` attributes and CSS so the link text
+  stays a plain title for `mobile-nav.js`, which copies it into the phone
+  drawer; switches to the drawer below 1100px (`mobile-nav.css` itself
+  switches at 992px; the partial brings it forward); and lets a dropdown
+  label that is a real page (B2B Leads → `/b2b`) navigate on click despite
+  `home-01.js`, which makes every label click-to-toggle on the homepage.
 - Which home page variant (01–21) is live: Appearance Settings → Home
   Variant (`admin.home.variant`, `AdminDashboardController@home_variant`).
   Which inner-page navbar style is used: Appearance Settings → Navbar
@@ -271,10 +278,16 @@ a server-side bridge to that API.
 
 One footer for the whole site: `resources/views/frontend/partials/footer.blade.php`,
 included by both `frontend-master.blade.php` and
-`frontend-page-master.blade.php`. Same pattern as the navbar:
+`frontend-page-master.blade.php`. CSS is inline in the file, for the same
+deploy reason as the chat widget.
 - Four link columns ("Product Features", "Popular Datasets", "Healthcare
-  Industry Lists", "Compliances") — **hardcoded static HTML**, several
-  linking to external `go4database.com` URLs. No admin control.
+  Industry Lists", "Compliances") — **DB-driven**: each is a menu picked by
+  the `footer_column_{one..four}_menu_id` / `_title` static options
+  (Appearance Settings → Footer Settings); a column with no menu is left out.
+- "Ask AI about Go4Database" (under the social icons) — **hardcoded**: five
+  tiles opening ChatGPT, Perplexity, Grok, Claude and Google AI Mode with a
+  prefilled question (`$askAiPrompt` in the file); clicks go to GA4 as
+  `ask_ai` with the assistant name.
 - Copyright line — **DB-driven**, `get_footer_copyright_text()` reads
   `site_{lang}_footer_copyright` (General Settings → Basic Settings).
 - Social icons — **DB-driven**, `SocialIcons::all()` (Topbar Settings →
