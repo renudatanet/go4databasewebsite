@@ -1,17 +1,15 @@
 <!-- Navbar -->
-    <header class="g4d-sticky-nav">
-      <nav
-        style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;max-width:1440px;margin:0 auto;position:relative;z-index:100;overflow:visible">
-        <a href="#top" style="display:flex;align-items:center;flex-shrink:0">
-          <img src="{{ asset('assets/frontend/images/logo.png') }}" alt="Go4Database Logo" style="height:34px;width:auto;display:block">
+@include('frontend.partials.navbar-style')
+    <header class="g4d-sticky-nav" id="g4d-header">
+      <nav class="g4d-bar" aria-label="Main">
+        <a href="#top" class="g4d-logo">
+          <img src="{{ asset('assets/frontend/images/logo.png') }}" alt="Go4Database Logo">
         </a>
 
-        <!-- Middle Centered Menu Links -->
-        <div class="g4d-nav"
-          style="display:flex;align-items:center;gap:28px;position:absolute;left:50%;transform:translateX(-50%);overflow:visible">
+        <div class="g4d-nav">
 
-          <!-- Pricings -->
-          <a href="{{ route('frontend.price.plan') }}" class="nav-link-item">Pricings</a>
+          <!-- Pricing -->
+          <a href="{{ route('frontend.price.plan') }}" class="nav-link-item">Pricing</a>
 
           <!-- Success Stories Dropdown -->
           <div class="nav-dropdown-wrapper">
@@ -60,7 +58,7 @@
             </a>
             <div class="nav-dropdown-menu">
               <a href="{{ route('frontend.blog') }}" class="simple-dropdown-item">Blog</a>
-              <a href="{{ route('frontend.faq') }}" class="simple-dropdown-item">Faq</a>
+              <a href="{{ route('frontend.faq') }}" class="simple-dropdown-item">FAQ</a>
               <a href="{{ route('frontend.about') }}" class="simple-dropdown-item">About</a>
               <div class="dropdown-green-bar"></div>
             </div>
@@ -68,7 +66,7 @@
         </div>
 
         <!-- Right Corner CTA Buttons -->
-        <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;margin-left:auto;">
+        <div class="g4d-actions">
           <a href="https://app.go4database.com/login?utm_source=HomePage&utm_medium=Internal&utm_campaign=app_login" class="nav-login-btn">Log in</a>
           <a href="https://app.go4database.com/register?utm_source=HomePage&utm_medium=Internal&utm_campaign=navbar_signup" class="nav-signup-btn">Sign up for free</a>
         </div>
