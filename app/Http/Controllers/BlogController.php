@@ -299,7 +299,13 @@ if ($request->has('faqs')) {
 
     public function blog_page_settings(){
         $all_languages = Language::all();
-        return view('backend.pages.blog.page-settings.blog')->with(['all_languages' => $all_languages]);
+        // For the "FAQ section" choice: which help-centre category the blog
+        // listing shows under its articles.
+        $faq_categories = \App\FaqCategory::where('status', 'publish')->orderBy('sr_order')->get(['id', 'name', 'lang']);
+        return view('backend.pages.blog.page-settings.blog')->with([
+            'all_languages' => $all_languages,
+            'faq_categories' => $faq_categories,
+        ]);
     }
     public function blog_single_page_settings(){
         $all_languages = Language::all();
@@ -345,19 +351,28 @@ if ($request->has('faqs')) {
 
         $this->validate($request,[
            'blog_page_recent_post_widget_items' => 'nullable|string|max:191',
-           'blog_page_item' => 'nullable|string|max:191'
+           'blog_page_item' => 'nullable|string|max:191',
+           'blog_page_faq_category' => 'nullable|string|max:191'
         ]);
 
         $all_languages = Language::all();
+        // The blog listing's own wording; each one falls back to a default
+        // on the page when left empty.
+        $texts = ['read_more_btn_text', 'subtitle', 'search_hint', 'most_read_title', 'latest_title', 'faq_title', 'newsletter_title', 'newsletter_text'];
         foreach ($all_languages as $lang){
-            $this->validate($request, [
-                'blog_page_'.$lang->slug.'_read_more_btn_text' => 'nullable|string',
-            ]);
-            $read_more_btn_text = 'blog_page_'.$lang->slug.'_read_more_btn_text';
-            update_static_option($read_more_btn_text, $request->$read_more_btn_text);
+            $rules = [];
+            foreach ($texts as $text) {
+                $rules['blog_page_'.$lang->slug.'_'.$text] = 'nullable|string|max:500';
+            }
+            $this->validate($request, $rules);
+            foreach ($texts as $text) {
+                $key = 'blog_page_'.$lang->slug.'_'.$text;
+                update_static_option($key, $request->$key);
+            }
         }
 
         update_static_option('blog_page_item',$request->blog_page_item);
+        update_static_option('blog_page_faq_category',$request->blog_page_faq_category);
         update_static_option('blog_page_recent_post_widget_items',$request->blog_page_recent_post_widget_items);
 
         return redirect()->back()->with([

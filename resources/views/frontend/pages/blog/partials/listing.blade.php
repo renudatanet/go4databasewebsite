@@ -1,0 +1,231 @@
+{{-- The blog listing shared by the index, category and search pages.
+
+     Everything on it comes from the admin panel: the page name and
+     description from Page Settings, posts per page and the read-more text
+     from Blog > Blog Page Settings, and the posts, topics and authors from
+     their own CRUD screens. The data around the posts is built by
+     FrontendController::blog_listing_data().
+
+     Passed in: $mode ('index', 'topic', 'search' or 'author'), $heading,
+     $lead, and optionally $crumb, $active_topic (a category id) and
+     $search_term. --}}
+@php
+    $mode = $mode ?? 'index';
+    // Older callers of blog-category (blog_author_page) don't pass these.
+    $blog_topics = $blog_topics ?? collect();
+    $blog_total_posts = $blog_total_posts ?? $all_blogs->total();
+    $blog_total_authors = $blog_total_authors ?? 0;
+    $blog_most_read = $blog_most_read ?? collect();
+    $blog_faqs = $blog_faqs ?? collect();
+    $posts = $all_blogs->getCollection();
+    $blog_name = get_static_option('blog_page_' . $user_select_lang_slug . '_name') ?: 'Blog';
+    // The lead story and the most-read list only on the plain first page.
+    $is_front = $mode === 'index' && $all_blogs->currentPage() === 1 && $posts->count() > 0;
+    $lead_post = $is_front ? $posts->first() : null;
+    $grid_posts = $is_front ? $posts->slice(1) : $posts;
+    // A card left alone on the last row runs the full width instead of
+    // leaving two empty columns beside it (the first page's grid opens with
+    // two wide cards, then rows of three).
+    $grid_count = $grid_posts->count();
+    $lone_last = $is_front ? ($grid_count === 1 || ($grid_count > 2 && ($grid_count - 2) % 3 === 1)) : $grid_count % 3 === 1;
+    // The section wording from Blog > Blog Page Settings, per language; each
+    // falls back to the default here when left empty.
+    $text = function ($key, $default) use ($user_select_lang_slug) {
+        $value = get_static_option('blog_page_' . $user_select_lang_slug . '_' . $key);
+        return trim((string) $value) !== '' ? $value : $default;
+    };
+    $topic_url = function ($topic) {
+        return route('frontend.blog.category', ['any' => $topic->slug ?: \Illuminate\Support\Str::slug($topic->name)]);
+    };
+@endphp
+
+@include('frontend.pages.blog.partials.style')
+
+<div class="g4b">
+    <section class="g4b-hero">
+        <div class="g4b-wrap">
+            <nav class="g4b-crumbs" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="{{ url('/') }}">{{ __('Home') }}</a></li>
+                    @if($mode === 'index' && empty($crumb))
+                        <li aria-current="page">{{ $blog_name }}</li>
+                    @else
+                        <li><a href="{{ route('frontend.blog') }}">{{ $blog_name }}</a></li>
+                        <li aria-current="page">{{ $crumb }}</li>
+                    @endif
+                </ol>
+            </nav>
+
+            <div class="g4b-hero-grid">
+                <div class="g4b-hero-copy">
+                    <h1 class="g4b-title">{{ $heading }}</h1>
+                    @if(!empty($lead))
+                        <p class="g4b-lead">{{ $lead }}</p>
+                    @endif
+                    @if($mode === 'index')
+                        <ul class="g4b-stats">
+                            <li><strong>{{ number_format($blog_total_posts) }}</strong> articles</li>
+                            <li><strong>{{ $blog_topics->count() }}</strong> topics</li>
+                            <li><strong>{{ $blog_total_authors }}</strong> authors</li>
+                        </ul>
+                    @endif
+                </div>
+
+                <div class="g4b-search-wrap">
+                    <form class="g4b-search" action="{{ route('frontend.blog.search') }}" method="get" role="search" data-suggest-url="{{ route('frontend.blog.search') }}" data-popular-label="{{ $text('most_read_title', 'Most read') }}">
+                        <label class="g4b-sr" for="g4b-search-input">Search articles</label>
+                        <svg class="g4b-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
+                        <input id="g4b-search-input" type="search" name="search" value="{{ $search_term ?? '' }}"
+                               placeholder="Search {{ number_format($blog_total_posts) }} articles" autocomplete="off" required
+                               role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="g4b-suggest">
+                        <button type="button" class="g4b-search-clear" aria-label="Clear search" hidden>
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                        </button>
+                        <kbd class="g4b-search-key" title="Press / to search">/</kbd>
+                        <button type="submit" class="g4b-search-go">Search</button>
+                        <div class="g4b-suggest" id="g4b-suggest" role="listbox" aria-label="Suggested articles" hidden></div>
+                    </form>
+                    <p class="g4b-search-hint">{{ $text('search_hint', 'Searches the titles and summaries of every article. Results appear as you type.') }}</p>
+                </div>
+            </div>
+
+            @if($blog_topics->count())
+                <nav class="g4b-topics" aria-label="Topics">
+                    <a class="g4b-topic {{ $mode === 'index' ? 'is-active' : '' }}" href="{{ route('frontend.blog') }}" @if($mode === 'index') aria-current="page" @endif>
+                        All <span>{{ number_format($blog_total_posts) }}</span>
+                    </a>
+                    @foreach($blog_topics as $topic)
+                        @php $active = isset($active_topic) && (int) $active_topic === (int) $topic->id; @endphp
+                        <a class="g4b-topic {{ $active ? 'is-active' : '' }}" href="{{ $topic_url($topic) }}" @if($active) aria-current="page" @endif>
+                            {{ $topic->name }} <span>{{ $topic->post_count }}</span>
+                        </a>
+                    @endforeach
+                </nav>
+            @endif
+        </div>
+    </section>
+
+    <section class="g4b-main">
+        <div class="g4b-wrap">
+            @if($posts->isEmpty())
+                <div class="g4b-empty">
+                    @if($mode === 'search')
+                        <h2>No articles match “{{ $search_term }}”</h2>
+                        <p>Try a shorter search, or pick a topic above.</p>
+                    @else
+                        <h2>No articles here yet</h2>
+                        <p>New articles in this topic will appear here.</p>
+                    @endif
+                    <a class="g4b-btn" href="{{ route('frontend.blog') }}">See all articles</a>
+                </div>
+            @else
+                @if($lead_post)
+                    <div class="g4b-top {{ $blog_most_read->count() ? '' : 'is-solo' }}">
+                        @include('frontend.pages.blog.partials.card', ['post' => $lead_post, 'variant' => 'featured'])
+
+                        @if($blog_most_read->count())
+                            <aside class="g4b-popular" aria-labelledby="g4b-popular-title">
+                                <h2 id="g4b-popular-title">{{ $text('most_read_title', 'Most read') }}</h2>
+                                <ol>
+                                    @foreach($blog_most_read as $popular)
+                                        @php $thumb = get_attachment_image_by_id($popular->image, 'thumb'); @endphp
+                                        <li>
+                                            <a href="{{ route('frontend.blog.single', $popular->slug) }}">
+                                                <span class="g4b-rank" aria-hidden="true">{{ $loop->iteration }}</span>
+                                                <span class="g4b-popular-text">
+                                                    <span class="g4b-popular-title">{{ $popular->title }}</span>
+                                                    <span class="g4b-popular-views">{{ number_format((int) $popular->total_visitors) }} views</span>
+                                                </span>
+                                                @if(!empty($thumb['img_url']))
+                                                    <img src="{{ $thumb['img_url'] }}" alt="" loading="lazy">
+                                                @endif
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ol>
+                            </aside>
+                        @endif
+                    </div>
+                @endif
+
+                <div class="g4b-results">
+                @if($grid_posts->count())
+                    <div class="g4b-section-head">
+                        <h2>{{ $is_front ? $text('latest_title', 'Latest articles') : ($list_heading ?? 'Articles') }}</h2>
+                        @if($all_blogs->lastPage() > 1)
+                            <span class="g4b-count" data-first="{{ $all_blogs->firstItem() }}" data-last="{{ $all_blogs->lastItem() }}" data-total="{{ $all_blogs->total() }}">{{ $all_blogs->firstItem() }}–{{ $all_blogs->lastItem() }} of {{ number_format($all_blogs->total()) }} articles</span>
+                        @endif
+                    </div>
+                    <div class="g4b-grid {{ $is_front ? 'g4b-grid--front' : '' }}">
+                        @foreach($grid_posts as $post)
+                            @include('frontend.pages.blog.partials.card', ['post' => $post, 'variant' => 'card', 'across' => $loop->last && $lone_last, 'hide_topic' => $mode === 'topic'])
+                        @endforeach
+                    </div>
+                @endif
+
+                {{-- Adds the next page's articles here without leaving the page, so a
+                     reader can keep going through every post. The page links
+                     below stay for search engines and anyone without script. --}}
+                @if($all_blogs->hasMorePages())
+                    @php $left = $all_blogs->total() - $all_blogs->lastItem(); @endphp
+                    <div class="g4b-more">
+                        <button type="button" class="g4b-more-btn" data-next="{{ $all_blogs->nextPageUrl() }}">
+                            Show more articles <span class="g4b-more-left">{{ number_format($left) }} more</span>
+                        </button>
+                    </div>
+                @endif
+
+                @include('frontend.pages.blog.partials.pagination', ['paginator' => $all_blogs])
+                </div>
+            @endif
+        </div>
+    </section>
+
+    @if($mode === 'index' && $blog_faqs->count())
+        <section class="g4b-faq" aria-labelledby="g4b-faq-title">
+            <div class="g4b-wrap">
+                <div class="g4b-faq-grid">
+                    <div class="g4b-faq-intro">
+                        <h2 id="g4b-faq-title">{{ $text('faq_title', 'Frequently asked questions') }}</h2>
+                        @if(!empty($blog_faq_category))
+                            <p>From our help centre: {{ $blog_faq_category->name }}.</p>
+                        @endif
+                        <a class="g4b-btn g4b-btn--ghost" href="{{ route('frontend.faq') }}">See all FAQs</a>
+                    </div>
+                    <div class="g4b-faq-list">
+                        @foreach($blog_faqs as $faq)
+                            <details class="g4b-faq-item" @if(!empty($faq->is_open)) open @endif>
+                                <summary>
+                                    <span>{{ $faq->title }}</span>
+                                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                                </summary>
+                                <div class="g4b-faq-answer">{!! $faq->description !!}</div>
+                            </details>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </section>
+    @endif
+
+    <section class="g4b-news" aria-labelledby="g4b-news-title">
+        <div class="g4b-wrap">
+            <div class="g4b-news-card">
+                <div class="g4b-news-copy">
+                    <h2 id="g4b-news-title">{{ $text('newsletter_title', 'Get new articles by email') }}</h2>
+                    @php $news_text = $text('newsletter_text', $blog_topics->count() ? 'New posts on ' . $blog_topics->take(3)->pluck('name')->join(', ', ' and ') . ', sent to your inbox.' : ''); @endphp
+                    @if($news_text !== '')
+                        <p>{{ $news_text }}</p>
+                    @endif
+                </div>
+                <form class="g4b-news-form" action="{{ route('frontend.subscribe.newsletter') }}" method="post" novalidate>
+                    @csrf
+                    <label class="g4b-sr" for="g4b-news-email">Work email</label>
+                    <input id="g4b-news-email" type="email" name="email" placeholder="you@company.com" autocomplete="email" required>
+                    <button type="submit">Subscribe</button>
+                    <p class="g4b-news-msg" role="status" aria-live="polite"></p>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>

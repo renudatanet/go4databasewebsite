@@ -30,6 +30,41 @@
                                         <label for="blog_page_{{$lang->slug}}_read_more_btn_text">{{__('Blog Read More Text')}}</label>
                                         <input type="text" class="form-control"  id="blog_page_{{$lang->slug}}_read_more_btn_text" name="blog_page_{{$lang->slug}}_read_more_btn_text" value="{{get_static_option('blog_page_'.$lang->slug.'_read_more_btn_text')}}" placeholder="{{__('Blog Read More Text')}}">
                                     </div>
+                                    <div class="form-group">
+                                        <label for="blog_page_{{$lang->slug}}_subtitle">{{__('Header Text')}}</label>
+                                        <textarea class="form-control" rows="2" id="blog_page_{{$lang->slug}}_subtitle" name="blog_page_{{$lang->slug}}_subtitle">{{get_static_option('blog_page_'.$lang->slug.'_subtitle')}}</textarea>
+                                        <small class="text-muted">{{__('Shown under the page title. Leave empty to use the meta description from Page Settings.')}}</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="blog_page_{{$lang->slug}}_search_hint">{{__('Search Hint')}}</label>
+                                        <input type="text" class="form-control" id="blog_page_{{$lang->slug}}_search_hint" name="blog_page_{{$lang->slug}}_search_hint" value="{{get_static_option('blog_page_'.$lang->slug.'_search_hint')}}">
+                                        <small class="text-muted">{{__('Under the search box. Default: Searches the titles and summaries of every article. Results appear as you type.')}}</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="blog_page_{{$lang->slug}}_most_read_title">{{__('"Most Read" Heading')}}</label>
+                                        <input type="text" class="form-control" id="blog_page_{{$lang->slug}}_most_read_title" name="blog_page_{{$lang->slug}}_most_read_title" value="{{get_static_option('blog_page_'.$lang->slug.'_most_read_title')}}">
+                                        <small class="text-muted">{{__('Default: Most read')}}</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="blog_page_{{$lang->slug}}_latest_title">{{__('"Latest Articles" Heading')}}</label>
+                                        <input type="text" class="form-control" id="blog_page_{{$lang->slug}}_latest_title" name="blog_page_{{$lang->slug}}_latest_title" value="{{get_static_option('blog_page_'.$lang->slug.'_latest_title')}}">
+                                        <small class="text-muted">{{__('Default: Latest articles')}}</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="blog_page_{{$lang->slug}}_faq_title">{{__('FAQ Heading')}}</label>
+                                        <input type="text" class="form-control" id="blog_page_{{$lang->slug}}_faq_title" name="blog_page_{{$lang->slug}}_faq_title" value="{{get_static_option('blog_page_'.$lang->slug.'_faq_title')}}">
+                                        <small class="text-muted">{{__('Default: Frequently asked questions')}}</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="blog_page_{{$lang->slug}}_newsletter_title">{{__('Newsletter Heading')}}</label>
+                                        <input type="text" class="form-control" id="blog_page_{{$lang->slug}}_newsletter_title" name="blog_page_{{$lang->slug}}_newsletter_title" value="{{get_static_option('blog_page_'.$lang->slug.'_newsletter_title')}}">
+                                        <small class="text-muted">{{__('Default: Get new articles by email')}}</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="blog_page_{{$lang->slug}}_newsletter_text">{{__('Newsletter Text')}}</label>
+                                        <textarea class="form-control" rows="2" id="blog_page_{{$lang->slug}}_newsletter_text" name="blog_page_{{$lang->slug}}_newsletter_text">{{get_static_option('blog_page_'.$lang->slug.'_newsletter_text')}}</textarea>
+                                        <small class="text-muted">{{__('Default: names your three biggest topics, e.g. "New posts on B2B Sales, Industries and Lead Generation, sent to your inbox."')}}</small>
+                                    </div>
                                 </div>
                                 @endforeach
                             </div>
@@ -37,6 +72,18 @@
                                 <label for="blog_page_item">{{__('Post Items')}}</label>
                                 <input type="text" class="form-control"  id="blog_page_item" value="{{get_static_option('blog_page_item')}}" name="blog_page_item" placeholder="{{__('Post Items')}}">
                                 <small class="text-danger">{{__('Enter how many post you want to show in blog page')}}</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="blog_page_faq_category">{{__('FAQ Section')}}</label>
+                                @php $faq_choice = get_static_option('blog_page_faq_category'); @endphp
+                                <select class="form-control" id="blog_page_faq_category" name="blog_page_faq_category">
+                                    <option value="" @if($faq_choice === null || $faq_choice === '') selected @endif>{{__('Default (Data & Accuracy)')}}</option>
+                                    <option value="none" @if($faq_choice === 'none') selected @endif>{{__("Don't show FAQs on the blog page")}}</option>
+                                    @foreach($faq_categories as $faq_category)
+                                        <option value="{{$faq_category->id}}" @if((string) $faq_choice === (string) $faq_category->id) selected @endif>{{$faq_category->name}}</option>
+                                    @endforeach
+                                </select>
+                                <small class="text-muted">{{__('Up to six questions from this FAQ category appear under the articles on the blog page, linking to the full FAQ page. Edit the questions themselves under Faq.')}}</small>
                             </div>
                             <button type="submit" class="btn btn-primary mt-4 pr-4 pl-4">{{__('Update Blog Page Settings')}}</button>
                         </form>

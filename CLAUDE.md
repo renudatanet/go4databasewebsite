@@ -198,6 +198,51 @@ The breadcrumb banner is suppressed for this page in
 `frontend-page-master.blade.php` by **route name** (`frontend.faq`) rather than
 path, because the slug is admin-configurable and differs between environments.
 
+## Blog listings (`/blog`, `/blog/{category}`, `/blog-search`)
+
+All three render one shared view, `pages/blog/partials/listing.blade.php`
+(with `card`, `pagination` and `style` partials beside it; CSS and the
+newsletter script are inline in `style`, so it deploys as views). Rebuilt
+2026-10-25 as a magazine layout: header with search and topic chips, then on
+the index's first page a lead story beside a "Most read" list, then a grid.
+- Data: `FrontendController::blog_listing_data()` adds the topics that have
+  posts (with counts), the header totals, the five most-read posts
+  (`total_visitors` is a varchar, cast to sort) and eager-loads each post's
+  `authorData`/`category`. Called from `blog_page`, `blog_search_page` and
+  the category branch of `blog_single_page`.
+- Admin sources: page name, description and SEO from Page Settings
+  (`blog_page_{lang}_*`); posts per page, read-more text, FAQ category and
+  the page's wording from Blog → Blog Page Settings (per language:
+  `blog_page_{lang}_subtitle` — header text, else the meta description —
+  `_search_hint`, `_most_read_title`, `_latest_title`, `_faq_title`,
+  `_newsletter_title`, `_newsletter_text`; each empty one falls back to the
+  default in `listing.blade.php`); posts, categories and authors from their
+  CRUD screens.
+- **Category URLs are served by `blog_single_page`**, not
+  `category_wise_blog_page`: `blog/{slug}` is registered before
+  `blog/{any}`, so it checks `BlogCategory::where('slug', …)` first. Live's
+  `blog_categories` has a `slug` column that the local DB lacks, so locally
+  every `/blog/{anything}` (posts too) errors on that query.
+- The Widgets Manage "blog" sidebar (`pages/blog/sidebar.blade.php`) is no
+  longer shown on the listings: categories became the topic chips, the
+  newsletter widget became the band at the foot (same
+  `frontend.subscribe.newsletter` route, so sign-ups still land in
+  Newsletter Manage). The old breadcrumb banner is switched off by
+  `@section('no-breadcrumb')`, checked in `frontend-page-master`.
+- Page links are real `?page=N` links (search keeps `search=`); the old
+  AJAX `javascript:void(0)` pagination is gone. "Show more articles" fetches
+  the next page's HTML and appends its `.g4b-grid` in place, so readers can
+  go through every post; the page links stay for crawlers.
+- Search matches title **or** excerpt (title matches first, `%`/`_`
+  escaped). Asked for JSON (`Accept: application/json`), the same
+  `blog_search_page` route returns the search box's instant results (top 6,
+  or the most-read posts when the box is empty).
+- FAQ section under the index's articles: up to six questions from the FAQ
+  category picked in Blog → Blog Page Settings → "FAQ Section"
+  (`blog_page_faq_category`: a category id, `none` to hide, or empty for
+  "Data & Accuracy"). `FrontendController::blog_page_faqs()`; the questions
+  themselves are edited under Faq.
+
 ## Chat widget
 
 The conversation system itself runs on a **separate server owned by the user**

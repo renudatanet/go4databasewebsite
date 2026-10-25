@@ -809,9 +809,84 @@ public function blog_page(Request $request)
         $all_blogs->withPath('/blog');
     }
 
-    return view('frontend.pages.blog.blog')->with([
-        'all_blogs' => $all_blogs
-    ]);
+    $show_most_read = empty($request->author) && $all_blogs->currentPage() === 1;
+
+    return view('frontend.pages.blog.blog')->with(array_merge(
+        ['all_blogs' => $all_blogs],
+        $this->blog_listing_data($lang, $all_blogs, $show_most_read),
+        $this->blog_page_faqs($lang)
+    ));
+}
+
+/**
+ * The help-centre questions shown under the blog index, from the FAQ category
+ * picked in Blog > Blog Page Settings ("none" hides the section). Until one is
+ * picked it uses "Data & Accuracy", the questions blog readers ask most, and
+ * failing that the first category that has questions.
+ */
+private function blog_page_faqs($lang)
+{
+    $choice = get_static_option('blog_page_faq_category');
+    if ($choice === 'none') {
+        return ['blog_faqs' => collect(), 'blog_faq_category' => null];
+    }
+
+    $categories = FaqCategory::where(['lang' => $lang, 'status' => 'publish'])->orderBy('sr_order');
+    $category = !empty($choice)
+        ? (clone $categories)->find($choice)
+        : (clone $categories)->where('name', 'Data & Accuracy')->first();
+
+    $faqs = collect();
+    if ($category) {
+        $faqs = Faq::where(['lang' => $lang, 'status' => 'publish', 'category_id' => $category->id])->orderBy('id')->take(6)->get();
+    }
+    if ($faqs->isEmpty() && empty($choice)) {
+        $category = (clone $categories)->whereHas('faqs', function ($q) use ($lang) {
+            $q->where(['lang' => $lang, 'status' => 'publish']);
+        })->first();
+        $faqs = $category
+            ? Faq::where(['lang' => $lang, 'status' => 'publish', 'category_id' => $category->id])->orderBy('id')->take(6)->get()
+            : collect();
+    }
+
+    return ['blog_faqs' => $faqs, 'blog_faq_category' => $category];
+}
+
+/**
+ * What every blog listing (the index, a category, a search) shows around
+ * its posts: the topics that have posts, with their counts, the totals in
+ * the page header, and optionally the five most-read posts. Also loads each
+ * listed post's author and category in two queries instead of two per card.
+ */
+private function blog_listing_data($lang, $all_blogs, $with_most_read = false)
+{
+    $published = Blog::where(['lang' => $lang, 'status' => 'publish']);
+
+    $counts = (clone $published)
+        ->selectRaw('blog_categories_id, COUNT(*) as total')
+        ->groupBy('blog_categories_id')
+        ->pluck('total', 'blog_categories_id');
+
+    // A topic with no published posts would only lead to an empty page.
+    $topics = BlogCategory::where(['status' => 'publish', 'lang' => $lang])->get()
+        ->filter(function ($topic) use ($counts) { return ($counts[$topic->id] ?? 0) > 0; })
+        ->each(function ($topic) use ($counts) { $topic->post_count = (int) $counts[$topic->id]; })
+        ->sortBy([['post_count', 'desc'], ['name', 'asc']])
+        ->values();
+
+    $all_blogs->getCollection()->load(['authorData', 'category']);
+
+    return [
+        'blog_topics' => $topics,
+        'blog_total_posts' => (int) $counts->sum(),
+        'blog_total_authors' => (clone $published)->whereNotNull('author_id')->distinct()->count('author_id'),
+        // total_visitors is a varchar column, so it has to be cast to sort as a number.
+        'blog_most_read' => $with_most_read
+            ? (clone $published)->whereRaw('CAST(total_visitors AS UNSIGNED) > 0')
+                ->orderByRaw('CAST(total_visitors AS UNSIGNED) DESC')->take(5)
+                ->get(['id', 'title', 'slug', 'image', 'total_visitors'])
+            : collect(),
+    ];
 }
 
     public function category_wise_blog_page($slug)
@@ -860,15 +935,51 @@ public function blog_page(Request $request)
         $lang = !empty(session()->get('lang')) ? session()->get('lang') : $default_lang->slug;
         $all_recent_blogs = Blog::where(['lang' => $lang,'status' => 'publish'])->orderBy('id', 'desc')->take(get_static_option('blog_page_recent_post_widget_item'))->get();
         $all_category = BlogCategory::where(['status' => 'publish', 'lang' => $lang])->orderBy('id', 'desc')->get();
-        $all_blogs = Blog::where(['lang' => $lang,'status' => 'publish'])->Where('title', 'LIKE', '%' . $request->search . '%')
-            ->orderBy('id', 'desc')->paginate(get_static_option('blog_page_item'));
+        $term = trim((string) $request->search);
+        // % and _ are LIKE wildcards; searching "50%" would match everything.
+        $like = '%' . addcslashes($term, '%_\\') . '%';
+        $matches = Blog::where(['lang' => $lang, 'status' => 'publish'])
+            ->where(function ($q) use ($like) {
+                $q->where('title', 'LIKE', $like)->orWhere('excerpt', 'LIKE', $like);
+            })
+            ->orderByRaw('CASE WHEN title LIKE ? THEN 0 ELSE 1 END', [$like])
+            ->orderBy('id', 'desc');
 
-        return view('frontend.pages.blog.blog-search')->with([
+        // The search box's instant results. With nothing typed yet it offers
+        // the most-read posts instead.
+        if ($request->wantsJson()) {
+            $popular = $term === '';
+            $query = $popular
+                ? Blog::where(['lang' => $lang, 'status' => 'publish'])->orderByRaw('CAST(total_visitors AS UNSIGNED) DESC')
+                : $matches;
+            $found = (clone $query)->with('category')->take(6)->get(['id', 'title', 'slug', 'image', 'blog_categories_id', 'updated_at']);
+
+            return response()->json([
+                'query' => $term,
+                'popular' => $popular,
+                'total' => $popular ? $found->count() : (clone $matches)->count(),
+                'all_url' => route('frontend.blog.search', ['search' => $term]),
+                'results' => $found->map(function ($post) {
+                    return [
+                        'title' => $post->title,
+                        'url' => route('frontend.blog.single', $post->slug),
+                        'topic' => optional($post->category)->name,
+                        'date' => optional($post->updated_at)->format('d M Y'),
+                        'image' => get_attachment_image_url($post->image, 'thumb'),
+                    ];
+                })->values(),
+            ]);
+        }
+
+        $all_blogs = $matches->paginate(get_static_option('blog_page_item'));
+        $all_blogs->appends(['search' => $request->search]);
+
+        return view('frontend.pages.blog.blog-search')->with(array_merge([
             'all_blogs' => $all_blogs,
             'all_categories' => $all_category,
             'search_term' => $request->search,
             'all_recent_blogs' => $all_recent_blogs,
-        ]);
+        ], $this->blog_listing_data($lang, $all_blogs)));
     }
     
 public function blog_author_page($author)
@@ -951,13 +1062,13 @@ $authorName = Str::title(str_replace('-', ' ', $authorSlug));
             $all_category = BlogCategory::where(['status' => 'publish', 'lang' => $lang])->orderBy('id', 'desc')->get();
             $category_name = BlogCategory::where(['id' => $id, 'status' => 'publish'])->first()->name;
             $blogcat = BlogCategory::where(['id' => $id, 'status' => 'publish'])->first();
-            return view('frontend.pages.blog.blog-category')->with([
+            return view('frontend.pages.blog.blog-category')->with(array_merge([
                 'all_blogs' => $all_blogs,
                 'all_categories' => $all_category,
                 'category_name' => $category_name,
                 'all_recent_blogs' => $all_recent_blogs,
                 'blogcat' => $blogcat,
-            ]);
+            ], $this->blog_listing_data($lang, $all_blogs)));
         }
         else
         {
