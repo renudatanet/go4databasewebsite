@@ -41,6 +41,41 @@
 
 @include('frontend.pages.blog.partials.style')
 
+{{-- Structured data: what this page is and the posts on it. The site-wide
+     block (partials/og-meta) already has the Organization, the WebSite and
+     this page's breadcrumb, so this points at those by @id instead of
+     repeating them. Search results are left out; they are noindex. --}}
+@if(in_array($mode, ['index', 'topic']) && $posts->count())
+    @php
+        $page_url = url()->current();
+        $site_url = rtrim(url('/'), '/');
+        $structured = [
+            '@context' => 'https://schema.org',
+            '@graph' => [
+                array_filter([
+                    '@type' => 'CollectionPage',
+                    '@id' => $page_url . '#webpage',
+                    'url' => $page_url,
+                    'name' => $heading,
+                    'description' => $lead ?: null,
+                    'isPartOf' => ['@id' => $site_url . '#website'],
+                    'publisher' => ['@id' => $site_url . '#organization'],
+                    'mainEntity' => ['@id' => $page_url . '#articles'],
+                ]),
+                [
+                    '@type' => 'ItemList',
+                    '@id' => $page_url . '#articles',
+                    'numberOfItems' => $all_blogs->total(),
+                    'itemListElement' => $posts->values()->map(function ($post, $i) use ($all_blogs) {
+                        return ['@type' => 'ListItem', 'position' => $all_blogs->firstItem() + $i, 'url' => route('frontend.blog.single', $post->slug), 'name' => $post->title];
+                    })->all(),
+                ],
+            ],
+        ];
+    @endphp
+    <script type="application/ld+json">{!! json_encode($structured, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) !!}</script>
+@endif
+
 <div class="g4b">
     <section class="g4b-hero">
         <div class="g4b-wrap">
@@ -137,7 +172,7 @@
                                                     <span class="g4b-popular-views">{{ number_format((int) $popular->total_visitors) }} views</span>
                                                 </span>
                                                 @if(!empty($thumb['img_url']))
-                                                    <img src="{{ $thumb['img_url'] }}" alt="" loading="lazy">
+                                                    <img src="{{ $thumb['img_url'] }}" alt="" width="64" height="64" loading="lazy">
                                                 @endif
                                             </a>
                                         </li>

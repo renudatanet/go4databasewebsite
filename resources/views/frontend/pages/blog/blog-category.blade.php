@@ -13,6 +13,11 @@
 @endsection 
 @section('page-meta-data')
     <meta name="description" content="{{$blogcat->meta_description ?? ''}}">
+    @include('frontend.pages.blog.partials.meta', [
+        'share_title' => (!empty($blogcat) && $blogcat->meta_tags != '') ? $blogcat->meta_tags : 'Category: '.$category_name,
+        'share_description' => $blogcat->meta_description ?? '',
+        'share_image' => !empty($blogcat->image) ? get_attachment_image_url($blogcat->image, 'large') : '',
+    ])
 @endsection
 {{-- The listing's own header carries the title and breadcrumb. --}}
 @section('no-breadcrumb', '1')

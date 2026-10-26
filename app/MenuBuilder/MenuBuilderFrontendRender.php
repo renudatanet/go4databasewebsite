@@ -258,7 +258,9 @@ class MenuBuilderFrontendRender
 
             $output .= "\t\t\t\t" . '<div class="mega-menu-col">' . "\n";
             if (!empty($columnTitle)) {
-                $output .= "\t\t\t\t\t" . '<h4 class="mega-col-title">' . htmlspecialchars($columnTitle) . '</h4>' . "\n";
+                // A label, not a heading: as an <h4> it came before every
+                // page's <h1> and broke the heading outline.
+                $output .= "\t\t\t\t\t" . '<p class="mega-col-title">' . htmlspecialchars($columnTitle) . '</p>' . "\n";
             }
 
             $links = $xpath->query('.//ul/li/a', $column);

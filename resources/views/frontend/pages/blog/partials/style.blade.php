@@ -571,7 +571,7 @@ document.addEventListener('DOMContentLoaded', function () {
       link.id = 'g4b-suggest-' + i;
       link.setAttribute('role', 'option');
       var thumb;
-      if (post.image) { thumb = el('img', 'g4b-suggest-thumb'); thumb.src = post.image; thumb.alt = ''; }
+      if (post.image) { thumb = el('img', 'g4b-suggest-thumb'); thumb.src = post.image; thumb.alt = ''; thumb.width = 56; thumb.height = 42; }
       else { thumb = el('span', 'g4b-suggest-thumb'); }
       var text = el('span', 'g4b-suggest-text');
       text.appendChild(highlighted(post.title, data.popular ? '' : data.query));

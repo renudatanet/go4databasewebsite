@@ -5,7 +5,9 @@
     $home_page_variant = $home_page ?? filter_static_option_value('home_page_variant',$global_static_field_data);
 @endphp
         <!DOCTYPE html>
-<html lang="{{ $user_select_lang_slug ?? 'en' }}"  dir="{{get_user_lang_direction()}}">
+{{-- The language slugs are en_US style; HTML wants en-US (an invalid code
+     fails accessibility and confuses search engines about the language). --}}
+<html lang="{{ str_replace('_', '-', $user_select_lang_slug ?? 'en') }}"  dir="{{get_user_lang_direction()}}">
  
 <head>
 
@@ -103,7 +105,7 @@
          home.css. The script reads the existing navbar, so the navbar file
          itself is never touched. --}}
     <link rel="stylesheet" href="{{asset('assets/frontend/css/mobile-nav.css?v=1')}}">
-    <script src="{{asset('assets/frontend/js/mobile-nav.js?v=1')}}" defer></script>
+    <script src="{{asset('assets/frontend/js/mobile-nav.js?v=2')}}" defer></script>
 
     {{-- The theme sets overflow-x:hidden on body. That makes body a scroll
          container, which silently disables position:sticky everywhere on the

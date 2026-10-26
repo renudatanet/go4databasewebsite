@@ -3,7 +3,9 @@
 @php
     $variant = $variant ?? 'card';
     $url = route('frontend.blog.single', $post->slug);
-    $img = get_attachment_image_by_id($post->image, $variant === 'featured' ? 'large' : 'grid');
+    // The 740px copy (Regenerate Media Image makes it); the helper falls back
+    // to the original when it is missing. 350px grid- copies blur on 2x screens.
+    $img = get_attachment_image_by_id($post->image, 'large');
     $topic = $post->category;
     $author = $post->authorData;
     $avatar = $author ? get_attachment_image_by_id($author->image, 'thumb') : [];
@@ -14,7 +16,11 @@
 <article class="g4b-card g4b-card--{{ $variant }}{{ !empty($across) ? ' is-across' : '' }}">
     <a class="g4b-card-media" href="{{ $url }}" tabindex="-1" aria-hidden="true">
         @if(!empty($img['img_url']))
-            <img src="{{ $img['img_url'] }}" alt="" loading="{{ $variant === 'featured' ? 'eager' : 'lazy' }}" decoding="async">
+            {{-- The link is hidden from screen readers (the title link names the
+                 post), so the alt text is for image search. width/height only
+                 give the browser the shape before CSS sizes it. --}}
+            <img src="{{ $img['img_url'] }}" alt="{{ $img['img_alt'] ?: $post->title }}" width="740" height="416"
+                 @if($variant === 'featured') fetchpriority="high" @else loading="lazy" @endif decoding="async">
         @endif
     </a>
     <div class="g4b-card-body">
@@ -37,7 +43,7 @@
             @if($author)
                 <span class="g4b-author">
                     @if(!empty($avatar['img_url']))
-                        <img class="g4b-avatar" src="{{ $avatar['img_url'] }}" alt="" loading="lazy">
+                        <img class="g4b-avatar" src="{{ $avatar['img_url'] }}" alt="" width="28" height="28" loading="lazy">
                     @else
                         <span class="g4b-avatar g4b-avatar--initial" aria-hidden="true">{{ mb_substr($author->name, 0, 1) }}</span>
                     @endif

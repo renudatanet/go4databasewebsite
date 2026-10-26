@@ -358,7 +358,7 @@ if ($request->has('faqs')) {
         $all_languages = Language::all();
         // The blog listing's own wording; each one falls back to a default
         // on the page when left empty.
-        $texts = ['read_more_btn_text', 'subtitle', 'search_hint', 'most_read_title', 'latest_title', 'faq_title', 'newsletter_title', 'newsletter_text'];
+        $texts = ['read_more_btn_text', 'heading', 'subtitle', 'search_hint', 'most_read_title', 'latest_title', 'faq_title', 'newsletter_title', 'newsletter_text'];
         foreach ($all_languages as $lang){
             $rules = [];
             foreach ($texts as $text) {

@@ -91,7 +91,8 @@
     var backdrop = document.createElement('div');
     backdrop.className = 'g4m-backdrop';
 
-    var drawer = document.createElement('aside');
+    // A div: <aside> is not allowed role="dialog".
+    var drawer = document.createElement('div');
     drawer.className = 'g4m-drawer';
     drawer.setAttribute('role', 'dialog');
     drawer.setAttribute('aria-modal', 'true');

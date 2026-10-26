@@ -1784,9 +1784,9 @@
                             <li class="{{active_menu('admin-home/general-settings/chat-widget-settings')}}"><a
                                         href="{{route('admin.chat.widget.settings')}}">{{__('Chat Widget Settings')}}</a>
                             </li>
-{{--                            <li class="{{active_menu('admin-home/general-settings/regenerate-image')}}"><a--}}
-{{--                                        href="{{route('admin.general.regenerate.thumbnail')}}">{{__('Regenerate Media Image')}}</a>--}}
-{{--                            </li>--}}
+                            <li class="{{active_menu('admin-home/general-settings/regenerate-image')}}"><a
+                                        href="{{route('admin.general.regenerate.thumbnail')}}">{{__('Regenerate Media Image')}}</a>
+                            </li>
                             <li class="{{active_menu('admin-home/general-settings/page-settings')}}"><a
                                         href="{{route('admin.general.page.settings')}}">{{__('Page Settings')}}</a></li>
                             @if(!empty(get_static_option('site_payment_gateway')))

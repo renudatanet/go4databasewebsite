@@ -125,52 +125,81 @@ class GeneralSettingsController extends Controller
         return view('backend.general-settings.regenerate-image');
     }
 
+    /**
+     * Makes the smaller copies pages ask for, for any image missing them:
+     * large- (740px wide; blog cards and lead stories), grid- (350px) and
+     * thumb- (150px square). Images added without the media uploader, e.g.
+     * by the blog agent, have none, and pages then load the full original
+     * (2.4 MB for a 400px card).
+     *
+     * Works for about 20 seconds per request and reports how many images are
+     * still waiting; the screen keeps asking until none are, so a large
+     * library no longer times out. Copies that already exist are left alone.
+     */
     public function update_regenerate_image_settings(Request $request)
     {
-        $all_media_file = MediaUpload::all();
+        @set_time_limit(90);
+        @ini_set('memory_limit', '512M');
+        $started = microtime(true);
+        $folder = 'assets/uploads/media-uploader/';
+        $made = 0;
+        $failed = 0;
+        $waiting = 0;
 
-
-        foreach ($all_media_file->chunk(20) as $imgs) {
-            foreach ($imgs as $img){
-                if (!file_exists('assets/uploads/media-uploader/' . $img->path)) {
-                    continue;
+        foreach (MediaUpload::orderBy('id', 'desc')->cursor() as $img) {
+            $source = $folder . $img->path;
+            if (empty($img->path) || !is_file($source)) {
+                continue;
+            }
+            $missing = [];
+            foreach (['large-' => 740, 'grid-' => 350, 'thumb-' => 150] as $prefix => $width) {
+                if (!is_file($folder . $prefix . $img->path)) {
+                    $missing[$prefix] = $width;
                 }
-
-                $image = 'assets/uploads/media-uploader/' . $img->path;
-                $image_dimension = getimagesize($image);;
-                $image_width = $image_dimension[0];
-                $image_height = $image_dimension[1];
-
-                $image_db = $img->path;
-                $image_grid = 'grid-' . $image_db;
-                $image_large = 'large-' . $image_db;
-                $image_thumb = 'thumb-' . $image_db;
-
-                $folder_path = 'assets/uploads/media-uploader/';
-
-                if ($image_width > 150) {
-                    if (!file_exists('assets/uploads/media-uploader/' . $image_large)){
-                        $resize_large_image = Image::make($image)->resize(740, null, function ($constraint) {
+            }
+            if (empty($missing)) {
+                continue;
+            }
+            // Too small to need copies, or not an image GD can read (an SVG).
+            $size = @getimagesize($source);
+            if (empty($size) || $size[0] <= 150) {
+                continue;
+            }
+            if (microtime(true) - $started > 20) {
+                $waiting++;
+                continue;
+            }
+            try {
+                foreach ($missing as $prefix => $width) {
+                    $copy = $prefix === 'thumb-'
+                        ? Image::make($source)->fit(150, 150)
+                        : Image::make($source)->resize($width, null, function ($constraint) {
                             $constraint->aspectRatio();
+                            $constraint->upsize();
                         });
-                        $resize_large_image->save($folder_path . $image_large);
-                    }
-                    if (!file_exists('assets/uploads/media-uploader/' . $image_grid)){
-                        $resize_grid_image = Image::make($image)->resize(350, null, function ($constraint) {
-                            $constraint->aspectRatio();
-                        });
-                        $resize_grid_image->save($folder_path . $image_grid);
-                    }
-                    if (!file_exists('assets/uploads/media-uploader/' . $image_grid)){
-                        $resize_thumb_image = Image::make($image)->resize(150, 150);
-                        $resize_thumb_image->save($folder_path . $image_thumb);
-                    }
+                    $copy->save($folder . $prefix . $img->path, 82);
+                    $copy->destroy();
                 }
+                $made++;
+            } catch (\Throwable $e) {
+                $failed++;
             }
         }
 
-        return response()->json(['type' => 'success' , 'msg' => __('image regenerate complete')]);
+        $msg = $waiting
+            ? __('Made smaller copies of :made images. :waiting still to go, carrying on…', ['made' => $made, 'waiting' => $waiting])
+            : __('Done. Every image has its smaller copies (made :made just now).', ['made' => $made]);
+        if ($failed) {
+            $msg .= ' ' . __(':failed could not be read and were skipped.', ['failed' => $failed]);
+        }
 
+        return response()->json([
+            'type' => $waiting ? 'warning' : 'success',
+            'msg' => $msg,
+            'made' => $made,
+            'failed' => $failed,
+            'waiting' => $waiting,
+        ]);
     }
 
     public function custom_js_settings()

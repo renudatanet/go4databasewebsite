@@ -241,6 +241,19 @@ the index's first page a lead story beside a "Most read" list, then a grid.
   escaped). Asked for JSON (`Accept: application/json`), the same
   `blog_search_page` route returns the search box's instant results (top 6,
   or the most-read posts when the box is empty).
+- Images: cards and the lead story use the `large-` copy (740px), with the
+  media library's alt text and width/height; the lead image is
+  `fetchpriority="high"`. Post images added without the media uploader
+  (e.g. by the blog agent) have no copies, so pages fell back to originals
+  of up to 2.4 MB; General Settings → Regenerate Media Image (sidebar link
+  restored) makes the missing copies in ~20-second batches until none are
+  left, and should be rerun after such posts are added.
+- SEO: `partials/meta.blade.php` adds Open Graph/Twitter tags (image: Page
+  Settings meta image, else the newest post's). The listing adds a
+  CollectionPage + ItemList JSON-LD block that points at the site-wide
+  Organization/WebSite nodes in `partials/og-meta.blade.php`, which already
+  carries the breadcrumb. "Page Heading (H1)" in Blog Page Settings
+  (`blog_page_{lang}_heading`) overrides the H1, else the page name.
 - FAQ section under the index's articles: up to six questions from the FAQ
   category picked in Blog → Blog Page Settings → "FAQ Section"
   (`blog_page_faq_category`: a category id, `none` to hide, or empty for
@@ -308,6 +321,10 @@ a server-side bridge to that API.
   switches at 992px; the partial brings it forward); and lets a dropdown
   label that is a real page (B2B Leads → `/b2b`) navigate on click despite
   `home-01.js`, which makes every label click-to-toggle on the homepage.
+- Mega menu column titles are `<p class="mega-col-title">`, not `<h4>`: as
+  headings they came before every page's `<h1>`. The phone drawer that
+  `mobile-nav.js` builds is a `div` (an `<aside>` may not take
+  `role="dialog"`). `<html lang>` turns the `en_US` slug into `en-US`.
 - Which home page variant (01–21) is live: Appearance Settings → Home
   Variant (`admin.home.variant`, `AdminDashboardController@home_variant`).
   Which inner-page navbar style is used: Appearance Settings → Navbar

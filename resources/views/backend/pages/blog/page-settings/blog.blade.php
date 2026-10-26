@@ -31,6 +31,11 @@
                                         <input type="text" class="form-control"  id="blog_page_{{$lang->slug}}_read_more_btn_text" name="blog_page_{{$lang->slug}}_read_more_btn_text" value="{{get_static_option('blog_page_'.$lang->slug.'_read_more_btn_text')}}" placeholder="{{__('Blog Read More Text')}}">
                                     </div>
                                     <div class="form-group">
+                                        <label for="blog_page_{{$lang->slug}}_heading">{{__('Page Heading (H1)')}}</label>
+                                        <input type="text" class="form-control" id="blog_page_{{$lang->slug}}_heading" name="blog_page_{{$lang->slug}}_heading" value="{{get_static_option('blog_page_'.$lang->slug.'_heading')}}">
+                                        <small class="text-muted">{{__('The big title at the top of the blog page. A descriptive one helps search, e.g. "B2B Sales & Lead Generation Blog". Leave empty to use the page name from Page Settings (also shown in the breadcrumb).')}}</small>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="blog_page_{{$lang->slug}}_subtitle">{{__('Header Text')}}</label>
                                         <textarea class="form-control" rows="2" id="blog_page_{{$lang->slug}}_subtitle" name="blog_page_{{$lang->slug}}_subtitle">{{get_static_option('blog_page_'.$lang->slug.'_subtitle')}}</textarea>
                                         <small class="text-muted">{{__('Shown under the page title. Leave empty to use the meta description from Page Settings.')}}</small>
