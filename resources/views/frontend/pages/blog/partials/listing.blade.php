@@ -243,24 +243,8 @@
         </section>
     @endif
 
-    <section class="g4b-news" aria-labelledby="g4b-news-title">
-        <div class="g4b-wrap">
-            <div class="g4b-news-card">
-                <div class="g4b-news-copy">
-                    <h2 id="g4b-news-title">{{ $text('newsletter_title', 'Get new articles by email') }}</h2>
-                    @php $news_text = $text('newsletter_text', $blog_topics->count() ? 'New posts on ' . $blog_topics->take(3)->pluck('name')->join(', ', ' and ') . ', sent to your inbox.' : ''); @endphp
-                    @if($news_text !== '')
-                        <p>{{ $news_text }}</p>
-                    @endif
-                </div>
-                <form class="g4b-news-form" action="{{ route('frontend.subscribe.newsletter') }}" method="post" novalidate>
-                    @csrf
-                    <label class="g4b-sr" for="g4b-news-email">Work email</label>
-                    <input id="g4b-news-email" type="email" name="email" placeholder="you@company.com" autocomplete="email" required>
-                    <button type="submit">Subscribe</button>
-                    <p class="g4b-news-msg" role="status" aria-live="polite"></p>
-                </form>
-            </div>
-        </div>
-    </section>
+    @include('frontend.pages.blog.partials.newsletter', [
+        'news_title' => $text('newsletter_title', 'Get new articles by email'),
+        'news_text' => $text('newsletter_text', $blog_topics->count() ? 'New posts on ' . $blog_topics->take(3)->pluck('name')->join(', ', ' and ') . ', sent to your inbox.' : ''),
+    ])
 </div>

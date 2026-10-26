@@ -260,6 +260,46 @@ the index's first page a lead story beside a "Most read" list, then a grid.
   "Data & Accuracy"). `FrontendController::blog_page_faqs()`; the questions
   themselves are edited under Faq.
 
+## Blog post page (`/blog/{slug}`)
+
+`pages/blog/blog-single.blade.php` is now only the meta/OG tags; the page is
+`partials/post.blade.php` with its CSS/JS inline in `partials/post-style.blade.php`
+(it reuses the listing's `partials/style` tokens, card and newsletter partials).
+Rebuilt 2026-10-26; Disqus comments, the Font Awesome CDN and `blog.css` were
+dropped from it on purpose.
+- Everything below the article is backend data, from
+  `FrontendController::blog_post_extras()`: related posts (same category
+  first), mailing lists (`B2BList` matched on the title's words, and a
+  "Decision makers" tab of role lists), the latest 3 case studies, Brand
+  Logos (falls back to four fixed logos while none have an image), reading
+  time. Author card and byline use the post's `Author` (bio = its content).
+  These extras fail soft: `blog_post_extras()` catches any query error,
+  logs it and returns empty panels, so the article itself always shows.
+- `publish_date` is free text in the admin (only `required`); it is parsed
+  in a try/catch, falling back to `created_at`, in both `blog-single` and
+  `og-meta`. Keep it that way, a bad date must not 500 the post.
+- Wording: Blog → Blog Single Page Settings, "Post page wording" fields,
+  keys `blog_single_page_{lang}_{toc_title,cta_*,faq_title,author_title,
+  lists_*,about_*,partners_title,case_title}`; empty = the default shown in
+  each field's help text.
+- "On this page" follows the reader (script in `post-style`): read /
+  current / ahead states, a green line down the rail set through the
+  `--g4p-fill` CSS variable, and "N% read". The rail is the items' left
+  borders and the line is the list's `::before`, inside the scrolling list
+  so neither gets clipped.
+- The lead image is never cropped: most are ~2.7:1 banners with the title
+  written on them. Its height attribute comes from `media_uploads.dimensions`
+  ("851 x 315 pixels", written by both the uploader and the blog agent).
+  Four posts point at 350px `grid-…` re-uploads instead of their 851px
+  originals, which is why they look soft — a media choice, not CSS.
+- The FAQ block shows only when the post has FAQ rows or `faq_content`
+  (it used to print "No FAQ Found"). Empty `<p>` paragraphs in post bodies
+  are removed at render, not in the DB.
+- JSON-LD for posts is built as a PHP array in `partials/og-meta.blade.php`
+  (the old hand-written block was invalid JSON on posts without FAQs).
+- Previewing locally needs the live `blog_categories.slug` column (see the
+  listings section), so post pages can't be opened on the local server as is.
+
 ## Chat widget
 
 The conversation system itself runs on a **separate server owned by the user**

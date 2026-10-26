@@ -562,118 +562,98 @@
           } 
       </script>
      @elseif(isset($blog_post) && !empty($blog_post))
-          <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-
-    {
-       "@type": "Organization",
-      "@id": "{{ url('/') }}#organization",
-      "name": "Go4Database",
-      "url": "{{ url('/') }}",
-      "logo": {
-        "@type": "ImageObject",
-        "@id": "{{ url('/') }}#logo",
-        "url": "{{ url('/') }}/assets/uploads/media-uploader/go4database-logo1751528079.png",
-        "contentUrl": "{{ url('/') }}/assets/uploads/media-uploader/go4database-logo1751528079.png",
-        "width": 300,
-        "height": 300,
-        "caption": "Go4Database"
-      },
-      "image": { "@id": "{{ url('/') }}#logo" },
-     
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "telephone": "+1 786 785 2141",
-        "contactType": "customer service",
-        "areaServed": "US",
-        "availableLanguage": "en"
-      },
-      "sameAs": [
-        "https://www.facebook.com/Go4Database",
-        "https://twitter.com/go4database",
-        "https://www.instagram.com/go4database/",
-        "https://www.youtube.com/@Go4Database",
-        "https://www.linkedin.com/company/go4database/",
-        "https://in.pinterest.com/go4database/"
-      ]
-    },
-
-    {
-      "@type": "WebSite",
-      "@id": "{{ url('/') }}#website",
-      "name": "Go4Database",
-      "url": "{{ url('/') }}",
-      "publisher": {
-        "@id": "{{ url('/') }}#organization"
-      }
-    },
-    {
-       "@type": "BreadcrumbList", 
-        "itemListElement": [{
-          "@type": "ListItem", 
-          "position": 1, 
-          "name": "Home",
-          "item": "{{ url('/') }}"  
-        },{
-          "@type": "ListItem", 
-          "position": 2, 
-          "name": "Blog",
-          "item": "{{ url('blog') }}"  
-        },{
-          "@type": "ListItem", 
-          "position": 3, 
-          "name": "{{ $blog_post->title }} ",
-          "item": "{{ url()->current() }}"  
-        }]
-    },
-    {
-        "@type": "BlogPosting",
-        "mainEntityOfPage": {
-          "@type": "WebPage",
-          "@id": "{{ url()->current() }}"
-        },
-        "headline": "{{ $blog_post->title }}",
-        "description": "{{ \Illuminate\Support\Str::limit(strip_tags($blog_post->content),150) }}",
-        "image": "{{ get_attachment_image_by_id($blog_post->image,'full',true)['img_url'] ?? '' }}",  
-        "author": {
-          "@type": "Person",
-          "name": "{{ $blog_post->author }}",
-          "url": "{{ url()->current() }}"
-
-        },  
-        "publisher": {
-          "@type": "Organization",
-          "name": "{{ $blog_post->author }}",
-          "logo": {
-            "@type": "ImageObject",
-            "url": "{{ url()->current() }}"
-          }
-        },
-        "datePublished": "{{ date('c', strtotime($blog_post->created_at)) }}",
-"dateModified": "{{ date('c', strtotime($blog_post->updated_at)) }}"
-    },
-    @if(!empty($blog_post->faqs))
-{!! json_encode([
-    "@context" => "https://schema.org",
-    "@type" => "FAQPage",
-    "mainEntity" => collect($blog_post->faqs)->map(function ($faq) {
-        return [
-            "@type" => "Question",
-            "name" => $faq['question'],
-            "acceptedAnswer" => [
-                "@type" => "Answer",
-                "text" => strip_tags($faq['answer'])
-            ]
-        ];
-    })->values()
-], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
-
-@endif
-  ]
-}
-</script>
+          {{-- Built as an array and encoded, so it is always valid JSON. The
+               hand-written version left a trailing comma after the BlogPosting
+               when a post had no FAQs, which made the whole block invalid (and
+               ignored) on most posts; it also named the author as publisher
+               and pointed the author and logo at the post's own URL. --}}
+          @php
+              $ld_site = rtrim(url('/'), '/');
+              $ld_author = $blog_post->authorData ?? null;
+              $ld_image = get_attachment_image_by_id($blog_post->image, 'full', true)['img_url'] ?? '';
+              // Free text in the admin; an unreadable one falls back to the creation date.
+              $ld_published = $blog_post->created_at;
+              if (!empty($blog_post->publish_date)) {
+                  try { $ld_published = \Carbon\Carbon::parse($blog_post->publish_date); } catch (\Throwable $e) {}
+              }
+              $ld_graph = [
+                  [
+                      '@type' => 'Organization',
+                      '@id' => $ld_site . '#organization',
+                      'name' => 'Go4Database',
+                      'url' => $ld_site,
+                      'logo' => [
+                          '@type' => 'ImageObject',
+                          '@id' => $ld_site . '#logo',
+                          'url' => $ld_site . '/assets/uploads/media-uploader/go4database-logo1751528079.png',
+                          'contentUrl' => $ld_site . '/assets/uploads/media-uploader/go4database-logo1751528079.png',
+                          'width' => 300,
+                          'height' => 300,
+                          'caption' => 'Go4Database',
+                      ],
+                      'image' => ['@id' => $ld_site . '#logo'],
+                      'contactPoint' => [
+                          '@type' => 'ContactPoint',
+                          'telephone' => '+1 786 785 2141',
+                          'contactType' => 'customer service',
+                          'areaServed' => 'US',
+                          'availableLanguage' => 'en',
+                      ],
+                      'sameAs' => [
+                          'https://www.facebook.com/Go4Database',
+                          'https://twitter.com/go4database',
+                          'https://www.instagram.com/go4database/',
+                          'https://www.youtube.com/@Go4Database',
+                          'https://www.linkedin.com/company/go4database/',
+                          'https://in.pinterest.com/go4database/',
+                      ],
+                  ],
+                  [
+                      '@type' => 'WebSite',
+                      '@id' => $ld_site . '#website',
+                      'name' => 'Go4Database',
+                      'url' => $ld_site,
+                      'publisher' => ['@id' => $ld_site . '#organization'],
+                  ],
+                  [
+                      '@type' => 'BreadcrumbList',
+                      'itemListElement' => [
+                          ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => $ld_site],
+                          ['@type' => 'ListItem', 'position' => 2, 'name' => 'Blog', 'item' => url('blog')],
+                          ['@type' => 'ListItem', 'position' => 3, 'name' => $blog_post->title, 'item' => url()->current()],
+                      ],
+                  ],
+                  array_filter([
+                      '@type' => 'BlogPosting',
+                      'mainEntityOfPage' => ['@type' => 'WebPage', '@id' => url()->current()],
+                      'headline' => $blog_post->title,
+                      'description' => $blog_post->meta_description ?: ($blog_post->excerpt ?: \Illuminate\Support\Str::limit(trim(strip_tags($blog_post->content)), 150)),
+                      'image' => $ld_image ?: null,
+                      'articleSection' => optional($blog_post->category)->name,
+                      'author' => array_filter([
+                          '@type' => 'Person',
+                          'name' => $ld_author->name ?? $blog_post->author,
+                          'url' => (!empty($ld_author) && !empty($ld_author->slug)) ? route('frontend.author.single', $ld_author->slug) : null,
+                      ]),
+                      'publisher' => ['@id' => $ld_site . '#organization'],
+                      'datePublished' => $ld_published ? \Carbon\Carbon::parse($ld_published)->toIso8601String() : null,
+                      // The Blog model casts its dates to strings, so parse rather than call methods on them.
+                      'dateModified' => $blog_post->updated_at ? \Carbon\Carbon::parse($blog_post->updated_at)->toIso8601String() : null,
+                  ]),
+              ];
+              $ld_faqs = collect($blog_post->faqs ?? [])->filter(function ($faq) {
+                  return is_array($faq) && !empty($faq['question']) && !empty($faq['answer']);
+              });
+              if ($ld_faqs->count()) {
+                  $ld_graph[] = [
+                      '@type' => 'FAQPage',
+                      'mainEntity' => $ld_faqs->map(function ($faq) {
+                          return ['@type' => 'Question', 'name' => $faq['question'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($faq['answer'])]];
+                      })->values()->all(),
+                  ];
+              }
+          @endphp
+          <script type="application/ld+json">{!! json_encode(['@context' => 'https://schema.org', '@graph' => $ld_graph], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_PRETTY_PRINT) !!}</script>
      
 
 

@@ -335,6 +335,15 @@ if ($request->has('faqs')) {
                 'blog_single_page_'.$lang->slug.'_tags_title'
             ];
 
+            // The post page's own wording; each falls back to a default when empty.
+            foreach (['toc_title', 'cta_title', 'cta_text', 'cta_button', 'cta_url', 'faq_title', 'author_title', 'lists_title',
+                      'lists_tab_industry', 'lists_tab_roles', 'about_title', 'about_text', 'about_stat_one', 'about_stat_two',
+                      'partners_title', 'case_title'] as $text) {
+                $key = 'blog_single_page_'.$lang->slug.'_'.$text;
+                $this->validate($request, [$key => 'nullable|string|max:1000']);
+                $fields[] = $key;
+            }
+
             foreach ($fields as $field){
                 update_static_option($field, $request->$field);
             }

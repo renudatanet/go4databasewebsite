@@ -1096,18 +1096,81 @@ $authorName = Str::title(str_replace('-', ' ', $authorSlug));
 $blog_post->timestamps = false;
 $blog_post->increment('total_visitors');
            
-            return view('frontend.pages.blog.blog-single')->with([
+            return view('frontend.pages.blog.blog-single')->with(array_merge([
                 'blog_post' => $blog_post,
                 'all_categories' => $all_category,
                 'all_recent_blogs' => $all_recent_blogs,
                 'all_related_blog' => $all_related_blog,
                 'all_work' => $all_work,
                 'toc' => $toc,
-            ]);
+            ], $this->blog_post_extras($blog_post, $lang)));
         }
     }
     
     
+    /**
+     * What the post page shows around the article: three related posts (same
+     * topic first, then the newest), real list pages for the sidebar instead
+     * of the old placeholder links, the case studies and partner logos (Case
+     * Study and Brand Logos in the admin), and the reading time.
+     */
+    private function blog_post_extras($blog_post, $lang)
+    {
+        try {
+            return $this->blog_post_extras_query($blog_post, $lang);
+        } catch (\Throwable $e) {
+            // These panels are extras: if one of their queries fails, the
+            // article still shows, without them, and the error is logged.
+            report($e);
+            return ['post_related' => collect(), 'post_lists' => ['industry' => collect(), 'roles' => collect()],
+                'post_case_studies' => collect(), 'post_brands' => collect(),
+                'post_minutes' => max(1, (int) ceil(str_word_count(strip_tags((string) $blog_post->content)) / 225))];
+        }
+    }
+
+    private function blog_post_extras_query($blog_post, $lang)
+    {
+        $published = Blog::where(['lang' => $lang, 'status' => 'publish'])->where('id', '!=', $blog_post->id);
+        $related = (clone $published)->where('blog_categories_id', $blog_post->blog_categories_id)->orderBy('id', 'desc')->take(3)->get();
+        if ($related->count() < 3) {
+            $related = $related->concat((clone $published)->whereNotIn('id', $related->pluck('id'))->orderBy('id', 'desc')->take(3 - $related->count())->get());
+        }
+        $related->load(['authorData', 'category']);
+
+        // List pages about the post's subject, matched on the words of its
+        // title and topic; the generic words every list title shares are left out.
+        $generic = ['list', 'lists', 'email', 'emails', 'mailing', 'contact', 'contacts', 'database', 'data', 'best', 'guide',
+            'what', 'your', 'with', 'from', 'that', 'this', 'than', 'vs', 'top', 'how', 'for', 'and', 'the', 'b2b', 'leads',
+            'features', 'pricing', 'compared', 'review', 'reviews', 'which', 'better', 'complete', 'ultimate'];
+        $words = collect(preg_split('/[^a-z0-9]+/', strtolower($blog_post->title . ' ' . optional($blog_post->category)->name)))
+            ->filter(function ($word) use ($generic) { return strlen($word) >= 4 && !ctype_digit($word) && !in_array($word, $generic); })
+            ->unique()->take(5)->values();
+        $lists = B2BList::where('lang', $lang)->where(function ($q) { $q->whereNull('status')->orWhere('status', '!=', 'draft'); });
+        $on_subject = function ($query) use ($words) {
+            $query->where(function ($q) use ($words) {
+                foreach ($words as $word) {
+                    $q->orWhere('title', 'LIKE', '%' . addcslashes($word, '%_\\') . '%');
+                }
+            });
+        };
+        $pick = function ($query, $count) use ($words, $on_subject) {
+            $found = $words->isNotEmpty() ? (clone $query)->where($on_subject)->orderBy('id')->take($count)->get(['id', 'title', 'slug']) : collect();
+            if ($found->count() < $count) {
+                $found = $found->concat((clone $query)->whereNotIn('id', $found->pluck('id'))->orderBy('id', 'desc')->take($count - $found->count())->get(['id', 'title', 'slug']));
+            }
+            return $found;
+        };
+        $roles = (clone $lists)->whereRaw('title REGEXP ?', ['(^|[^A-Za-z])(CEO|CFO|CTO|CMO|COO|CIO|VP|Director|Owner|Founder|Executive|Manager)s?([^A-Za-z]|$)']);
+
+        return [
+            'post_related' => $related,
+            'post_lists' => ['industry' => $pick($lists, 8), 'roles' => $pick($roles, 8)],
+            'post_case_studies' => CaseStudy::where(['lang' => $lang, 'status' => 'publish'])->orderBy('id', 'desc')->take(3)->get(['id', 'title', 'slug', 'excerpt']),
+            'post_brands' => Brand::orderBy('id')->take(8)->get(['id', 'title', 'url', 'image']),
+            'post_minutes' => max(1, (int) ceil(str_word_count(strip_tags((string) $blog_post->content)) / 225)),
+        ];
+    }
+
     private function generateTOC($content)
 {
    $matches = [];
