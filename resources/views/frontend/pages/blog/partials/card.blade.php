@@ -64,7 +64,10 @@
         </div>
 
         @if($variant === 'featured')
-            <a class="g4b-btn" href="{{ $url }}" tabindex="-1">{{ $read_more ?: 'Read article' }}</a>
+            {{-- The visible text is the admin's read-more wording; the hidden
+                 title makes the link say where it goes, for search engines and
+                 screen readers ("Read More" alone fails Lighthouse's link-text check). --}}
+            <a class="g4b-btn" href="{{ $url }}" tabindex="-1">{{ $read_more ?: 'Read article' }}<span class="g4b-sr">: {{ $post->title }}</span></a>
         @endif
     </div>
 </article>
