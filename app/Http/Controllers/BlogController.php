@@ -403,7 +403,7 @@ if ($request->has('faqs')) {
 
     public function slug_check(SlugCheckRequest $request){
         $user_given_slug = $request->slug;
-        $query = Events::Blog(['slug' => $user_given_slug]);
+        $query = Blog::where(['slug' => $user_given_slug]);
 
         return SlugChecker::Check($request,$query);
     }

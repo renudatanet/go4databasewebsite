@@ -92,6 +92,16 @@ use App\Http\Controllers\AffiliateSettingsController;
 class FrontendController extends Controller
 {
 
+    /**
+     * /home, where Laravel sends people after signing up or confirming their
+     * password (RouteServiceProvider::HOME). It had no page and showed an
+     * error: signed-in visitors go to their dashboard, everyone else home.
+     */
+    public function home()
+    {
+        return redirect(auth('web')->check() ? route('user.home') : route('homepage'));
+    }
+
     public function index()
     {
         $home_page_variant = get_home_variant();
