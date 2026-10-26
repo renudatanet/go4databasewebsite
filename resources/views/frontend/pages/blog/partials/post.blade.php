@@ -39,6 +39,21 @@
     // above them is the one the page waits for. Empty paragraphs the editor
     // leaves between real ones are dropped, they doubled the spacing.
     $body = preg_replace('/<img(?![^>]*\sloading=)/i', '<img loading="lazy" decoding="async"', (string) ($toc['content'] ?? $blog_post->content));
+    // Posts pasted from documents open and close their paragraphs with line
+    // breaks (<p><br>Text … Text<br>&nbsp;</p>), each one an empty line: the
+    // gaps under headings and inside the boxes. Breaks at those edges go,
+    // breaks between lines stay, and no more than two ever stand together.
+    $edge = '(?:\s|&nbsp;|&#160;|\x{00A0}|<br\s*\/?>)+';
+    $blocks = 'p|h[1-6]|li|td|th|blockquote';
+    $inline = 'span|strong|b|em|i|u|font';
+    $body = preg_replace('/(<(?:' . $blocks . ')\b[^>]*>(?:\s*<(?:' . $inline . ')\b[^>]*>)*)' . $edge . '/iu', '$1', $body) ?? $body;
+    $body = preg_replace('/' . $edge . '((?:\s*<\/(?:' . $inline . '|a)>)*\s*<\/(?:' . $blocks . ')>)/iu', '$1', $body) ?? $body;
+    $body = preg_replace('/(?:<br\s*\/?>\s*){3,}/i', '<br><br>', $body);
+    // The posts' "Start …" buttons carry the blog agent's inline sizes and
+    // fonts, which nothing else can override; the page styles them instead.
+    $body = preg_replace_callback('/<a\b[^>]*\bid="TrailBtn"[^>]*>/i', function ($tag) {
+        return preg_replace('/\sstyle="[^"]*"/i', '', $tag[0]);
+    }, $body) ?? $body;
     $body = preg_replace('/<p\b[^>]*>(?:\s|&nbsp;|&#160;|\x{00A0}|<br\s*\/?>)*<\/p>/iu', '', $body) ?? $body;
     // Some posts use Heading 1 for their sections; the title above is the
     // page's one H1, so those become H2 (ids kept, the contents still link).

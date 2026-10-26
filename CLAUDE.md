@@ -296,6 +296,17 @@ dropped from it on purpose.
   (it used to print "No FAQ Found"). At render, not in the DB, the body
   loses its empty `<p>` paragraphs and its `<h1>`s become `<h2>` (some
   posts use Heading 1 for sections; the title is the page's only H1).
+  Line breaks at the start or end of a paragraph/heading/cell (`<p><br>…`,
+  `…<br>&nbsp;</p>`, from documents pasted in) are dropped too, and runs of
+  3+ `<br>` become two; they were most of the page's empty space.
+- Posts carry promo boxes, `<div id="BigCTA">` with an `<a id="TrailBtn">`
+  button (263 boxes in 95 posts). The old theme's style.css forces
+  `#TrailBtn` into Montserrat, which isn't loaded (serif fallback), so
+  `post-style` restyles both as a mint card and a green pill button at
+  `.g4p-body #…` specificity, and the render strips the blog agent's inline
+  `style` from `TrailBtn` (its `!important`s can't be overridden).
+- Spacing scale in `post-style`: 8/12/16/24/32/40/48px; headings H1 46 /
+  H2 28 / H3 21 / H4 18px (phones 28/22/19/17).
 - Author photos (post page and cards) fall back to the initial when the
   media record's file is missing from disk, e.g. `image-71776673131.png`.
   The check is relative to the web root, like `get_attachment_image_by_id`'s
