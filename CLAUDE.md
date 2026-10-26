@@ -229,10 +229,14 @@ the index's first page a lead story beside a "Most read" list, then a grid.
   `frontend.subscribe.newsletter` route, so sign-ups still land in
   Newsletter Manage). The old breadcrumb banner is switched off by
   `@section('no-breadcrumb')`, checked in `frontend-page-master`.
-- Page links are real `?page=N` links (search keeps `search=`); the old
-  AJAX `javascript:void(0)` pagination is gone. "Show more articles" fetches
-  the next page's HTML and appends its `.g4b-grid` in place, so readers can
-  go through every post; the page links stay for crawlers.
+- No numbered page links, by request: "Show more articles" is the only way
+  on. It is a real `<a href="?page=N" rel="next">` (search keeps `search=`),
+  which the script turns into fetching that page and appending its
+  `.g4b-grid` in place, so the address stays `/blog`; crawlers and no-script
+  visitors follow the link. `?page=N` pages are already `noindex, follow`
+  with a clean canonical through `partials/header.blade.php`, which does
+  that for every URL with a query string. The old AJAX
+  `javascript:void(0)` pagination is gone.
 - Search matches title **or** excerpt (title matches first, `%`/`_`
   escaped). Asked for JSON (`Accept: application/json`), the same
   `blog_search_page` route returns the search box's instant results (top 6,

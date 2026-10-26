@@ -330,30 +330,6 @@
   .g4b-grid > .g4b-card.is-across{grid-column:1 / -1;}
 }
 
-/* --- page links -------------------------------------------------------- */
-.g4b-pages{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:56px;}
-.g4b-pages ol{display:flex;align-items:center;gap:6px;margin:0;padding:0;list-style:none;}
-.g4b-page{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-width:42px;
-  height:42px;
-  padding:0 12px;
-  border:1px solid var(--g4b-line);
-  border-radius:12px;
-  background:#fff;
-  font-size:14.5px;
-  font-weight:800;
-  color:var(--g4b-ink);
-  transition:background-color .2s ease,border-color .2s ease,color .2s ease;
-}
-a.g4b-page:hover{border-color:#c6e9c9;background:var(--g4b-tint);color:var(--g4b-deep);}
-.g4b-page.is-current{border-color:var(--g4b-green);background:var(--g4b-green);color:var(--g4b-ink);}
-.g4b-page--step{padding:0 18px;}
-.g4b-page.is-off{visibility:hidden;}
-.g4b-page-gap{padding:0 4px;font-weight:800;color:var(--g4b-slate);}
-
 /* --- show more -------------------------------------------------------- */
 .g4b-grid + .g4b-grid{margin-top:28px;}
 .g4b-more{display:flex;justify-content:center;margin-top:44px;}
@@ -373,9 +349,9 @@ a.g4b-page:hover{border-color:#c6e9c9;background:var(--g4b-tint);color:var(--g4b
   transition:background-color .2s ease,border-color .2s ease,transform .2s var(--g4b-ease);
 }
 .g4b-more-btn:hover{border-color:var(--g4b-green);background:var(--g4b-mint);transform:translateY(-1px);}
-.g4b-more-btn[disabled]{cursor:wait;opacity:.75;transform:none;}
+.g4b-more-btn:hover{color:var(--g4b-ink);}
+.g4b-more-btn.is-loading{cursor:wait;opacity:.75;transform:none;pointer-events:none;}
 .g4b-more-left{padding:3px 9px;border-radius:999px;background:var(--g4b-tint);font-size:12.5px;color:var(--g4b-deep);}
-.g4b-more + .g4b-pages{margin-top:24px;}
 
 /* --- FAQs -------------------------------------------------------------- */
 .g4b-faq{padding:0 0 72px;}
@@ -475,10 +451,6 @@ a.g4b-page:hover{border-color:#c6e9c9;background:var(--g4b-tint);color:var(--g4b
   .g4b-card-body,.g4b-card--featured .g4b-card-body{padding:18px 18px 20px;}
   .g4b-card--featured .g4b-card-media{aspect-ratio:16/10;}
   .g4b-section-head h2{font-size:22px;}
-  .g4b-pages{gap:6px;}
-  .g4b-pages ol li:not(:has(.is-current)):not(:first-child):not(:last-child){display:none;}
-  .g4b-page{min-width:38px;height:40px;}
-  .g4b-page--step{padding:0 12px;}
   .g4b-news{padding-bottom:56px;}
   .g4b-search{height:56px;padding-left:44px;}
   .g4b-search-icon{left:15px;}
@@ -676,17 +648,22 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-  // "Show more articles": fetches the next page and adds its grid here, so a
-  // reader can go through every post without paging. If anything fails it
-  // simply goes to that page instead.
+  // "Show more articles": a link to the next page, which this turns into
+  // adding that page's grid here instead, so a reader goes through every post
+  // on one page and the address never changes. If anything fails it simply
+  // follows the link.
   var button = document.querySelector('.g4b-more-btn');
   if (!button) { return; }
   var results = button.closest('.g4b-results');
+  var busy = false;
 
-  button.addEventListener('click', function () {
-    var next = button.getAttribute('data-next');
-    if (!next) { return; }
-    button.disabled = true;
+  button.addEventListener('click', function (e) {
+    var next = button.getAttribute('href');
+    if (!next || e.metaKey || e.ctrlKey || e.shiftKey) { return; }   // a new tab still opens the page
+    e.preventDefault();
+    if (busy) { return; }
+    busy = true;
+    button.classList.add('is-loading');
     button.textContent = 'Loading…';
     fetch(next, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
       .then(function (res) { return res.ok ? res.text() : Promise.reject(); })
@@ -697,9 +674,6 @@ document.addEventListener('DOMContentLoaded', function () {
         var added = document.importNode(grid, true);
         results.insertBefore(added, button.parentNode);
 
-        var pages = doc.querySelector('.g4b-pages'), current = results.querySelector('.g4b-pages');
-        if (pages && current) { current.replaceWith(document.importNode(pages, true)); }
-
         var count = results.querySelector('.g4b-count'), fetched = doc.querySelector('.g4b-count');
         if (count && fetched) {
           count.textContent = count.dataset.first + '–' + fetched.dataset.last + ' of ' + Number(fetched.dataset.total).toLocaleString() + ' articles';
@@ -707,9 +681,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         var nextButton = doc.querySelector('.g4b-more-btn');
         if (nextButton) {
-          button.setAttribute('data-next', nextButton.getAttribute('data-next'));
+          button.setAttribute('href', nextButton.getAttribute('href'));
           button.innerHTML = nextButton.innerHTML;
-          button.disabled = false;
+          button.classList.remove('is-loading');
+          busy = false;
         } else {
           button.parentNode.remove();
         }

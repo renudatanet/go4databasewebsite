@@ -163,19 +163,19 @@
                     </div>
                 @endif
 
-                {{-- Adds the next page's articles here without leaving the page, so a
-                     reader can keep going through every post. The page links
-                     below stay for search engines and anyone without script. --}}
+                {{-- The only way on to older posts: no numbered page links. The
+                     script adds the next batch here without leaving the page
+                     or changing the address; as a plain link it still lets
+                     search engines (and anyone without script) reach every
+                     post. Those ?page=N pages are marked noindex. --}}
                 @if($all_blogs->hasMorePages())
                     @php $left = $all_blogs->total() - $all_blogs->lastItem(); @endphp
                     <div class="g4b-more">
-                        <button type="button" class="g4b-more-btn" data-next="{{ $all_blogs->nextPageUrl() }}">
+                        <a class="g4b-more-btn" href="{{ $all_blogs->nextPageUrl() }}" rel="next">
                             Show more articles <span class="g4b-more-left">{{ number_format($left) }} more</span>
-                        </button>
+                        </a>
                     </div>
                 @endif
-
-                @include('frontend.pages.blog.partials.pagination', ['paginator' => $all_blogs])
                 </div>
             @endif
         </div>
