@@ -293,8 +293,14 @@ dropped from it on purpose.
   Four posts point at 350px `grid-…` re-uploads instead of their 851px
   originals, which is why they look soft — a media choice, not CSS.
 - The FAQ block shows only when the post has FAQ rows or `faq_content`
-  (it used to print "No FAQ Found"). Empty `<p>` paragraphs in post bodies
-  are removed at render, not in the DB.
+  (it used to print "No FAQ Found"). At render, not in the DB, the body
+  loses its empty `<p>` paragraphs and its `<h1>`s become `<h2>` (some
+  posts use Heading 1 for sections; the title is the page's only H1).
+- Author photos (post page and cards) fall back to the initial when the
+  media record's file is missing from disk, e.g. `image-71776673131.png`.
+  The check is relative to the web root, like `get_attachment_image_by_id`'s
+  own, so in the scratch preview (run from the project root) every author
+  shows an initial.
 - JSON-LD for posts is built as a PHP array in `partials/og-meta.blade.php`
   (the old hand-written block was invalid JSON on posts without FAQs).
 - Previewing locally needs the live `blog_categories.slug` column (see the

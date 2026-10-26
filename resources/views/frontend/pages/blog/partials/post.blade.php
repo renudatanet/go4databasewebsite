@@ -16,6 +16,11 @@
     $topic_url = $topic ? route('frontend.blog.category', ['any' => $topic->slug ?: \Illuminate\Support\Str::slug($topic->name)]) : null;
     $author = $blog_post->authorData;
     $avatar = $author ? get_attachment_image_by_id($author->image, 'thumb') : [];
+    // A media record can outlive its file; then the initial shows, not a
+    // broken picture. Same relative path the image helper itself checks.
+    if (!empty($avatar['img_url']) && !file_exists('assets/uploads/media-uploader/' . basename(parse_url($avatar['img_url'], PHP_URL_PATH)))) {
+        $avatar = [];
+    }
     $author_url = ($author && !empty($author->slug)) ? route('frontend.author.single', $author->slug) : null;
     $author_bio = $author ? trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags((string) $author->content)))) : '';
     $hero = get_attachment_image_by_id($blog_post->image, 'large');
@@ -35,6 +40,9 @@
     // leaves between real ones are dropped, they doubled the spacing.
     $body = preg_replace('/<img(?![^>]*\sloading=)/i', '<img loading="lazy" decoding="async"', (string) ($toc['content'] ?? $blog_post->content));
     $body = preg_replace('/<p\b[^>]*>(?:\s|&nbsp;|&#160;|\x{00A0}|<br\s*\/?>)*<\/p>/iu', '', $body) ?? $body;
+    // Some posts use Heading 1 for their sections; the title above is the
+    // page's one H1, so those become H2 (ids kept, the contents still link).
+    $body = preg_replace('/<(\/?)h1\b/i', '<$1h2', $body);
     $faqs = collect($blog_post->faqs ?? [])->filter(function ($faq) {
         return is_array($faq) && trim((string) ($faq['question'] ?? '')) !== '' && trim((string) ($faq['answer'] ?? '')) !== '';
     })->values();

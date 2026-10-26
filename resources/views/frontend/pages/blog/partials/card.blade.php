@@ -9,6 +9,11 @@
     $topic = $post->category;
     $author = $post->authorData;
     $avatar = $author ? get_attachment_image_by_id($author->image, 'thumb') : [];
+    // A media record can outlive its file; then the initial shows, not a
+    // broken picture. Same relative path the image helper itself checks.
+    if (!empty($avatar['img_url']) && !file_exists('assets/uploads/media-uploader/' . basename(parse_url($avatar['img_url'], PHP_URL_PATH)))) {
+        $avatar = [];
+    }
     $minutes = max(1, (int) ceil(str_word_count(strip_tags((string) $post->content)) / 225));
     $date = $post->updated_at ?? $post->created_at;
     $read_more = get_static_option('blog_page_' . $user_select_lang_slug . '_read_more_btn_text');
