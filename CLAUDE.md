@@ -253,7 +253,18 @@ the index's first page a lead story beside a "Most read" list, then a grid.
   CollectionPage + ItemList JSON-LD block that points at the site-wide
   Organization/WebSite nodes in `partials/og-meta.blade.php`, which already
   carries the breadcrumb. "Page Heading (H1)" in Blog Page Settings
-  (`blog_page_{lang}_heading`) overrides the H1, else the page name.
+  (`blog_page_{lang}_heading`) overrides the H1 (see Header below).
+- Header (2026-10-27): centred, `g4b-hero--center` (the post page shares
+  `g4b-hero`, so the new look is scoped to that class). No more
+  articles/topics/authors counts. A "New" chip links the newest post (index
+  page 1 only). The H1 is Blog Page Settings' "Page Heading (H1)" when set;
+  when empty, the index shows a fixed "Explore insights on B2B Growth"
+  (highlighted `.g4b-mark`). A cycling topic word was tried and rejected
+  by the user: keep it fixed. A slow green glow (`.g4b-glow`) drifts behind.
+  Every header text is in Blog Page Settings, per language: `heading`,
+  `heading_highlight` (the green words; default "B2B Growth" only with the
+  default heading), `subtitle`, `new_label`, `search_placeholder`,
+  `search_hint`, `all_label`.
 - FAQ section under the index's articles: up to six questions from the FAQ
   category picked in Blog → Blog Page Settings → "FAQ Section"
   (`blog_page_faq_category`: a category id, `none` to hide, or empty for

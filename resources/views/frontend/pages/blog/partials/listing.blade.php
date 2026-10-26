@@ -77,7 +77,18 @@
 @endif
 
 <div class="g4b">
-    <section class="g4b-hero">
+    @php
+        // The index's heading, from Blog Page Settings: "Page Heading (H1)"
+        // then its green "Heading Highlighted Words". Left empty they read
+        // "Explore insights on" + "B2B Growth"; a heading of your own has no
+        // green words unless they are set too. Topic and search pages keep
+        // their own heading.
+        $custom_heading = trim((string) get_static_option('blog_page_' . $user_select_lang_slug . '_heading'));
+        $hero_heading = $custom_heading !== '' ? $custom_heading : 'Explore insights on';
+        $hero_highlight = $text('heading_highlight', $custom_heading !== '' ? '' : 'B2B Growth');
+    @endphp
+    <section class="g4b-hero g4b-hero--center">
+        <span class="g4b-glow" aria-hidden="true"></span>
         <div class="g4b-wrap">
             <nav class="g4b-crumbs" aria-label="Breadcrumb">
                 <ol>
@@ -91,43 +102,46 @@
                 </ol>
             </nav>
 
-            <div class="g4b-hero-grid">
-                <div class="g4b-hero-copy">
+            <div class="g4b-hero-copy">
+                @if($lead_post)
+                    {{-- The newest post, so the header always has something new in it. --}}
+                    <a class="g4b-new" href="{{ route('frontend.blog.single', $lead_post->slug) }}">
+                        <span class="g4b-new-tag"><span class="g4b-new-dot" aria-hidden="true"></span>{{ $text('new_label', 'New') }}</span>
+                        <span class="g4b-new-title">{{ \Illuminate\Support\Str::limit($lead_post->title, 70) }}</span>
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    </a>
+                @endif
+                @if($mode === 'index')
+                    <h1 class="g4b-title">{{ $hero_heading }}@if($hero_highlight !== '') <span class="g4b-mark">{{ $hero_highlight }}</span>@endif</h1>
+                @else
                     <h1 class="g4b-title">{{ $heading }}</h1>
-                    @if(!empty($lead))
-                        <p class="g4b-lead">{{ $lead }}</p>
-                    @endif
-                    @if($mode === 'index')
-                        <ul class="g4b-stats">
-                            <li><strong>{{ number_format($blog_total_posts) }}</strong> articles</li>
-                            <li><strong>{{ $blog_topics->count() }}</strong> topics</li>
-                            <li><strong>{{ $blog_total_authors }}</strong> authors</li>
-                        </ul>
-                    @endif
-                </div>
+                @endif
+                @if(!empty($lead))
+                    <p class="g4b-lead">{{ $lead }}</p>
+                @endif
+            </div>
 
-                <div class="g4b-search-wrap">
-                    <form class="g4b-search" action="{{ route('frontend.blog.search') }}" method="get" role="search" data-suggest-url="{{ route('frontend.blog.search') }}" data-popular-label="{{ $text('most_read_title', 'Most read') }}">
-                        <label class="g4b-sr" for="g4b-search-input">Search articles</label>
-                        <svg class="g4b-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
-                        <input id="g4b-search-input" type="search" name="search" value="{{ $search_term ?? '' }}"
-                               placeholder="Search {{ number_format($blog_total_posts) }} articles" autocomplete="off" required
-                               role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="g4b-suggest">
-                        <button type="button" class="g4b-search-clear" aria-label="Clear search" hidden>
-                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
-                        </button>
-                        <kbd class="g4b-search-key" title="Press / to search">/</kbd>
-                        <button type="submit" class="g4b-search-go">Search</button>
-                        <div class="g4b-suggest" id="g4b-suggest" role="listbox" aria-label="Suggested articles" hidden></div>
-                    </form>
-                    <p class="g4b-search-hint">{{ $text('search_hint', 'Searches the titles and summaries of every article. Results appear as you type.') }}</p>
-                </div>
+            <div class="g4b-search-wrap">
+                <form class="g4b-search" action="{{ route('frontend.blog.search') }}" method="get" role="search" data-suggest-url="{{ route('frontend.blog.search') }}" data-popular-label="{{ $text('most_read_title', 'Most read') }}">
+                    <label class="g4b-sr" for="g4b-search-input">Search articles</label>
+                    <svg class="g4b-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
+                    <input id="g4b-search-input" type="search" name="search" value="{{ $search_term ?? '' }}"
+                           placeholder="{{ $text('search_placeholder', 'Search articles and guides') }}" autocomplete="off" required
+                           role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="g4b-suggest">
+                    <button type="button" class="g4b-search-clear" aria-label="Clear search" hidden>
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                    </button>
+                    <kbd class="g4b-search-key" title="Press / to search">/</kbd>
+                    <button type="submit" class="g4b-search-go">Search</button>
+                    <div class="g4b-suggest" id="g4b-suggest" role="listbox" aria-label="Suggested articles" hidden></div>
+                </form>
+                <p class="g4b-search-hint">{{ $text('search_hint', 'Searches the titles and summaries of every article. Results appear as you type.') }}</p>
             </div>
 
             @if($blog_topics->count())
                 <nav class="g4b-topics" aria-label="Topics">
                     <a class="g4b-topic {{ $mode === 'index' ? 'is-active' : '' }}" href="{{ route('frontend.blog') }}" @if($mode === 'index') aria-current="page" @endif>
-                        All <span>{{ number_format($blog_total_posts) }}</span>
+                        {{ $text('all_label', 'All articles') }}
                     </a>
                     @foreach($blog_topics as $topic)
                         @php $active = isset($active_topic) && (int) $active_topic === (int) $topic->id; @endphp

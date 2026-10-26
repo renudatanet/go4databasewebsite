@@ -33,7 +33,12 @@
                                     <div class="form-group">
                                         <label for="blog_page_{{$lang->slug}}_heading">{{__('Page Heading (H1)')}}</label>
                                         <input type="text" class="form-control" id="blog_page_{{$lang->slug}}_heading" name="blog_page_{{$lang->slug}}_heading" value="{{get_static_option('blog_page_'.$lang->slug.'_heading')}}">
-                                        <small class="text-muted">{{__('The big title at the top of the blog page. A descriptive one helps search, e.g. "B2B Sales & Lead Generation Blog". Leave empty to use the page name from Page Settings (also shown in the breadcrumb).')}}</small>
+                                        <small class="text-muted">{{__('The big title at the top of the blog page, before the green words below. Leave empty for: Explore insights on')}}</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="blog_page_{{$lang->slug}}_heading_highlight">{{__('Heading Highlighted Words')}}</label>
+                                        <input type="text" class="form-control" id="blog_page_{{$lang->slug}}_heading_highlight" name="blog_page_{{$lang->slug}}_heading_highlight" value="{{get_static_option('blog_page_'.$lang->slug.'_heading_highlight')}}">
+                                        <small class="text-muted">{{__('Shown in green, underlined, at the end of the heading. Leave empty for: B2B Growth (only used with the default heading; with your own heading, leave it empty for no green words).')}}</small>
                                     </div>
                                     <div class="form-group">
                                         <label for="blog_page_{{$lang->slug}}_subtitle">{{__('Header Text')}}</label>
@@ -41,9 +46,24 @@
                                         <small class="text-muted">{{__('Shown under the page title. Leave empty to use the meta description from Page Settings.')}}</small>
                                     </div>
                                     <div class="form-group">
+                                        <label for="blog_page_{{$lang->slug}}_new_label">{{__('Newest Post Label')}}</label>
+                                        <input type="text" class="form-control" id="blog_page_{{$lang->slug}}_new_label" name="blog_page_{{$lang->slug}}_new_label" value="{{get_static_option('blog_page_'.$lang->slug.'_new_label')}}">
+                                        <small class="text-muted">{{__('The small green tag above the heading that links to your newest article. Default: New')}}</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="blog_page_{{$lang->slug}}_search_placeholder">{{__('Search Box Placeholder')}}</label>
+                                        <input type="text" class="form-control" id="blog_page_{{$lang->slug}}_search_placeholder" name="blog_page_{{$lang->slug}}_search_placeholder" value="{{get_static_option('blog_page_'.$lang->slug.'_search_placeholder')}}">
+                                        <small class="text-muted">{{__('The grey text inside the empty search box. Default: Search articles and guides')}}</small>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="blog_page_{{$lang->slug}}_search_hint">{{__('Search Hint')}}</label>
                                         <input type="text" class="form-control" id="blog_page_{{$lang->slug}}_search_hint" name="blog_page_{{$lang->slug}}_search_hint" value="{{get_static_option('blog_page_'.$lang->slug.'_search_hint')}}">
                                         <small class="text-muted">{{__('Under the search box. Default: Searches the titles and summaries of every article. Results appear as you type.')}}</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="blog_page_{{$lang->slug}}_all_label">{{__('All Topics Button')}}</label>
+                                        <input type="text" class="form-control" id="blog_page_{{$lang->slug}}_all_label" name="blog_page_{{$lang->slug}}_all_label" value="{{get_static_option('blog_page_'.$lang->slug.'_all_label')}}">
+                                        <small class="text-muted">{{__('The first topic button, which shows every article. Default: All articles')}}</small>
                                     </div>
                                     <div class="form-group">
                                         <label for="blog_page_{{$lang->slug}}_most_read_title">{{__('"Most Read" Heading')}}</label>
