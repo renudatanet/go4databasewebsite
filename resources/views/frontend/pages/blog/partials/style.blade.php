@@ -323,7 +323,8 @@
 
 /* Most read: a ranked list, so the numbers carry the order. */
 .g4b-popular{display:flex;flex-direction:column;padding:24px 24px 14px;border:1px solid var(--g4b-line);border-radius:18px;background:#fbfcfa;}
-.g4b-popular h2{margin:0 0 6px;font-size:20px;font-weight:800;color:var(--g4b-ink);}
+/* A label, not a heading (the side box isn't a section of the page). */
+.g4b-popular-head{margin:0 0 6px;font-size:20px;font-weight:800;line-height:1.3;color:var(--g4b-ink);}
 .g4b-popular ol{display:flex;flex:1;flex-direction:column;justify-content:space-between;margin:0;padding:0;list-style:none;}
 .g4b-popular li + li{border-top:1px solid var(--g4b-line);}
 .g4b-popular li a{display:grid;grid-template-columns:34px minmax(0,1fr) 64px;align-items:center;gap:14px;padding:16px 0;color:var(--g4b-ink);}

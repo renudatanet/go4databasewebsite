@@ -211,7 +211,7 @@
                         <span class="g4p-author-avatar g4b-avatar--initial" aria-hidden="true">{{ mb_substr($author->name, 0, 1) }}</span>
                     @endif
                     <div>
-                        <h2 id="g4p-author-title">{{ $text('author_title', 'About the author') }}</h2>
+                        <p class="g4p-author-label" id="g4p-author-title">{{ $text('author_title', 'About the author') }}</p>
                         <p class="g4p-author-name">
                             @if($author_url)<a href="{{ $author_url }}" rel="author">{{ $author->name }}</a>@else{{ $author->name }}@endif
                             @if(!empty($author->position))<span>{{ $author->position }}</span>@endif

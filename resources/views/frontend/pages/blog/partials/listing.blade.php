@@ -174,7 +174,7 @@
 
                         @if($blog_most_read->count())
                             <aside class="g4b-popular" aria-labelledby="g4b-popular-title">
-                                <h2 id="g4b-popular-title">{{ $text('most_read_title', 'Most read') }}</h2>
+                                <p class="g4b-popular-head" id="g4b-popular-title">{{ $text('most_read_title', 'Most read') }}</p>
                                 <ol>
                                     @foreach($blog_most_read as $popular)
                                         @php $thumb = get_attachment_image_by_id($popular->image, 'thumb'); @endphp
