@@ -965,6 +965,34 @@ function render_favicon_by_id($id)
     return $output;
 }
 
+/**
+ * A stylesheet's contents, comments and runs of whitespace removed, for a
+ * <style> block in place of a <link>. A page that waits on a stylesheet waits
+ * a whole extra round trip before its first paint, and on PageSpeed's phone
+ * test that held the homepage blank for 1-2 seconds.
+ *
+ * Read from the folder the site serves, so it is the same file the <link>
+ * would have fetched: on live that is public_html, the folder above @core
+ * (whose own public/ is a separate copy), locally public/. Null when the file
+ * can't be read, so the caller can fall back to the <link>.
+ */
+function inline_stylesheet(string $path): ?string
+{
+    static $memo = [];
+    if (array_key_exists($path, $memo)) {
+        return $memo[$path];
+    }
+    $served = dirname(base_path()) . '/' . $path;
+    $file = is_file($served) ? $served : public_path($path);
+    $css = is_file($file) ? @file_get_contents($file) : false;
+    if ($css === false || trim($css) === '') {
+        return $memo[$path] = null;
+    }
+    $css = preg_replace('#/\*.*?\*/#s', '', $css);
+    $css = trim(preg_replace('/\s+/', ' ', $css));
+    return $memo[$path] = str_ireplace('</style', '<\/style', $css);
+}
+
 function get_user_name_by_id($id)
 {
     $user = \App\User::find($id);

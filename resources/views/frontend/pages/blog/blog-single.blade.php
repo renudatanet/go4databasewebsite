@@ -58,6 +58,18 @@
 @section('page-title')
     {{$blog_post->title}}
 @endsection
+{{-- The lead image is the largest thing on a post's first screen. Its <img>
+     sits after ~80KB of inline styles, so the browser only found it late;
+     asking for it from the <head> starts it straight away. Same copy as the
+     <img> in partials/post (the 740px large- one). --}}
+@php
+  $hero_preload = get_attachment_image_by_id($blog_post->image, 'large');
+@endphp
+@if(!empty($hero_preload['img_url']))
+@section('style')
+    <link rel="preload" as="image" href="{{ $hero_preload['img_url'] }}" fetchpriority="high">
+@endsection
+@endif
 {{-- The post's own header carries the title and breadcrumb. --}}
 @section('no-breadcrumb', '1')
 {{-- The layout, styles and script are in pages/blog/partials/post. The page

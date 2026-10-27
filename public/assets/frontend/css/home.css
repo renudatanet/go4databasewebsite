@@ -2278,3 +2278,67 @@
                   white-space: nowrap;
                 }
 
+
+/* --- Below the first screen ---
+   The browser skips laying out and drawing these sections until they come
+   near the screen. Without this the first frame had to lay out the whole
+   ~23,000px page (the footer, .g4f, is included: it is the site footer, but
+   this file is only on the homepage), and on PageSpeed's phone test that first frame took long
+   enough that Chrome dropped it and showed nothing for another 1-2 seconds.
+   The heights are the sections' measured content heights, padding left out
+   because the browser adds it (phone / tablet / desktop), so the scrollbar
+   and #anchor jumps land where they would without this; "auto" then
+   remembers each section's real height once it has been drawn. */
+.promo-wrapper,
+#ai-verified-leads,
+#features,
+#comparison,
+#integrations,
+#case-studies,
+#favorite-lists,
+#blog,
+#faq,
+#contact,
+.g4f {
+  content-visibility: auto;
+}
+
+.promo-wrapper { contain-intrinsic-block-size: auto 997px; }
+#ai-verified-leads { contain-intrinsic-block-size: auto 829px; }
+#features { contain-intrinsic-block-size: auto 2350px; }
+#comparison { contain-intrinsic-block-size: auto 1279px; }
+#integrations { contain-intrinsic-block-size: auto 3345px; }
+#case-studies { contain-intrinsic-block-size: auto 1564px; }
+#favorite-lists { contain-intrinsic-block-size: auto 2445px; }
+#blog { contain-intrinsic-block-size: auto 1847px; }
+#faq { contain-intrinsic-block-size: auto 1698px; }
+#contact { contain-intrinsic-block-size: auto 1151px; }
+.g4f { contain-intrinsic-block-size: auto 1946px; }
+
+@media (min-width: 768px) {
+  .promo-wrapper { contain-intrinsic-block-size: auto 971px; }
+  #ai-verified-leads { contain-intrinsic-block-size: auto 736px; }
+  #features { contain-intrinsic-block-size: auto 1185px; }
+  #comparison { contain-intrinsic-block-size: auto 851px; }
+  #integrations { contain-intrinsic-block-size: auto 3088px; }
+  #case-studies { contain-intrinsic-block-size: auto 1037px; }
+  #favorite-lists { contain-intrinsic-block-size: auto 1360px; }
+  #blog { contain-intrinsic-block-size: auto 1554px; }
+  #faq { contain-intrinsic-block-size: auto 1139px; }
+  #contact { contain-intrinsic-block-size: auto 926px; }
+  .g4f { contain-intrinsic-block-size: auto 1086px; }
+}
+
+@media (min-width: 1100px) {
+  .promo-wrapper { contain-intrinsic-block-size: auto 517px; }
+  #ai-verified-leads { contain-intrinsic-block-size: auto 423px; }
+  #features { contain-intrinsic-block-size: auto 706px; }
+  #comparison { contain-intrinsic-block-size: auto 486px; }
+  #integrations { contain-intrinsic-block-size: auto 1978px; }
+  #case-studies { contain-intrinsic-block-size: auto 771px; }
+  #favorite-lists { contain-intrinsic-block-size: auto 1025px; }
+  #blog { contain-intrinsic-block-size: auto 646px; }
+  #faq { contain-intrinsic-block-size: auto 969px; }
+  #contact { contain-intrinsic-block-size: auto 569px; }
+  .g4f { contain-intrinsic-block-size: auto 410px; }
+}

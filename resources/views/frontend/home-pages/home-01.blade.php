@@ -1,7 +1,17 @@
 @include('frontend.partials.homesupportbar')
 @include('frontend.partials.navbar-new') 
+{{-- home.css goes in the page itself rather than as a <link>: waiting on that
+     request held the first paint back by a round trip and more on PageSpeed's
+     phone test. The file in assets/ is still the one to edit. --}}
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('assets/frontend/css/home.css?v=127') }}">
+    @php
+        $home_css = inline_stylesheet('assets/frontend/css/home.css');
+    @endphp
+    @if($home_css)
+    <style>{!! $home_css !!}</style>
+    @else
+    <link rel="stylesheet" href="{{ asset('assets/frontend/css/home.css?v=128') }}">
+    @endif
 @endpush
  <!-- ═══════════════════════════════════════════════════════
          ANIMATED HERO SECTION — Go4Database

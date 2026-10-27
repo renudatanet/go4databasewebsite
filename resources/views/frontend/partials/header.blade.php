@@ -43,20 +43,22 @@
 {{-- Fonts, in one request that does not block the first paint: the stylesheet is
      preloaded and only becomes a stylesheet once it has arrived, so text shows in
      the metric-matched Nunito-fallback face first and swaps in (display=swap).
-     Nunito is the site font (--body-font / --heading-font; the hero headline is
-     Nunito 800, so its file is preloaded too). The homepage also sets Inter for
-     body copy and Poppins 900 for one icon letter; font files download only
-     where a stylesheet uses the family, so other pages pay for the CSS alone.
+     Nunito is the site font (--body-font / --heading-font). The homepage also
+     sets Inter for body copy and Poppins 900 for one icon letter; font files
+     download only where a stylesheet uses the family, so other pages pay for
+     the CSS alone.
      Two things used to sit here and cost ~1.4s of blocked rendering: a request
      for five unused families (~36 faces), and three @import lines inside
-     home.css that could only start after that file had arrived. --}}
+     home.css that could only start after that file had arrived.
+     The Nunito file and the Font Awesome icon font are no longer preloaded:
+     a preloaded font can hold the first paint while it downloads, and on
+     PageSpeed's phone test it did, so text now paints in the fallback face and
+     swaps in, and the icons arrive with fontawesome.min.css. --}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/nunito/v32/XRXV3I6Li01BKofINeaB.woff2" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Inter:wght@400..900&family=Poppins:wght@900&display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Inter:wght@400..900&family=Poppins:wght@900&display=swap"></noscript>
-<link rel="preload" href="{{ asset('assets/frontend/webfonts/fa-solid-900.woff2') }}" as="font" type="font/woff2" crossorigin>
-    
+
 <!-- Preload key CSS (icons, layout, main styles) -->
 <link rel="preload" href="{{ asset('assets/frontend/css/bootstrap.min.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <link rel="preload" href="{{ asset('assets/frontend/css/style.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -103,8 +105,17 @@
          home layout and the inner-page layout include this partial, and the
          desktop mega-menu has no small-screen handling of its own outside
          home.css. The script reads the existing navbar, so the navbar file
-         itself is never touched. --}}
+         itself is never touched. Its CSS is inline (inline_stylesheet()), so
+         no page waits on a request for it before painting; the <link> is only
+         the fallback for when the file can't be read. --}}
+    @php
+        $mobile_nav_css = inline_stylesheet('assets/frontend/css/mobile-nav.css');
+    @endphp
+    @if($mobile_nav_css)
+    <style>{!! $mobile_nav_css !!}</style>
+    @else
     <link rel="stylesheet" href="{{asset('assets/frontend/css/mobile-nav.css?v=1')}}">
+    @endif
     <script src="{{asset('assets/frontend/js/mobile-nav.js?v=2')}}" defer></script>
 
     {{-- The theme sets overflow-x:hidden on body. That makes body a scroll

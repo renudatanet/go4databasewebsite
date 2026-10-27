@@ -184,6 +184,48 @@ a sticky child needs its grid parent to span the row (`align-self:stretch`),
 and grid items default to `min-width:auto`, so a horizontal scroll row inside
 one will drag the whole grid wider than the viewport (`min-width:0` fixes it).
 
+## Page speed (PageSpeed mobile)
+
+Two rounds, 2026-10-27. Server: `get_static_option()` memoises per request and
+caches missing keys as `__g4_unset__` (Laravel's cache won't store null, so
+they were re-queried every call), the table check runs once, and
+`get_work_category_by_id()` loads its two tables once: homepage ~640 → ~50
+queries. The homepage article pop-up fetches its text from
+`/home-article/{id}` instead of shipping every article in the page.
+`php artisan media:copies --root=<web root>` (`App\Actions\MediaCopies`, also
+behind General Settings → Regenerate Media Image and called by the blog agent)
+makes the missing `large-`/`grid-`/`thumb-` copies.
+
+Front end: PageSpeed's score turned on one thing, whether Lighthouse's Chrome
+showed the first frame at ~0.5s or dropped it and waited 1-2s more (score ~95
+vs ~62, the 66 that was live). It dropped it when the first frame was slow to
+build or something busy ran beside it. What keeps it fast, measured on an
+HTTP/2 copy of live with a far-server delay:
+- No stylesheet `<link>` the page waits on: `inline_stylesheet($path)`
+  (helpers.php) puts `mobile-nav.css` (every page, header.blade.php) and
+  `home.css` (home-01) inline, read from the folder the site serves (live:
+  `public_html`, not `@core/public`). Edit the files in `assets/` as before,
+  but deploy the served copy; there is no `?v=` to bump for them now.
+- No font preloads in the header (a preloaded font can hold the first paint).
+- `content-visibility: auto` on the homepage sections below the first screen
+  (end of home.css), with each section's measured content height, padding
+  excluded, per breakpoint. Without it the first frame laid out the whole
+  ~23,000px page. If a section is added, renamed or much changed in height,
+  update its height there. Full-page screenshots show those sections blank
+  (they are never scrolled to); compare by scrolling, not `full_page`.
+- Tawk.to (`partials/twakto.blade.php`) is put in a `<template>` and started
+  after `load`, on first scroll/tap/key or after 4s. Running at once, its
+  ~220KB was the main cause of the dropped first frame.
+- Post pages preload their lead image from the head (`blog-single`, the
+  `style` section), since its `<img>` comes after ~80KB of inline CSS.
+
+Measuring: my own runs from India were dominated by the 280ms round trip
+(server is in Boston); PageSpeed's API needs a key (anonymous quota is
+usually spent). What worked: a small local HTTP/2 server serving saved live
+pages and their assets with ~0.3s added per request, and Lighthouse 12.8.2
+against it; `--throttling-method=provided` runs show the observed first paint
+directly, and it varies run to run, so test 5-6 times.
+
 ## FAQ page
 
 `resources/views/frontend/pages/faq-page.blade.php`, served by
