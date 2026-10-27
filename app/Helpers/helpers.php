@@ -52,17 +52,34 @@ function set_static_option($key, $value)
 
 function get_static_option($key,$default = null)
 {
-    if (!\Illuminate\Support\Facades\Schema::hasTable('static_options')) {
+    // A page asks for ~100 settings, many of them more than once. Each used to
+    // cost a query checking that the table exists, and a setting never saved
+    // was fetched again on every call (Cache::remember does not keep null).
+    // Now: the table is checked once per request, every answer is kept for the
+    // rest of the request, and "not set" is cached like any other value.
+    $memo = &$GLOBALS['__g4_static_options'];
+    if (!is_array($memo)) {
+        $memo = [];
+    }
+    if (array_key_exists($key, $memo)) {
+        return $memo[$key] ?? $default;
+    }
+    static $has_table = null;
+    if ($has_table === null) {
+        $has_table = \Illuminate\Support\Facades\Schema::hasTable('static_options');
+    }
+    if (!$has_table) {
         return $default;
     }
-    global $option_name;
-    $option_name = $key;
-    $value = \Illuminate\Support\Facades\Cache::remember($option_name,6400, function () {
-        global $option_name;
-        return StaticOption::where('option_name', $option_name)->first();
+    $cached = \Illuminate\Support\Facades\Cache::remember($key, 6400, function () use ($key) {
+        $row = StaticOption::where('option_name', $key)->first();
+        return ($row && $row->option_value !== null) ? $row->option_value : '__g4_unset__';
     });
+    // Entries cached before this change hold the whole StaticOption row.
+    $value = is_object($cached) ? ($cached->option_value ?? null) : ($cached === '__g4_unset__' ? null : $cached);
+    $memo[$key] = $value;
 
-    return $value->option_value ?? $default;
+    return $value ?? $default;
 }
 
 function update_static_option($key, $value)
@@ -76,6 +93,7 @@ function update_static_option($key, $value)
         'option_value' => $value
     ]);
     \Illuminate\Support\Facades\Cache::forget($key);
+    unset($GLOBALS['__g4_static_options'][$key]);
     return true;
 }
 
@@ -182,14 +200,24 @@ function get_case_study_category_by_id($id, $output = 'array')
 
 function get_work_category_by_id($id, $output = 'array')
 {
-    $category_id = Works::find($id)->categories_id;
+    // Lists of works call this once per item (97 on the homepage), and it ran
+    // two queries per category each time; the categories and every item's
+    // category ids (a small table) are now loaded once per request instead.
+    static $categories = null, $work_categories = null;
+    if ($categories === null) {
+        $categories = WorksCategory::all()->keyBy('id');
+        $work_categories = Works::select('id', 'categories_id')->get()->mapWithKeys(function ($work) {
+            return [$work->id => $work->categories_id];
+        });
+    }
+    $category_id = $work_categories->get($id) ?: [];
     $cat_list = [];
     $cat_list_string = '';
     $cat_list_slug = '';
 
     foreach ($category_id as $key => $data) {
         $separator = $key != 0 ? ', ' : '';
-        $cat_item = WorksCategory::find($data);
+        $cat_item = $categories->get($data);
         if (!empty($cat_item)){
             $cat_list[$cat_item->id] = $cat_item->name;
             $cat_list_string .= $separator . $cat_item->name;

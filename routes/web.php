@@ -413,6 +413,7 @@ Route::group(['middleware' => ['setlang:frontend', 'globalVariable', 'maintains_
 
     Route::get('/', 'FrontendController@index')->name('homepage');
     Route::get('/home', 'FrontendController@home')->name('home');
+    Route::get('/home-article/{id}', 'FrontendController@home_article')->where('id', '[0-9]+')->name('frontend.home.article');
 
     Route::post('/get-touch', 'FrontendFormController@get_touch')->name('frontend.get.touch');
     Route::post('/appointment-message', 'FrontendFormController@appointment_message')->name('frontend.appointment.message');

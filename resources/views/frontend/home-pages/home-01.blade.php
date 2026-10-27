@@ -1404,7 +1404,9 @@
 
                 'img' => $imageDetails['img_url'] ?? '',
 
-                'content' => $blog->content ?? '',
+                // The text itself is fetched when the pop-up opens
+                // (frontend.home.article); the post page is the fallback.
+                'url' => route('frontend.blog.single', $blog->slug),
             ]
         ];
     })->toArray();
@@ -1412,6 +1414,7 @@
 
 <script>
     const blogArticlesData = @json($blogArticlesData);
+    window.G4D_ARTICLE_URL = @json(url('/home-article'));
 </script>
 
 @endif
@@ -1696,5 +1699,5 @@
     </script>
   @endif
   {{-- Bump ?v= on every home-01.js change: LiteSpeed serves JS with a one-year immutable cache --}}
-  <script src="{{ asset('assets/frontend/js/home-01.js') }}?v=8" defer></script>
+  <script src="{{ asset('assets/frontend/js/home-01.js') }}?v=9" defer></script>
 @include('frontend.partials.contact-section')

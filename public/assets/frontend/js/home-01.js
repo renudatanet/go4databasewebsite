@@ -506,6 +506,10 @@ function buildParamsAndFetch() {
           });
         }
     
+        // The article text is fetched the first time a post is opened, not
+        // shipped with the page: inline, every chosen post's text cost each
+        // homepage visitor ~230 KB and seconds of script time on a phone.
+        const blogArticleText = {};
         function openBlogArticle(id) {
           const modal = document.getElementById('blog-reader-modal');
           const data = blogArticlesData[id];
@@ -515,10 +519,31 @@ function buildParamsAndFetch() {
           document.getElementById('modal-blog-title').textContent = data.title;
           document.getElementById('modal-blog-meta').textContent = data.meta;
           document.getElementById('modal-blog-img').src = data.img;
-          document.getElementById('modal-blog-body').innerHTML = data.content;
+          const body = document.getElementById('modal-blog-body');
+          modal.dataset.open = id;
     
           modal.style.display = 'flex';
           document.body.style.overflow = 'hidden';
+    
+          if (blogArticleText[id] !== undefined) {
+            body.innerHTML = blogArticleText[id];
+            return;
+          }
+          body.textContent = 'Loading the article…';
+          fetch((window.G4D_ARTICLE_URL || '/home-article') + '/' + encodeURIComponent(id), { headers: { 'Accept': 'application/json' } })
+            .then(res => res.ok ? res.json() : Promise.reject())
+            .then(json => {
+              blogArticleText[id] = json.content || '';
+              if (modal.dataset.open == id) body.innerHTML = blogArticleText[id];
+            })
+            .catch(() => {
+              if (modal.dataset.open != id) return;
+              body.textContent = '';
+              const link = document.createElement('a');
+              link.href = data.url;
+              link.textContent = 'Read the full article';
+              body.appendChild(link);
+            });
         }
     
         function closeBlogArticle() {

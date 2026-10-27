@@ -97,6 +97,20 @@ class FrontendController extends Controller
      * password (RouteServiceProvider::HOME). It had no page and showed an
      * error: signed-in visitors go to their dashboard, everyone else home.
      */
+    /**
+     * One homepage-chosen post's text for the homepage's article pop-up, which
+     * now fetches it on first open instead of every visitor downloading the
+     * text of every chosen post (~230 KB) with the page.
+     */
+    public function home_article($id)
+    {
+        $post = Blog::where(['id' => $id, 'status' => 'publish'])->first(['id', 'content']);
+        if (!$post) {
+            return response()->json(['content' => null], 404);
+        }
+        return response()->json(['content' => (string) $post->content])->header('Cache-Control', 'public, max-age=600');
+    }
+
     public function home()
     {
         return redirect(auth('web')->check() ? route('user.home') : route('homepage'));

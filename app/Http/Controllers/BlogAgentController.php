@@ -165,6 +165,13 @@ class BlogAgentController extends Controller
                 'size' => round(strlen($response->body()) / 1024, 2) . ' KB',
                 'dimensions' => $size ? $size[0] . ' x ' . $size[1] . ' pixels' : null,
             ]);
+            // The smaller copies pages use (large-, grid-, thumb-); without them
+            // every card and post loaded this full-size original. Not fatal.
+            try {
+                \App\Actions\MediaCopies::forImage($media);
+            } catch (\Throwable $e) {
+                report($e);
+            }
             return $media->id;
         } catch (\Throwable $e) {
             report($e);

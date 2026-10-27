@@ -126,11 +126,8 @@ class GeneralSettingsController extends Controller
     }
 
     /**
-     * Makes the smaller copies pages ask for, for any image missing them:
-     * large- (740px wide; blog cards and lead stories), grid- (350px) and
-     * thumb- (150px square). Images added without the media uploader, e.g.
-     * by the blog agent, have none, and pages then load the full original
-     * (2.4 MB for a 400px card).
+     * Makes the smaller copies pages ask for, for any image missing them
+     * (App\Actions\MediaCopies; also `php artisan media:copies`).
      *
      * Works for about 20 seconds per request and reports how many images are
      * still waiting; the screen keeps asking until none are, so a large
@@ -140,51 +137,7 @@ class GeneralSettingsController extends Controller
     {
         @set_time_limit(90);
         @ini_set('memory_limit', '512M');
-        $started = microtime(true);
-        $folder = 'assets/uploads/media-uploader/';
-        $made = 0;
-        $failed = 0;
-        $waiting = 0;
-
-        foreach (MediaUpload::orderBy('id', 'desc')->cursor() as $img) {
-            $source = $folder . $img->path;
-            if (empty($img->path) || !is_file($source)) {
-                continue;
-            }
-            $missing = [];
-            foreach (['large-' => 740, 'grid-' => 350, 'thumb-' => 150] as $prefix => $width) {
-                if (!is_file($folder . $prefix . $img->path)) {
-                    $missing[$prefix] = $width;
-                }
-            }
-            if (empty($missing)) {
-                continue;
-            }
-            // Too small to need copies, or not an image GD can read (an SVG).
-            $size = @getimagesize($source);
-            if (empty($size) || $size[0] <= 150) {
-                continue;
-            }
-            if (microtime(true) - $started > 20) {
-                $waiting++;
-                continue;
-            }
-            try {
-                foreach ($missing as $prefix => $width) {
-                    $copy = $prefix === 'thumb-'
-                        ? Image::make($source)->fit(150, 150)
-                        : Image::make($source)->resize($width, null, function ($constraint) {
-                            $constraint->aspectRatio();
-                            $constraint->upsize();
-                        });
-                    $copy->save($folder . $prefix . $img->path, 82);
-                    $copy->destroy();
-                }
-                $made++;
-            } catch (\Throwable $e) {
-                $failed++;
-            }
-        }
+        ['made' => $made, 'failed' => $failed, 'waiting' => $waiting] = \App\Actions\MediaCopies::run(20);
 
         $msg = $waiting
             ? __('Made smaller copies of :made images. :waiting still to go, carrying on…', ['made' => $made, 'waiting' => $waiting])
