@@ -317,6 +317,11 @@ Route::group(['middleware' => ['setlang:frontend', 'globalVariable', 'maintains_
 
 });
 
+// The shop module is off, so /product had become a "Page Not Found".
+// Old links and search results to it go to the homepage instead. It is
+// registered after the shop's own route so it takes that address over.
+Route::redirect('/product', '/', 301);
+
 /*==============================================
     FRONTEND ROUTES: EVENTS MODULE
 ==============================================*/
