@@ -177,6 +177,7 @@
                                     <div class="dropdown-menu"></div>
                                 </div>
                                 <input type="hidden" class="form-control"  id="icon" value="fas fa-exclamation-triangle" name="icon">
+                                <small class="text-muted d-block mt-1">{{__('Shown on the lists page next to the industry. Leave the warning triangle (the default) and the page draws an icon that fits the industry name instead.')}}</small>
                             </div>
                             <div class="form-group">
                                 <label for="image">{{__('Image')}}</label>
@@ -262,6 +263,7 @@
                                 <div class="dropdown-menu"></div>
                             </div>
                             <input type="hidden" class="form-control"  id="edit_icon" value="fas fa-exclamation-triangle" name="icon">
+                            <small class="text-muted d-block mt-1">{{__('Shown on the lists page next to the industry. Leave the warning triangle (the default) and the page draws an icon that fits the industry name instead.')}}</small>
                         </div>
                         <div class="form-group">
                             <label for="edit_img_icon">{{__('Image')}}</label>

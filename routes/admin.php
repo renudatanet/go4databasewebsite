@@ -291,6 +291,8 @@ Route::prefix('admin-home')->middleware(['setlang:backend'])->group(function () 
         ------------------------------------*/
         Route::group(['prefix' => 'list'],function () {
          Route::get('/', 'ListController@index')->name('admin.list');
+        Route::get('/page-settings', 'ListController@page_settings')->name('admin.list.page.settings');
+        Route::post('/page-settings', 'ListController@update_page_settings');
         Route::post('/', 'ListController@store');
         Route::get('/new', 'ListController@new_list')->name('admin.list.new');
         Route::get('/edit/{id}', 'ListController@edit_list')->name('admin.list.edit');

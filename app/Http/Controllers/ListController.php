@@ -809,4 +809,36 @@ public function importCsv(Request $request)
 
     return redirect()->back()->with('success', $count . ' records imported successfully.');
 }
+
+    /**
+     * The wording of the lists index page (/list), per language. Every key
+     * is list_page_{lang}_{field}; an empty one falls back to the default
+     * shown on the page and under each field. The page's name, meta and
+     * slug stay in General Settings > Page Settings.
+     */
+    public const PAGE_TEXTS = ['badge', 'heading', 'heading_highlight', 'heading_after', 'subtitle', 'search_placeholder',
+        'popular_label', 'results_title', 'empty_title', 'narrow_hint',
+        'browse_title', 'browse_text', 'card_count_text', 'all_lists_text', 'pipeline_title', 'pipeline_text',
+        'cta_title', 'cta_text', 'cta_button', 'cta_url', 'cta2_button', 'cta2_url', 'cta_notes'];
+
+    public function page_settings()
+    {
+        return view('backend.pages.list.page-settings')->with(['all_languages' => \App\Language::all()]);
+    }
+
+    public function update_page_settings(Request $request)
+    {
+        foreach (\App\Language::all() as $lang) {
+            $rules = [];
+            foreach (self::PAGE_TEXTS as $text) {
+                $rules['list_page_' . $lang->slug . '_' . $text] = 'nullable|string|max:1000';
+            }
+            $this->validate($request, $rules);
+            foreach (self::PAGE_TEXTS as $text) {
+                $key = 'list_page_' . $lang->slug . '_' . $text;
+                update_static_option($key, $request->$key);
+            }
+        }
+        return redirect()->back()->with(['msg' => __('List page settings updated'), 'type' => 'success']);
+    }
 }

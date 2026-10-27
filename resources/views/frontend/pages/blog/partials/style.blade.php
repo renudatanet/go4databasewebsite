@@ -546,7 +546,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // offers the most-read posts.
   var form = document.querySelector('.g4b-search');
   if (!form) { return; }
-  var input = form.querySelector('input[name="search"]');
+  var input = form.querySelector('input[type="search"]');
   var panel = form.querySelector('.g4b-suggest');
   var clear = form.querySelector('.g4b-search-clear');
   var endpoint = form.getAttribute('data-suggest-url');
@@ -591,9 +591,11 @@ document.addEventListener('DOMContentLoaded', function () {
   function render(data) {
     panel.textContent = '';
     items = [];
-    var heading = data.popular ? (form.getAttribute('data-popular-label') || 'Most read') : (data.total === 1 ? '1 article' : data.total + ' articles');
+    // The list page reuses this box: data-noun names what it searches.
+    var noun = form.getAttribute('data-noun') || 'article';
+    var heading = data.popular ? (form.getAttribute('data-popular-label') || 'Most read') : (data.total === 1 ? '1 ' + noun : data.total + ' ' + noun + 's');
     if (data.results.length) { panel.appendChild(el('div', 'g4b-suggest-head', heading)); }
-    else { panel.appendChild(el('div', 'g4b-suggest-empty', 'No articles match “' + data.query + '”. Try a shorter search.')); }
+    else { panel.appendChild(el('div', 'g4b-suggest-empty', 'No ' + noun + 's match “' + data.query + '”. Try a shorter search.')); }
 
     data.results.forEach(function (post, i) {
       var link = el('a', 'g4b-suggest-item');
@@ -627,7 +629,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (cache[query]) { render(cache[query]); return; }
     var mine = ++seq;
     form.classList.add('is-loading');
-    fetch(endpoint + '?search=' + encodeURIComponent(query), { headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
+    fetch(endpoint + '?' + (form.getAttribute('data-param') || 'search') + '=' + encodeURIComponent(query), { headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
       .then(function (res) { return res.ok ? res.json() : Promise.reject(); })
       .then(function (data) {
         cache[query] = data;

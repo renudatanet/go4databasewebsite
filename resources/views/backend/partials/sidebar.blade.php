@@ -177,6 +177,8 @@
                                     href="{{route('admin.list.new')}}">{{__('New List')}}</a></li>
                             <li class="{{active_menu('admin-home/list/category')}}"><a
                                     href="{{route('admin.list.category')}}">{{__('Category')}}</a></li>
+                            <li class="{{active_menu('admin-home/list/page-settings')}}"><a
+                                    href="{{route('admin.list.page.settings')}}">{{__('List Page')}}</a></li>
                        </ul>
                     </li>
                     

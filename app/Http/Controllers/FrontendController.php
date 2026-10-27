@@ -2727,6 +2727,31 @@ $all_testimonial = Testimonial::where('lang', $lang)->orderBy('id', 'desc')->tak
             $results = $base->orderBy('title')->limit(60)->get(['title', 'slug', 'categories_id']);
         }
 
+        // The search box's instant results, in the shape the blog's box
+        // uses. With nothing typed it offers the first lists published.
+        if (request()->wantsJson()) {
+            $names = $category_item->pluck('name', 'id');
+            $popular = $query === '';
+            $found = $popular
+                ? B2BList::where('lang', $lang)->where(function ($q) { $q->whereNull('status')->orWhere('status', '!=', 'draft'); })->orderBy('id')->limit(6)->get(['title', 'slug', 'categories_id'])
+                : $results->take(6);
+            return response()->json([
+                'query' => $query,
+                'popular' => $popular,
+                'total' => $popular ? $found->count() : $result_total,
+                'all_url' => route('frontend.b2c', ['q' => $query]) . '#results',
+                'results' => $found->map(function ($row) use ($names) {
+                    return [
+                        'title' => $row->title,
+                        'url' => route('frontend.list.single', ['service_slug' => ltrim($row->slug, '/')]),
+                        'topic' => $names[$row->categories_id] ?? null,
+                        'date' => null,
+                        'image' => null,
+                    ];
+                })->values(),
+            ]);
+        }
+
         $list_item = B2BList::where('lang', $lang)->pluck('slug')
             ->map(function ($slug) {
                 return ltrim($slug, '/');

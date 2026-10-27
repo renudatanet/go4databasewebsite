@@ -328,6 +328,28 @@ dropped from it on purpose.
 - Previewing locally needs the live `blog_categories.slug` column (see the
   listings section), so post pages can't be opened on the local server as is.
 
+## Lists index (`/list`, route `frontend.b2c`)
+
+`pages/list/list.blade.php`, rebuilt 2026-10-27 in the blog's look: it
+includes `blog/partials/style` (tokens, centred header, search box, chips,
+buttons) plus its own `list/partials/index-style`. `list.css` is no longer
+loaded here, only by the single list pages.
+- Data: `FrontendController::list()` — industries (`ListCategory`, List >
+  Category), a cached per-industry digest (count + 6 sample lists), and a
+  title search on `?q=`. Asked for JSON it returns the blog search box's
+  shape, so the shared suggestion script works here too; that script reads
+  `data-param` (`q`) and `data-noun` (`list`) off the form, defaulting to
+  the blog's `search` / `article`.
+- Wording: List > **List Page** (`ListController::page_settings`, route
+  `admin.list.page.settings`), keys `list_page_{lang}_{field}` for the
+  fields in `ListController::PAGE_TEXTS`. `{lists}`, `{industries}` and
+  `{with}` in texts become live numbers, as do `{count}`/`{industry}`/
+  `{Industry}` in the card texts and `{query}` in the results heading; "cta_notes" is one per line. The
+  header has no "what every list holds" ticks, removed at the user's request.
+- Icons: a drawn SVG per industry matched on its name; an admin icon is
+  used instead unless it is `fa-exclamation-triangle`, the picker default
+  every live industry carried.
+
 ## Chat widget
 
 The conversation system itself runs on a **separate server owned by the user**
