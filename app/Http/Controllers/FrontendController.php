@@ -794,32 +794,28 @@ public function blog_page(Request $request)
     $default_lang = Language::where('default', 1)->first();
     $lang = session()->get('lang') ?? $default_lang->slug;
 
-    // Filter by author if present
-    if (!empty($request->author)) {
-        $all_blogs = Blog::where([
-            'lang' => $lang,
-            'status' => 'publish',
-            'author' => $request->author
-        ])
-        ->orderBy('id', 'desc')
-        ->paginate(get_static_option('blog_page_item'));
-
-        // Force relative path with author parameter
-        $all_blogs->appends(['author' => $request->author]);
-        $all_blogs->withPath('/blog');
-    } else {
-        $all_blogs = Blog::where([
-            'lang' => $lang,
-            'status' => 'publish'
-        ])
-        ->orderBy('id', 'desc')
-        ->paginate(get_static_option('blog_page_item'));
-
-        // Force relative path
-        $all_blogs->withPath('/blog');
+    // /blog?author=Name was an old per-author view of the listing. Each
+    // author has a real page (/author/{slug}), so the old address moves
+    // there for good, or to the blog when no author matches.
+    if ($request->filled('author')) {
+        $name = trim((string) $request->author);
+        $author = \App\Author::where('name', $name)->first()
+            ?? \App\Author::where('name', 'LIKE', addcslashes($name, '%_\\') . '%')->first()
+            ?? optional(Blog::where('author', $name)->whereNotNull('author_id')->first())->authorData;
+        return redirect(($author && !empty($author->slug)) ? route('frontend.author.single', $author->slug) : route('frontend.blog'), 301);
     }
 
-    $show_most_read = empty($request->author) && $all_blogs->currentPage() === 1;
+    $all_blogs = Blog::where([
+        'lang' => $lang,
+        'status' => 'publish'
+    ])
+    ->orderBy('id', 'desc')
+    ->paginate(get_static_option('blog_page_item'));
+
+    // Force relative path
+    $all_blogs->withPath('/blog');
+
+    $show_most_read = $all_blogs->currentPage() === 1;
 
     return view('frontend.pages.blog.blog')->with(array_merge(
         ['all_blogs' => $all_blogs],
