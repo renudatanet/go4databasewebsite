@@ -1,18 +1,19 @@
 @php $twak__api = get_static_option('tawk_api_key'); @endphp
 @if(!empty($twak__api))
    {{-- The snippet from General Settings > Third-party Scripts > Tawk.to API,
-        started only once the page has loaded and the visitor scrolls, taps or
-        types (or 4 seconds pass). Run straight away, its ~220KB of script was
+        started only once the page has loaded and the visitor scrolls, taps,
+        types or moves the mouse. Run straight away, its ~220KB of script was
         working while the browser drew its first frame, and on PageSpeed's
         phone test that frame was then dropped and the page stayed blank for
-        another 1-2 seconds. Scripts inside a <template> don't run, so each one
-        is copied into a fresh <script> when it's time. --}}
+        another 1-2 seconds; started on a 4 second timer it still landed inside
+        the test. Scripts inside a <template> don't run, so each one is copied
+        into a fresh <script> when it's time. --}}
    <template id="g4-tawk">{!! $twak__api !!}</template>
    <script>
    (function () {
      var tpl = document.getElementById('g4-tawk');
      if (!tpl || !tpl.content) { return; }
-     var started = false, events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
+     var started = false, events = ['scroll', 'wheel', 'pointerdown', 'pointermove', 'keydown', 'touchstart'];
      function start() {
        if (started) { return; }
        started = true;
@@ -26,7 +27,6 @@
      }
      function arm() {
        events.forEach(function (e) { addEventListener(e, start, {capture: true, passive: true, once: true}); });
-       setTimeout(start, 4000);
      }
      if (document.readyState === 'complete') { arm(); } else { addEventListener('load', arm); }
    })();

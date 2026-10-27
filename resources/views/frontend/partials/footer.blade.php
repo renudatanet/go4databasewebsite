@@ -108,7 +108,7 @@
       <div class="g4f-brand">
         <a class="g4f-logo" href="{{ url('/') }}">
           @if(!empty(get_static_option('site_logo')))
-            {!! render_image_markup_by_attachment_id(get_static_option('site_logo'), '', 'full') !!}
+            {!! render_image_markup_by_attachment_id(get_static_option('site_logo'), '', 'full', 'loading="lazy" decoding="async"') !!}
           @else
             <span>{{ get_static_option('site_' . $user_select_lang_slug . '_title') }}</span>
           @endif

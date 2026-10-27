@@ -219,6 +219,31 @@ HTTP/2 copy of live with a far-server delay:
 - Post pages preload their lead image from the head (`blog-single`, the
   `style` section), since its `<img>` comes after ~80KB of inline CSS.
 
+Second round (PageSpeed then said 78, TBT 240ms):
+- Tawk.to starts only on a real interaction (scroll, wheel, tap, pointer
+  move, key); a 4s timer still landed inside the test.
+- gtag.js (180KB) is requested on `load`: header.blade.php rewrites the
+  `<script async src=".../gtag/js?...">` tag of the admin's Google Analytics
+  snippet; the inline dataLayer/config part still runs at once, so gtag()
+  calls queue. Visits that leave before `load` aren't counted. A snippet of
+  another shape is printed unchanged.
+- No transitions until `load` (`#g4-still` in the header): style.css's
+  `transition: all` animated every deferred stylesheet's arrival.
+- The chat widget restores its transcript and arms the teaser after `load`
+  (or on first open): its first localStorage read could stall ~40ms while
+  the page was being drawn, and its scroll-to-bottom forced a full layout.
+  It now scrolls the log only while open.
+- fontawesome.min.css had `font-display: swap;` then `font-display: auto;`
+  in each @font-face (the second won, icons were invisible while loading);
+  the `auto` lines are gone, link is `?v=2`. That file is now in git.
+- Hero: heroFloat animates `translate` (not `transform`, which heroFadeUp
+  also animates, so neither could run on the compositor); the typing caret
+  is a `::after` bar blinking by opacity over the transparent border.
+- Below-the-fold homepage images and the footer logo are `loading="lazy"`;
+  homepage blog cards use the `large-` copy.
+  `render_image_markup_by_attachment_id()` takes extra tag attributes as a
+  4th argument for this.
+
 Measuring: my own runs from India were dominated by the 280ms round trip
 (server is in Boston); PageSpeed's API needs a key (anonymous quota is
 usually spent). What worked: a small local HTTP/2 server serving saved live

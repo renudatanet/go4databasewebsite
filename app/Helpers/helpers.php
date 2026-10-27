@@ -756,7 +756,9 @@ function render_logo_image_markup_by_attachment_id($id, $class = null, $size = '
     }
     return $output;
 }
-function render_image_markup_by_attachment_id($id, $class = null, $size = 'full')
+// $attributes is extra markup for the tag, e.g. 'loading="lazy" decoding="async"'
+// for an image below the first screen.
+function render_image_markup_by_attachment_id($id, $class = null, $size = 'full', $attributes = '')
 {
     if (empty($id)) return '';
     $output = '';
@@ -764,7 +766,8 @@ function render_image_markup_by_attachment_id($id, $class = null, $size = 'full'
     $image_details = get_attachment_image_by_id($id, $size);
     if (!empty($image_details)) {
         $class_list = !empty($class) ? 'class="' . $class . '"' : '';
-        $output = '<img src="' . $image_details['img_url'] . '" ' . $class_list . ' alt="'.$image_details['img_alt'].'"/>';
+        $extra = $attributes !== '' ? ' ' . $attributes : '';
+        $output = '<img src="' . $image_details['img_url'] . '" ' . $class_list . ' alt="'.$image_details['img_alt'].'"' . $extra . '/>';
     }
     return $output;
 }

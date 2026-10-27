@@ -30,8 +30,33 @@
 @endif
 
 
+{{-- No transitions until the page has loaded. The theme's style.css gives many
+     elements `transition: all`, so each deferred stylesheet arriving animated
+     colours, borders and outlines on the main thread while the page was still
+     being drawn; nobody sees those, and on PageSpeed's phone test they cost
+     frames. Removed one frame after `load`. --}}
+<style id="g4-still">*,*::before,*::after{transition:none!important}</style>
+<script>addEventListener('load',function(){requestAnimationFrame(function(){var s=document.getElementById('g4-still');if(s){s.remove();}});});</script>
+
+{{-- Google Analytics, from General Settings > Third-party Scripts. The inline
+     part (dataLayer, gtag('config')) still runs here, so every gtag() call
+     the page makes is queued from the start; only the 180KB gtag.js download
+     waits for `load`, because fetching and running it during the first paint
+     made PageSpeed's phone test drop that frame. A snippet in another shape is
+     printed as it is. --}}
 @if(!empty(filter_static_option_value('site_google_analytics',$global_static_field_data)))
-    {!! get_static_option('site_google_analytics') !!}
+    @php
+        $ga_snippet = preg_replace_callback(
+            '#<script\s+async\s+src="(https://www\.googletagmanager\.com/gtag/js\?[^"]+)"\s*>\s*</script>#i',
+            function ($m) {
+                return '<script>addEventListener("load",function(){var s=document.createElement("script");s.async=true;s.src='
+                    . json_encode(html_entity_decode($m[1]), JSON_UNESCAPED_SLASHES)
+                    . ';document.head.appendChild(s);});</script>';
+            },
+            get_static_option('site_google_analytics')
+        );
+    @endphp
+    {!! $ga_snippet !!}
 @endif
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -64,7 +89,7 @@
 <link rel="preload" href="{{ asset('assets/frontend/css/style.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
 
 <!-- Other styles loaded normally but not render-blocking -->
-<link rel="stylesheet" href="{{ asset('assets/frontend/css/fontawesome.min.css') }}" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="{{ asset('assets/frontend/css/fontawesome.min.css?v=2') }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ asset('assets/frontend/css/flaticon.css') }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ asset('assets/frontend/css/owl.carousel.min.css') }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ asset('assets/frontend/css/magnific-popup.css') }}" media="print" onload="this.media='all'">
@@ -75,7 +100,7 @@
 <noscript>
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/style.css?v=123') }}">
-    <link rel="stylesheet" href="{{ asset('assets/frontend/css/fontawesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/frontend/css/fontawesome.min.css?v=2') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/flaticon.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/owl.carousel.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/magnific-popup.css') }}">

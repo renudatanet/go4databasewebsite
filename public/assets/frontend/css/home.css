@@ -1821,15 +1821,19 @@
               }
             }
 
+            /* The float moves `translate`, not `transform`: heroFadeUp already
+               animates transform on the same element, and two animations of one
+               property can't run on the compositor, so the headline (with its
+               heavy text shadows) was repainted on the main thread every frame. */
             @keyframes heroFloat {
 
               0%,
               100% {
-                transform: translateY(0px);
+                translate: 0 0;
               }
 
               50% {
-                transform: translateY(-10px);
+                translate: 0 -10px;
               }
             }
 
@@ -1852,9 +1856,26 @@
                 heroFloat 6s ease-in-out 1s infinite;
             }
 
+            /* The typing caret is a 3px bar laid over the (transparent) right
+               border and blinks by opacity, which the compositor runs; blinking
+               the border colour repainted the word twice a second. Same place,
+               same rhythm; z-index -1 keeps it under the word's glow, as the
+               border was. */
             #hero-rotating-word {
-              border-right: 3px solid #0b132a;
+              position: relative;
+              border-right: 3px solid transparent;
               padding-right: 5px;
+            }
+
+            #hero-rotating-word::after {
+              content: '';
+              position: absolute;
+              top: 0;
+              bottom: 0;
+              right: -3px;
+              width: 3px;
+              background: #0b132a;
+              z-index: -1;
               animation: blink-caret 0.75s step-end infinite;
             }
 
@@ -1862,11 +1883,11 @@
 
               from,
               to {
-                border-color: transparent
+                opacity: 0;
               }
 
               50% {
-                border-color: #0b132a
+                opacity: 1;
               }
             }
 

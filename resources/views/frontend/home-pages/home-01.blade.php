@@ -548,7 +548,7 @@
           <div
             style="position:relative;display:flex;justify-content:center;align-items:flex-end;background:transparent;overflow:hidden;"
             class="promo-img-container">
-            <img src="{{ asset('assets/frontend/images/free-credits-promo.webp') }}"
+            <img loading="lazy" decoding="async" src="{{ asset('assets/frontend/images/free-credits-promo.webp') }}"
               srcset="{{ asset('assets/frontend/images/free-credits-promo-440.webp') }} 440w, {{ asset('assets/frontend/images/free-credits-promo.webp') }} 880w"
               sizes="440px"
               alt="1200 Free Credits Offer" width="880" height="880" loading="lazy" style="width:100%;max-width:440px;height:auto;display:block;object-fit:contain;
@@ -885,7 +885,7 @@
             style="background:linear-gradient(135deg, #fff1f2 0%, #ffe4e6 50%, #fecdd3 100%);border:1.5px solid rgba(244, 63, 94, 0.25)">
             <div>
               <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;margin-top:-6px;flex-wrap:wrap">
-                <img src="{{ asset('assets/frontend/images/logo.png') }}" alt="Go4Database Logo"
+                <img loading="lazy" decoding="async" src="{{ asset('assets/frontend/images/logo.png') }}" alt="Go4Database Logo"
                   style="height:28px;width:auto;display:block;transform:translateY(-1px)">
                 <div
                   style="display:inline-block;background:#ffe4e6;color:#e11d48;font-size:11.5px;font-weight:800;letter-spacing:1px;padding:6px 14px;border-radius:999px">
@@ -919,7 +919,7 @@
             <!-- Direct Screenshot Image 1 -->
             <div
               style="background:#fff;border-radius:18px;padding:10px;box-shadow:0 20px 50px -15px rgba(0,0,0,0.12);border:1px solid rgba(0,0,0,0.08);overflow:hidden">
-              <img src="{{ asset('assets/frontend/images/b2b-marketplace-table.webp') }}" alt="Go4Database B2B leads table with company, contact name, title and verified email"
+              <img loading="lazy" decoding="async" src="{{ asset('assets/frontend/images/b2b-marketplace-table.webp') }}" alt="Go4Database B2B leads table with company, contact name, title and verified email"
                 width="1140" height="877" loading="lazy"
                 style="width:100%;height:auto;border-radius:12px;display:block;object-fit:cover">
             </div>
@@ -930,7 +930,7 @@
             style="background:linear-gradient(135deg, #faf5ff 0%, #f3e8ff 50%, #e9d5ff 100%);border:1.5px solid rgba(168, 85, 247, 0.25)">
             <div>
               <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;margin-top:-6px;flex-wrap:wrap">
-                <img src="{{ asset('assets/frontend/images/logo.png') }}" alt="Go4Database Logo"
+                <img loading="lazy" decoding="async" src="{{ asset('assets/frontend/images/logo.png') }}" alt="Go4Database Logo"
                   style="height:28px;width:auto;display:block;transform:translateY(-1px)">
                 <div
                   style="display:inline-block;background:#f3e8ff;color:#7c3aed;font-size:11.5px;font-weight:800;letter-spacing:1px;padding:6px 14px;border-radius:999px">
@@ -966,7 +966,7 @@
             <!-- Exact Create Filter Photo uploaded by user -->
             <div
               style="background:#fff;border-radius:18px;padding:10px;box-shadow:0 20px 50px -15px rgba(0,0,0,0.12);border:1px solid rgba(0,0,0,0.08);overflow:hidden">
-              <img src="{{ asset('assets/frontend/images/advanced-filters-form.webp') }}" alt="Go4Database advanced filters for company, industry, technology, turnover, title and seniority"
+              <img loading="lazy" decoding="async" src="{{ asset('assets/frontend/images/advanced-filters-form.webp') }}" alt="Go4Database advanced filters for company, industry, technology, turnover, title and seniority"
                 width="1140" height="821" loading="lazy"
                 style="width:100%;height:auto;border-radius:12px;display:block;object-fit:cover">
             </div>
@@ -977,7 +977,7 @@
             style="background:linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #bae6fd 100%);border:1.5px solid rgba(56, 189, 248, 0.3)">
             <div>
               <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;margin-top:-6px;flex-wrap:wrap">
-                <img src="{{ asset('assets/frontend/images/logo.png') }}" alt="Go4Database Logo"
+                <img loading="lazy" decoding="async" src="{{ asset('assets/frontend/images/logo.png') }}" alt="Go4Database Logo"
                   style="height:28px;width:auto;display:block;transform:translateY(-1px)">
                 <div
                   style="display:inline-block;background:#e0f2fe;color:#0284c7;font-size:11.5px;font-weight:800;letter-spacing:1px;padding:6px 14px;border-radius:999px">
@@ -1340,7 +1340,7 @@
           <!-- Card 1 -->
           <div class="blog-card-hover blog-item" data-category="{{ get_blog_category_name_by_id($data->blog_categories_id) }}" onclick="openBlogArticle({{ $data->id }})">
               <div style="position:relative;height:210px;overflow:hidden;background:#f8fafc">
-              {!! render_image_markup_by_attachment_id($data->image) !!}
+              {!! render_image_markup_by_attachment_id($data->image, null, 'large', 'loading="lazy" decoding="async"') !!}
               <div
                 style="position:absolute;top:14px;left:14px;background:rgba(15,23,42,0.85);backdrop-filter:blur(8px);color:#6fd943;border-radius:99px;padding:4px 12px;font-size:11px;font-weight:800;letter-spacing:0.8px;text-transform:uppercase">
                {!! get_blog_category_by_id($data->blog_categories_id,'link') !!}
@@ -1650,7 +1650,7 @@
                 style="font-family:'Palatino Linotype',Georgia,serif;font-size:14px;font-weight:600;letter-spacing:2px;color:#1a1a2e;text-transform:uppercase;">Westin</span>
               <span class="trusted-text-logo"
                 style="font-family:'Inter',sans-serif;font-size:16px;font-weight:900;color:#003087;letter-spacing:0.5px;">CBRE</span>
-              <img class="trusted-logo" src="{{ asset('assets/frontend/images/logos/Shopify_logo_2018.svg') }}"
+              <img loading="lazy" decoding="async" class="trusted-logo" src="{{ asset('assets/frontend/images/logos/Shopify_logo_2018.svg') }}"
                 alt="Shopify" style="height: 22px;" />
               <span class="trusted-text-logo"
                 style="font-family:'Inter',sans-serif;font-size:14px;font-weight:600;letter-spacing:2px;color:#222;text-transform:uppercase;">CANDELA</span>

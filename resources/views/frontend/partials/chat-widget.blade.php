@@ -492,7 +492,7 @@
         el.className = 'g4chat-msg ' + who;
         el.textContent = text;
         log.appendChild(el);
-        log.scrollTop = log.scrollHeight;
+        if (root.classList.contains('is-open')) { log.scrollTop = log.scrollHeight; }
         if (!skipSave) { saveTranscript(); }
         return el;
     }
@@ -509,7 +509,7 @@
             + '<span></span>';
         el.querySelector('span').textContent = HUMAN;
         log.appendChild(el);
-        log.scrollTop = log.scrollHeight;
+        if (root.classList.contains('is-open')) { log.scrollTop = log.scrollHeight; }
     }
 
     function restore() {
@@ -542,7 +542,7 @@
             wrap.appendChild(b);
         });
         log.appendChild(wrap);
-        log.scrollTop = log.scrollHeight;
+        if (root.classList.contains('is-open')) { log.scrollTop = log.scrollHeight; }
     }
 
     function clearChips() {
@@ -552,6 +552,7 @@
 
     /* --- open / close ---------------------------------------------------- */
     function open() {
+        start();
         root.classList.add('is-open', 'is-touched');
         panel.setAttribute('aria-hidden', 'false');
         launcher.setAttribute('aria-expanded', 'true');
@@ -643,7 +644,7 @@
     /* --- teaser ----------------------------------------------------------
        Appears once per browser. Dismissing it, or opening the chat at all,
        stops it coming back, so it nudges rather than nags. */
-    (function teaser() {
+    function teaser() {
         var el = document.getElementById('g4chat-teaser');
         if (!el) { return; }
 
@@ -685,9 +686,24 @@
             hide(true);
         });
         launcher.addEventListener('click', function () { hide(true); });
-    })();
+    }
 
-    restore();
+    /* Restoring the conversation and the teaser wait until the page has
+       loaded (or the chat is opened first). Both read localStorage, whose
+       first read in a browser can stall for tens of milliseconds, and they
+       ran while the page was still being drawn; on PageSpeed's phone test
+       that was enough for the first frame to be dropped. */
+    var started = false;
+    function start() {
+        if (started) { return; }
+        started = true;
+        restore();
+    }
+    function afterLoad(fn) {
+        if (document.readyState === 'complete') { setTimeout(fn, 0); }
+        else { window.addEventListener('load', function () { setTimeout(fn, 0); }); }
+    }
+    afterLoad(function () { start(); teaser(); });
 })();
 </script>
 @endif
