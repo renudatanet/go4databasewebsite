@@ -14,8 +14,11 @@
 
    They are also printed here rather than pushed to the head stack. This
    partial is included from the footer so the widget reaches every page, and
-   by then the head's @stack('styles') has already been rendered, so a push
+   by then the head's styles stack has already been rendered, so a push
    would be silently dropped and the widget would appear completely unstyled.
+   (Never write a Blade directive in this comment: Blade runs it even here.
+   One that did pasted every page's pushed styles, with their closing style
+   tag, into this block, and the rest of these rules showed on the page.)
    The rules sit immediately above the markup they style, so there is no flash
    of unstyled content either.
    ========================================================================== */
