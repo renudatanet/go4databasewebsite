@@ -415,7 +415,7 @@ Route::group(['middleware' => ['setlang:frontend', 'globalVariable', 'maintains_
     Route::get('/home', 'FrontendController@home')->name('home');
     Route::get('/home-article/{id}', 'FrontendController@home_article')->where('id', '[0-9]+')->name('frontend.home.article');
 
-    Route::post('/get-touch', 'FrontendFormController@get_touch')->name('frontend.get.touch');
+    Route::post('/get-touch', 'FrontendFormController@get_touch')->name('frontend.get.touch')->middleware('tracking.identify:contact_form');
     Route::post('/appointment-message', 'FrontendFormController@appointment_message')->name('frontend.appointment.message');
     Route::post('/service-quote', 'FrontendFormController@service_quote')->name('frontend.service.quote');
     Route::post('/case-study-quote', 'FrontendFormController@case_study_quote')->name('frontend.case.study.quote');
@@ -593,7 +593,7 @@ Route::group(['middleware' => ['setlang:frontend', 'globalVariable', 'maintains_
     Route::get('/user/resend-verify-code', 'UserDashboardController@reset_user_email_verify_code')->name('user.resend.verify.mail');
     Route::post('/user/email-verify', 'UserDashboardController@user_email_verify');
 
-    Route::post('/request-quote', 'FrontendFormController@send_quote_message')->name('frontend.quote.message');
+    Route::post('/request-quote', 'FrontendFormController@send_quote_message')->name('frontend.quote.message')->middleware('tracking.identify:quote_form');
     Route::post('/request-estimate', 'FrontendFormController@send_estimate_message')->name('frontend.estimate.message');
     Route::get('/home/{id}', 'FrontendController@home_page_change')->name('frontend.homepage.demo');
 
@@ -653,8 +653,8 @@ Route::group(['middleware' => ['setlang:frontend', 'globalVariable', 'HtmlMinifi
     Route::post('/logout/admin', 'AdminDashboardController@adminLogout')->name('admin.logout');
     Route::post('/login/admin', 'Auth\LoginController@adminLogin');
     Route::get('/lang', 'FrontendController@lang_change')->name('frontend.langchange');
-    Route::post('/subscribe-newsletter', 'FrontendController@subscribe_newsletter')->name('frontend.subscribe.newsletter');
-    Route::post('/contact-message', 'FrontendFormController@send_contact_message')->name('frontend.contact.message');
+    Route::post('/subscribe-newsletter', 'FrontendController@subscribe_newsletter')->name('frontend.subscribe.newsletter')->middleware('tracking.identify:newsletter');
+    Route::post('/contact-message', 'FrontendFormController@send_contact_message')->name('frontend.contact.message')->middleware('tracking.identify:contact_form');
     Route::post('/place-order', 'FrontendFormController@send_order_message')->name('frontend.order.message');
 });
 

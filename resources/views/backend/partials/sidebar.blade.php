@@ -24,6 +24,22 @@
                             <span>@lang('dashboard')</span>
                         </a>
                     </li>
+                    @if(check_page_permission_by_string('Tracking'))
+                    <li class="main_dropdown @if(request()->is('admin-home/tracking*')) active @endif">
+                        <a href="javascript:void(0)" aria-expanded="true"><i class="ti-stats-up"></i>
+                            <span>{{__('Tracking')}}</span></a>
+                        <ul class="collapse">
+                            <li class="{{active_menu('admin-home/tracking')}}"><a href="{{route('admin.tracking.overview')}}">{{__('Overview')}}</a></li>
+                            <li class="{{active_menu('admin-home/tracking/live')}}"><a href="{{route('admin.tracking.live')}}">{{__('Live Now')}}</a></li>
+                            <li class="@if(request()->is('admin-home/tracking/pages*')) active @endif"><a href="{{route('admin.tracking.pages')}}">{{__('Pages')}}</a></li>
+                            <li class="{{active_menu('admin-home/tracking/clicks')}}"><a href="{{route('admin.tracking.clicks')}}">{{__('Clicks')}}</a></li>
+                            <li class="@if(request()->is('admin-home/tracking/visitors*')) active @endif"><a href="{{route('admin.tracking.visitors')}}">{{__('Visitors')}}</a></li>
+                            <li class="{{active_menu('admin-home/tracking/locations')}}"><a href="{{route('admin.tracking.locations')}}">{{__('Locations')}}</a></li>
+                            <li class="{{active_menu('admin-home/tracking/sources')}}"><a href="{{route('admin.tracking.sources')}}">{{__('Sources')}}</a></li>
+                            <li class="{{active_menu('admin-home/tracking/settings')}}"><a href="{{route('admin.tracking.settings')}}">{{__('Settings')}}</a></li>
+                        </ul>
+                    </li>
+                    @endif
                     @if(check_page_permission('admin_manage'))
                     <li
                         class="main_dropdown

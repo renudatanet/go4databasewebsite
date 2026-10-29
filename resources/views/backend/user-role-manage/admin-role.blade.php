@@ -15,6 +15,7 @@
         "Users Manage",
         "Quote Manage",
         "Newsletter Manage",
+        "Tracking",
         "Package Orders Manage",
         "All Payment Logs",
         "Pages Manage",

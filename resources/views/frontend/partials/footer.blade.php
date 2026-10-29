@@ -250,5 +250,9 @@ document.addEventListener('click', function (e) {
      admin panel. --}}
 @include('frontend.partials.chat-widget')
 
+{{-- Visit and click tracking for Admin > Tracking (app/Tracking). Starts only
+     after the page has loaded; prints nothing for logged-in admins. --}}
+@include('tracking::tracker')
+
 </body>
 </html>

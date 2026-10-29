@@ -417,6 +417,28 @@ loaded here, only by the single list pages.
   used instead unless it is `fa-exclamation-triangle`, the picker default
   every live industry carried.
 
+## Tracking (Admin → Tracking)
+
+Built 2026-10-29: first-party visit and click tracking, a self-contained
+module in `app/Tracking/` (its own provider, routes, migrations, views and
+tests). **Read `app/Tracking/README.md` before changing it**; it has the
+layout, data flow, settings keys, operations and the app's message spec.
+- Every page is tracked through one include in `partials/footer.blade.php`
+  (`tracking::tracker`), started after `load`, not printed for logged-in
+  admins. It posts to `/t/collect`, which runs outside the `web` group.
+- Names come only from forms (`tracking.identify:*` middleware on four
+  routes in `web.php`, controllers untouched) and from the app's signed
+  `POST /t/app-event`. Sign up / Log in links to the app get `g4v=<visitor
+  id>` at click time; the app must send it back (README spec).
+- No Composer packages were added (the location-file reader and device
+  parsing are in the module), so deploys stay file copies. Run its
+  migrations with `--path=app/Tracking/Database/Migrations` only; the
+  location files come from `php artisan tracking:geo-update` (git-ignored,
+  `storage/app/tracking/geo/`).
+- Its scheduler jobs need `schedule:run` in the **site user's** crontab.
+- Tests: `vendor/bin/phpunit tests/Unit/Tracking` and
+  `vendor/bin/phpunit --testsuite Feature --filter Tracking`.
+
 ## Chat widget
 
 The conversation system itself runs on a **separate server owned by the user**
