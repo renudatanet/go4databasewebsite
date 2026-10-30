@@ -41,8 +41,10 @@ class JobApplicationSuccessMailSendAdmin
 
        try{
            Mail::to($receiver_mail_address)->send(new BasicMail(EmailTemplate::jobAdminMail($job_applicant_details)));
-       }catch (\Exception $e){
-           //show error message
+       }catch (\Throwable $e){
+           // The application is saved already; a mail failure (e.g. bad SMTP
+           // settings) is logged instead of showing the applicant an error.
+           report($e);
        }
 
     }

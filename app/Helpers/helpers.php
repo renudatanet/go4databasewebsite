@@ -64,11 +64,16 @@ function get_static_option($key,$default = null)
     if (array_key_exists($key, $memo)) {
         return $memo[$key] ?? $default;
     }
+    // Only a "yes" is remembered, and only for this app's database: a table
+    // missing at boot (a fresh install, or a test database migrated after the
+    // app started) is looked for again.
     static $has_table = null;
-    if ($has_table === null) {
-        $has_table = \Illuminate\Support\Facades\Schema::hasTable('static_options');
+    $has_table ??= new \WeakMap();
+    $db = app('db');
+    if (empty($has_table[$db])) {
+        $has_table[$db] = \Illuminate\Support\Facades\Schema::hasTable('static_options');
     }
-    if (!$has_table) {
+    if (!$has_table[$db]) {
         return $default;
     }
     $cached = \Illuminate\Support\Facades\Cache::remember($key, 6400, function () use ($key) {

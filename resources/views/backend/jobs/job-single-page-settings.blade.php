@@ -25,62 +25,77 @@
                                         <div class="form-group">
                                             <label for="job_single_page_{{$lang->slug}}_job_context_label">{{__('Job Context Label')}}</label>
                                             <input type="text" name="job_single_page_{{$lang->slug}}_job_context_label"  class="form-control" value="{{get_static_option('job_single_page_'.$lang->slug.'_job_context_label')}}" id="job_single_page_{{$lang->slug}}_job_context_label">
+                                            <small class="text-muted">{{__('Empty shows:')}} {{\App\Careers\CareerText::LABELS['job_context_label'] ?? ''}}</small>
                                         </div>
                                         <div class="form-group">
                                             <label for="job_single_page_{{$lang->slug}}_job_responsibility_label">{{__('Job Responsibility Label')}}</label>
                                             <input type="text" name="job_single_page_{{$lang->slug}}_job_responsibility_label"  class="form-control" value="{{get_static_option('job_single_page_'.$lang->slug.'_job_responsibility_label')}}" id="job_single_page_{{$lang->slug}}_job_responsibility_label">
+                                            <small class="text-muted">{{__('Empty shows:')}} {{\App\Careers\CareerText::LABELS['job_responsibility_label'] ?? ''}}</small>
                                         </div>
                                         <div class="form-group">
                                             <label for="job_single_page_{{$lang->slug}}_education_requirement_label">{{__('Education Requirement Label')}}</label>
                                             <input type="text" name="job_single_page_{{$lang->slug}}_education_requirement_label"  class="form-control" value="{{get_static_option('job_single_page_'.$lang->slug.'_education_requirement_label')}}" id="job_single_page_{{$lang->slug}}_education_requirement_label">
+                                            <small class="text-muted">{{__('Empty shows:')}} {{\App\Careers\CareerText::LABELS['education_requirement_label'] ?? ''}}</small>
                                         </div>
                                         <div class="form-group">
                                             <label for="job_single_page_{{$lang->slug}}_experience_requirement_label">{{__('Experience Requirement Label')}}</label>
                                             <input type="text" name="job_single_page_{{$lang->slug}}_experience_requirement_label"  class="form-control" value="{{get_static_option('job_single_page_'.$lang->slug.'_experience_requirement_label')}}" id="job_single_page_{{$lang->slug}}_experience_requirement_label">
+                                            <small class="text-muted">{{__('Empty shows:')}} {{\App\Careers\CareerText::LABELS['experience_requirement_label'] ?? ''}}</small>
                                         </div>
                                         <div class="form-group">
                                             <label for="job_single_page_{{$lang->slug}}_additional_requirement_label">{{__('Additional Requirement Label')}}</label>
                                             <input type="text" name="job_single_page_{{$lang->slug}}_additional_requirement_label"  class="form-control" value="{{get_static_option('job_single_page_'.$lang->slug.'_additional_requirement_label')}}" id="job_single_page_{{$lang->slug}}_additional_requirement_label">
+                                            <small class="text-muted">{{__('Empty shows:')}} {{\App\Careers\CareerText::LABELS['additional_requirement_label'] ?? ''}}</small>
                                         </div>
                                         <div class="form-group">
                                             <label for="job_single_page_{{$lang->slug}}_others_benefits_label">{{__('Others Benefits Label')}}</label>
                                             <input type="text" name="job_single_page_{{$lang->slug}}_others_benefits_label"  class="form-control" value="{{get_static_option('job_single_page_'.$lang->slug.'_others_benefits_label')}}" id="job_single_page_{{$lang->slug}}_others_benefits_label">
+                                            <small class="text-muted">{{__('Empty shows:')}} {{\App\Careers\CareerText::LABELS['others_benefits_label'] ?? ''}}</small>
                                         </div>
                                         <div class="form-group">
                                             <label for="job_single_page_{{$lang->slug}}_apply_button_text">{{__('Job Apply Button Text')}}</label>
                                             <input type="text" name="job_single_page_{{$lang->slug}}_apply_button_text"  class="form-control" value="{{get_static_option('job_single_page_'.$lang->slug.'_apply_button_text')}}" id="job_single_page_{{$lang->slug}}_apply_button_text">
+                                            <small class="text-muted">{{__('Empty shows:')}} {{\App\Careers\CareerText::LABELS['apply_button_text'] ?? ''}}</small>
                                         </div>
                                         <div class="form-group">
                                             <label for="job_single_page_{{$lang->slug}}_job_info_text">{{__('Job Information Text')}}</label>
                                             <input type="text" name="job_single_page_{{$lang->slug}}_job_info_text"  class="form-control" value="{{get_static_option('job_single_page_'.$lang->slug.'_job_info_text')}}" id="job_single_page_{{$lang->slug}}_job_info_text">
+                                            <small class="text-muted">{{__('Empty shows:')}} {{\App\Careers\CareerText::LABELS['job_info_text'] ?? ''}}</small>
                                         </div>
                                         <div class="form-group">
                                             <label for="job_single_page_{{$lang->slug}}_company_name_text">{{__('Company Name Text')}}</label>
                                             <input type="text" name="job_single_page_{{$lang->slug}}_company_name_text"  class="form-control" value="{{get_static_option('job_single_page_'.$lang->slug.'_company_name_text')}}" id="job_single_page_{{$lang->slug}}_company_name_text">
+                                            <small class="text-muted">{{__('Empty shows:')}} {{\App\Careers\CareerText::LABELS['company_name_text'] ?? ''}}</small>
                                         </div>
                                         <div class="form-group">
                                             <label for="job_single_page_{{$lang->slug}}_job_category_text">{{__('Job Category Text')}}</label>
                                             <input type="text" name="job_single_page_{{$lang->slug}}_job_category_text"  class="form-control" value="{{get_static_option('job_single_page_'.$lang->slug.'_job_category_text')}}" id="job_single_page_{{$lang->slug}}_job_category_text">
+                                            <small class="text-muted">{{__('Empty shows:')}} {{\App\Careers\CareerText::LABELS['job_category_text'] ?? ''}}</small>
                                         </div>
                                         <div class="form-group">
                                             <label for="job_single_page_{{$lang->slug}}_job_position_text">{{__('Job Position Text')}}</label>
                                             <input type="text" name="job_single_page_{{$lang->slug}}_job_position_text"  class="form-control" value="{{get_static_option('job_single_page_'.$lang->slug.'_job_position_text')}}" id="job_single_page_{{$lang->slug}}_job_position_text">
+                                            <small class="text-muted">{{__('Empty shows:')}} {{\App\Careers\CareerText::LABELS['job_position_text'] ?? ''}}</small>
                                         </div>
                                         <div class="form-group">
                                             <label for="job_single_page_{{$lang->slug}}_job_type_text">{{__('Job Type Text')}}</label>
                                             <input type="text" name="job_single_page_{{$lang->slug}}_job_type_text"  class="form-control" value="{{get_static_option('job_single_page_'.$lang->slug.'_job_type_text')}}" id="job_single_page_{{$lang->slug}}_job_type_text">
+                                            <small class="text-muted">{{__('Empty shows:')}} {{\App\Careers\CareerText::LABELS['job_type_text'] ?? ''}}</small>
                                         </div>
                                         <div class="form-group">
                                             <label for="job_single_page_{{$lang->slug}}_salary_text">{{__('Salary Text')}}</label>
                                             <input type="text" name="job_single_page_{{$lang->slug}}_salary_text"  class="form-control" value="{{get_static_option('job_single_page_'.$lang->slug.'_salary_text')}}" id="job_single_page_{{$lang->slug}}_salary_text">
+                                            <small class="text-muted">{{__('Empty shows:')}} {{\App\Careers\CareerText::LABELS['salary_text'] ?? ''}}</small>
                                         </div>
                                         <div class="form-group">
                                             <label for="job_single_page_{{$lang->slug}}_job_location_text">{{__('Job Location Text')}}</label>
                                             <input type="text" name="job_single_page_{{$lang->slug}}_job_location_text"  class="form-control" value="{{get_static_option('job_single_page_'.$lang->slug.'_job_location_text')}}" id="job_single_page_{{$lang->slug}}_job_location_text">
+                                            <small class="text-muted">{{__('Empty shows:')}} {{\App\Careers\CareerText::LABELS['job_location_text'] ?? ''}}</small>
                                         </div>
                                         <div class="form-group">
                                             <label for="job_single_page_{{$lang->slug}}_job_deadline_text">{{__('Deadline Text')}}</label>
                                             <input type="text" name="job_single_page_{{$lang->slug}}_job_deadline_text"  class="form-control" value="{{get_static_option('job_single_page_'.$lang->slug.'_job_deadline_text')}}" id="job_single_page_{{$lang->slug}}_job_deadline_text">
+                                            <small class="text-muted">{{__('Empty shows:')}} {{\App\Careers\CareerText::LABELS['job_deadline_text'] ?? ''}}</small>
                                         </div>
                                         <div class="form-group">
                                             <label for="job_single_page_{{$lang->slug}}_job_application_fee_text">{{__('Application Fee Text')}}</label>

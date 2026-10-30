@@ -321,7 +321,12 @@
     
     @yield('og-meta')
 
-    @if(Request::path()=='about')
+    {{-- The career pages build their own structured data (App\Careers\JobSchema).
+         Matched on route names, before the URL-word checks below, which caught
+         roles such as "b2b-sales-leader" and "talent-acquisition-specialist". --}}
+    @if(request()->routeIs('frontend.jobs', 'frontend.jobs.single', 'frontend.jobs.category', 'frontend.jobs.search', 'frontend.jobs.apply'))
+        @yield('career-schema')
+    @elseif(Request::path()=='about')
         @if(get_static_option('about_page_'.$user_select_lang_slug.'_schema_code')!='')
             @php echo get_static_option('about_page_'.$user_select_lang_slug.'_schema_code'); @endphp
                 

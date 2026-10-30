@@ -188,8 +188,10 @@ class SitemapController extends Controller
     
       public function career()
     {
-        $careers = jobs::latest()->get();
-     $careersCategory = JobsCategory::latest()->get();
+        // Only pages Google may list: published roles still open (a closed
+        // role's page is noindex, a draft's is not public) and published teams.
+        $careers = Jobs::where('status', 'publish')->latest()->get()->filter(fn (Jobs $job) => $job->isOpen());
+        $careersCategory = JobsCategory::where('status', 'publish')->latest()->get();
         $xml = response()->view('frontend.sitemap.career', [
             'careers' => $careers,
             'careersCategory' => $careersCategory

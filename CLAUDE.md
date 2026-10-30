@@ -417,6 +417,52 @@ loaded here, only by the single list pages.
   used instead unless it is `fa-exclamation-triangle`, the picker default
   every live industry carried.
 
+## Careers (`/career`, its categories, roles and `/apply/{id}`)
+
+Rebuilt 2026-10-30 in the blog's look (it includes `blog/partials/style`,
+then `jobs/partials/style`, CSS and JS inline, so it deploys as views).
+Live's slug is `career` (`career_with_us_page_slug`; locally `jobs` unless set).
+- One board view, `pages/jobs/jobs.blade.php`, serves `/career`, a category
+  (`/career/{slug}`, which `jobs_single` checks before jobs) and
+  `/career-search` (JSON for the search box's instant results).
+  `FrontendController::career_board()`; the queries are `App\Careers\JobBoard`:
+  published, this language, deadline not passed (a role is open through its
+  whole deadline day; an unreadable deadline counts as none). Closed roles
+  leave the lists but keep their page (marked closed, `noindex`).
+- A role (`jobs-single`): sections cleaned at render by
+  `App\Careers\JobContent` (Google Docs pastes: inline styles, spans, empty
+  paragraphs; styled-span bold kept as `<strong>`). The DB is left as written.
+- Apply (`jobs-apply`): draws the Form Builder's Apply Job Form fields with
+  labels, same names/required/mimes, and posts to the untouched
+  `JobPaymentController::store_jobs_applicant_data` (fees and gateways as
+  before). Job applications name the visitor in Tracking (`job_application`).
+- Wording: Jobs > Job Page Settings, `career_page_{lang}_{key}`, defaults in
+  `App\Careers\CareerText::DEFAULTS` (the admin screen shows the same ones);
+  role page labels are Job Single Page Settings', defaults in
+  `CareerText::LABELS`. "Roles Shown Before Show More" is `site_job_post_items`.
+- Categories (Jobs > Job Category) now edit their slug, meta description and
+  SEO title; live already had those columns (added by hand), the migration
+  `2026_10_30_000000` adds only what's missing. Bulk delete keeps categories
+  still holding a job (that orphaned "Inside Sales Executive", which 500ed).
+- SEO: `og-meta` hands career routes to `@yield('career-schema')` before its
+  URL-word checks (which gave "b2b-sales-leader" the B2B lists' markup and a
+  broken BreadcrumbList); `App\Careers\JobSchema` builds valid JSON-LD,
+  with a JobPosting per open role for Google's job search (address parts and
+  salary currency in Job Page Settings). Role views pass `role_category`, not
+  `job_category`, and the apply view `$role`, not `$job`: og-meta titles any
+  page holding those after the category / the role.
+- Drafts are 404 for visitors (they used to be public); a logged-in admin
+  previews one at its address. `career_sitemap.xml` lists only published,
+  open roles and published categories.
+- Fixed in Jobs admin: a job saved with the Slug box empty got
+  `Str::slug($title, $lang)` (the language as separator: "qaentenstengienr"),
+  and a clone got its title plus digits, spaces and all. Note the admin's
+  date boxes are bootstrap-datepicker (admin-master): typing into them from
+  a test script is cleared on blur, set them through `datepicker('update')`.
+- No route was added: the career pages use the same five addresses as
+  before; only `POST /apply` gained the Tracking identity middleware.
+- Tests: `vendor/bin/phpunit tests/Unit/Careers tests/Feature/Careers`.
+
 ## Tracking (Admin → Tracking)
 
 Built 2026-10-29: first-party visit and click tracking, a self-contained
@@ -426,7 +472,7 @@ layout, data flow, settings keys, operations and the app's message spec.
 - Every page is tracked through one include in `partials/footer.blade.php`
   (`tracking::tracker`), started after `load`, not printed for logged-in
   admins. It posts to `/t/collect`, which runs outside the `web` group.
-- Names come only from forms (`tracking.identify:*` middleware on four
+- Names come only from forms (`tracking.identify:*` middleware on five
   routes in `web.php`, controllers untouched) and from the app's signed
   `POST /t/app-event`. Sign up / Log in links to the app get `g4v=<visitor
   id>` at click time; the app must send it back (README spec).

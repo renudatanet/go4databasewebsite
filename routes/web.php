@@ -377,7 +377,7 @@ Route::group(['middleware' => ['setlang:frontend', 'globalVariable', 'maintains_
     Route::get($career_with_us_page_slug.'-search', 'FrontendController@jobs_search')->name('frontend.jobs.search');
 
     Route::get('/apply/{id}', 'FrontendController@jobs_apply')->name('frontend.jobs.apply');
-    Route::post('/apply', 'JobPaymentController@store_jobs_applicant_data')->name('frontend.jobs.apply.store');
+    Route::post('/apply', 'JobPaymentController@store_jobs_applicant_data')->name('frontend.jobs.apply.store')->middleware('tracking.identify:job_application');
     /*-----------------------------------------
         JOB MODULE: PAYMENT GATEWAY ROUTES
     -----------------------------------------*/

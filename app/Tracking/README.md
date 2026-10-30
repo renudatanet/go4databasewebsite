@@ -9,7 +9,7 @@ page, every link and button clicked, the site's own GA4-style events, how the
 visit arrived (search, AI assistant, social, email, campaign tags), where it
 came from (country, region and city, plus the network owner from the IP),
 and the device. Names and emails come only from what a visitor submits
-(contact form, quote form, newsletter) or from the app when they sign up or
+(contact form, quote form, newsletter, job application) or from the app when they sign up or
 log in. Nothing is guessed from an IP address.
 
 ## Layout
@@ -41,7 +41,7 @@ app/Tracking/
 
 Outside this folder, the module touches only: `config/app.php` (provider),
 `frontend/partials/footer.blade.php` (includes the tracker),
-`routes/web.php` (`tracking.identify:*` on four form routes),
+`routes/web.php` (`tracking.identify:*` on five form routes),
 `backend/partials/sidebar.blade.php` (Tracking menu) and
 `backend/user-role-manage/admin-role.blade.php` ("Tracking" permission).
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Careers\JobBoard;
 use App\Jobs;
 use App\JobsCategory;
 use App\Language;
@@ -25,10 +26,20 @@ class JobsCategoryController extends Controller
         $this->validate($request,[
             'title' => 'required|string|max:191|unique:jobs_categories',
             'lang' => 'required|string|max:191',
-            'status' => 'required|string|max:191'
+            'status' => 'required|string|max:191',
+            'slug' => 'nullable|string|max:191',
+            'meta_description' => 'nullable|string|max:500',
+            'meta_tags' => 'nullable|string|max:191',
         ]);
 
-        JobsCategory::create($request->all());
+        JobsCategory::create([
+            'title' => $request->title,
+            'lang' => $request->lang,
+            'status' => $request->status,
+            'slug' => JobBoard::uniqueCategorySlug($request->slug ?: $request->title),
+            'meta_description' => $request->meta_description,
+            'meta_tags' => $request->meta_tags,
+        ]);
 
         return redirect()->back()->with([
             'msg' => __('New Category Added...'),
@@ -38,15 +49,25 @@ class JobsCategoryController extends Controller
 
     public function update_jobs_category(Request $request){
         $this->validate($request,[
+            'id' => 'required|integer|exists:jobs_categories,id',
             'title' => 'required|string|max:191',
             'lang' => 'required|string|max:191',
-            'status' => 'required|string|max:191'
+            'status' => 'required|string|max:191',
+            'slug' => 'nullable|string|max:191',
+            'meta_description' => 'nullable|string|max:500',
+            'meta_tags' => 'nullable|string|max:191',
         ]);
 
-        JobsCategory::find($request->id)->update([
+        // Its address stays as it is unless changed here, so links to it keep working.
+        $category = JobsCategory::find($request->id);
+        $wanted = $request->slug ?: ($category->slug ?: $request->title);
+        $category->update([
             'title' => $request->title,
             'status' => $request->status,
             'lang' => $request->lang,
+            'slug' => JobBoard::uniqueCategorySlug($wanted, $category->id),
+            'meta_description' => $request->meta_description,
+            'meta_tags' => $request->meta_tags,
         ]);
 
         return redirect()->back()->with([
@@ -75,12 +96,15 @@ class JobsCategoryController extends Controller
         return response()->json($all_category);
     }
 
+    /** Deletes the selected categories, except those still holding a job (as the single delete does). */
     public function bulk_action(Request $request){
-        $all = JobsCategory::find($request->ids);
-        foreach($all as $item){
-            $item->delete();
+        $in_use = Jobs::whereIn('category_id', (array) $request->ids)->pluck('category_id')->map('intval')->all();
+        foreach(JobsCategory::find((array) $request->ids) as $item){
+            if (!in_array($item->id, $in_use, true)) {
+                $item->delete();
+            }
         }
-        return response()->json(['status' => 'ok']);
+        return response()->json(['status' => 'ok', 'kept' => array_values(array_unique($in_use))]);
     }
 
 }

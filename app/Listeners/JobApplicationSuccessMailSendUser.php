@@ -37,8 +37,10 @@ class JobApplicationSuccessMailSendUser
         $job_applicant_details = JobApplicant::where('id',$data['job_application_id'])->first();
         try {
             Mail::to($job_applicant_details->email)->send(new BasicMail(EmailTemplate::jobUserMail($job_applicant_details)));
-        }catch (\Exception $e){
-            //show error message
+        }catch (\Throwable $e){
+            // The application is saved already; a mail failure (e.g. bad SMTP
+            // settings) is logged instead of showing the applicant an error.
+            report($e);
         }
     }
 }

@@ -1943,109 +1943,116 @@ $all_testimonial = Testimonial::where('lang', $lang)->orderBy('id', 'desc')->tak
     }
 
     //jobs
-    public function jobs()
+    // The career pages: the board (/career, a category, a search), a role and
+    // its application form. Which roles are open and where is JobBoard's;
+    // the wording comes from Jobs > Job Page Settings (career_page_{lang}_*)
+    // and Job Single Page Settings, each with a default in the views.
+    public function jobs(Request $request)
     {
-        $default_lang = Language::where('default', 1)->first();
-        $lang = !empty(session()->get('lang')) ? session()->get('lang') : $default_lang->slug;
+        $board = $this->job_board();
 
-        $all_jobs = Jobs::where(['status' => 'publish', 'lang' => $lang])->orderBy('id', 'desc')->paginate(get_static_option('site_job_post_items'));
-        $all_job_category = JobsCategory::where(['status' => 'publish', 'lang' => $lang])->get();
-        return view('frontend.pages.jobs.jobs')->with([
-            'all_jobs' => $all_jobs,
-            'all_job_category' => $all_job_category,
-        ]);
+        return $this->career_board($request, $board, $board->openJobs());
     }
 
     public function jobs_category($any)
     {
-        dd($any);
-    $jobCat = JobsCategory::where('slug', $slug)->first();
-        $id=$jobCat->id;
-       
-        $default_lang = Language::where('default', 1)->first();
-        $lang = !empty(session()->get('lang')) ? session()->get('lang') : $default_lang->slug;
-
-        $all_jobs = Jobs::where(['status' => 'publish', 'lang' => $lang, 'category_id' => $id])->orderBy('id', 'desc')->paginate(get_static_option('site_job_post_items'));
-        if (empty($all_jobs)){
-            abort(404);
-        }
-        $all_job_category = JobsCategory::where(['status' => 'publish', 'lang' => $lang])->get();
-        $category_name = JobsCategory::find($id)->title;
-        return view('frontend.pages.jobs.jobs-category')->with([
-            'all_jobs' => $all_jobs,
-            'all_job_category' => $all_job_category,
-            'category_name' => $category_name,
-        ]);
+        return $this->jobs_single(request(), $any);
     }
 
     public function jobs_search(Request $request)
     {
+        $board = $this->job_board();
+        $query = trim(mb_substr((string) $request->search, 0, 100));
+        $found = $board->search($query);
 
-        $default_lang = Language::where('default', 1)->first();
-        $lang = !empty(session()->get('lang')) ? session()->get('lang') : $default_lang->slug;
+        // The search box's instant results, in the blog box's shape.
+        if ($request->wantsJson()) {
+            $popular = $query === '';
+            $shown = $found->take(6);
+            return response()->json([
+                'query' => $query,
+                'popular' => $popular,
+                'total' => $popular ? $shown->count() : $found->count(),
+                'all_url' => route('frontend.jobs.search', ['search' => $query]),
+                'results' => $shown->map(function (Jobs $job) use ($board) {
+                    return [
+                        'title' => $job->title,
+                        'url' => route('frontend.jobs.single', $job->slug),
+                        'topic' => optional($board->categoryOf($job))->title,
+                        'date' => $job->job_location,
+                        'image' => null,
+                    ];
+                })->values(),
+            ]);
+        }
 
-        $all_jobs = Jobs::where(['status' => 'publish', 'lang' => $lang])->where('title', 'LIKE', '%' . $request->search . '%')->paginate(get_static_option('site_job_post_items'));
-        $all_job_category = JobsCategory::where(['status' => 'publish', 'lang' => $lang])->get();
-        $search_term = $request->search;
-
-        return view('frontend.pages.jobs.jobs-search')->with([
-            'all_jobs' => $all_jobs,
-            'all_job_category' => $all_job_category,
-            'search_term' => $search_term,
-        ]);
+        return $this->career_board($request, $board, $found, null, $query);
     }
 
-    public function jobs_single($slug)
+    public function jobs_single(Request $request, $slug)
     {
-   
-     $jobCat = JobsCategory::where('slug', $slug)->first();
-      if($jobCat)
-        {
-         $id=$jobCat->id;
-        $default_lang = Language::where('default', 1)->first();
-        $lang = !empty(session()->get('lang')) ? session()->get('lang') : $default_lang->slug;
+        $board = $this->job_board();
 
-        $all_jobs = Jobs::where(['status' => 'publish', 'lang' => $lang, 'category_id' => $id])->orderBy('id', 'desc')->paginate(get_static_option('site_job_post_items'));
-        if (empty($all_jobs)){
-            abort(404);
+        // /career/{slug} is a category's address as well as a role's.
+        $category = $board->findCategory($slug);
+        if ($category) {
+            return $this->career_board($request, $board, $board->inCategory($category), $category);
         }
-        $all_job_category = JobsCategory::where(['status' => 'publish', 'lang' => $lang])->get();
-        $category_name = JobsCategory::find($id)->title;
-       
-        return view('frontend.pages.jobs.jobs-category')->with([
-            'all_jobs' => $all_jobs,
-            'all_job_category' => $all_job_category,
-            'category_name' => $category_name,
-             'job_category' => $jobCat,
-        ]);
-        }else{
-        $default_lang = Language::where('default', 1)->first();
-        $lang = !empty(session()->get('lang')) ? session()->get('lang') : $default_lang->slug;
 
-        $job = Jobs::where('slug', $slug)->first();
+        // An admin can preview a draft at its address; nobody else sees one.
+        $job = $board->findJob($slug, auth('admin')->check());
         if (empty($job)) {
             abort(404);
         }
-        
-     $jobCat = JobsCategory::where('id', $job->category_id)->first();
- 
-        $all_job_category = JobsCategory::where(['status' => 'publish', 'lang' => $lang])->get();
+
+        // Named role_category, not job_category: og-meta titles any page
+        // holding a $job_category after the category, which gave every role
+        // its category's name as its title.
         return view('frontend.pages.jobs.jobs-single')->with([
             'job' => $job,
-            'category_name' => $jobCat->title,
-            'all_job_category' => $all_job_category,
-            
-            'job_category' => $jobCat,
+            'role_category' => $board->categoryOf($job),
+            'related_jobs' => $board->related($job),
+            'job_board' => $board,
         ]);
-        }
     }
 
     public function jobs_apply($id)
     {
-        $job = Jobs::findOrFail($id);
+        $job = Jobs::where('id', $id)->where('status', 'publish')->firstOrFail();
+        $board = $this->job_board();
 
+        // $role, not $job, so og-meta doesn't give the form the role page's title.
         return view('frontend.pages.jobs.jobs-apply')->with([
-            'job' => $job
+            'role' => $job,
+            'role_category' => $board->categoryOf($job),
+        ]);
+    }
+
+    private function job_board(): \App\Careers\JobBoard
+    {
+        $default_lang = Language::where('default', 1)->first();
+        $lang = !empty(session()->get('lang')) ? session()->get('lang') : $default_lang->slug;
+
+        return new \App\Careers\JobBoard($lang);
+    }
+
+    /** One view for /career, its categories and its search, a page of roles at a time. */
+    private function career_board(Request $request, \App\Careers\JobBoard $board, $roles, $category = null, $search = null)
+    {
+        $per_page = max(1, (int) get_static_option('site_job_post_items', 10));
+        $page = max(1, (int) $request->query('page', 1));
+        $paged = new \Illuminate\Pagination\LengthAwarePaginator(
+            $roles->forPage($page, $per_page)->values(), $roles->count(), $per_page, $page,
+            ['path' => $request->url(), 'query' => $search !== null ? ['search' => $search] : []]
+        );
+
+        return view('frontend.pages.jobs.jobs')->with([
+            'all_jobs' => $paged,
+            'job_board' => $board,
+            'all_job_category' => $board->categoriesWithRoles(),
+            'open_total' => $board->openJobs()->count(),
+            'job_category' => $category,
+            'search_term' => $search,
         ]);
     }
 

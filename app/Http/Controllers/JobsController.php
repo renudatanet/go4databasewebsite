@@ -67,7 +67,7 @@ class JobsController extends Controller
             'meta_description' => 'nullable|string|max:191',
             'slug' => 'nullable|string|max:191',
         ]);
-        $slug = !empty($request->slug) ? $request->slug : Str::slug($request->title,$request->lang);
+        $slug = !empty($request->slug) ? $request->slug : Str::slug($request->title);
 
         Jobs::create([
             'title' => $request->title,
@@ -122,7 +122,7 @@ class JobsController extends Controller
             'meta_description' => 'nullable|string|max:191',
             'slug' => 'nullable|string|max:191',
         ]);
-        $slug = !empty($request->slug) ? $request->slug : Str::slug($request->title,$request->lang);
+        $slug = !empty($request->slug) ? $request->slug : Str::slug($request->title);
 
         Jobs::find($request->job_id)->update([
             'title' => $request->title,
@@ -177,7 +177,7 @@ class JobsController extends Controller
             'meta_description' => $job_post->meta_description,
             'application_fee' => $job_post->application_fee,
             'application_fee_status' => $job_post->application_fee_status,
-            'slug' => $job_post->title.random_int(999,9999),
+            'slug' => Str::slug($job_post->title).'-'.random_int(1000,9999),
         ]);
         return redirect()->back()->with(['msg' => __('Job Post Clone Success...'),'type' => 'success']);
     }
@@ -186,6 +186,10 @@ class JobsController extends Controller
 
         return redirect()->back()->with(['msg' => __('Job Post Deleted Success'),'type' => 'danger']);
     }
+    /** Where the roles are, for Google's job listings (the JobPosting markup on each role). */
+    public const SCHEMA_SETTINGS = ['career_schema_locality', 'career_schema_region', 'career_schema_postal_code',
+        'career_schema_country', 'career_salary_currency'];
+
     public function page_settings(){
         $all_languages = Language::all();
         return view('backend.jobs.job-page-settings')->with(['all_languages' => $all_languages]);
@@ -193,15 +197,24 @@ class JobsController extends Controller
 
     public function update_page_settings(Request $request){
         $this->validate($request,[
-           'site_job_post_items' => 'required|string|max:191'
+           'site_job_post_items' => 'required|integer|min:1|max:100',
+           'career_schema_country' => 'nullable|string|size:2',
+           'career_salary_currency' => 'nullable|string|size:3',
         ]);
-        $all_languages = Language::all();
-        foreach ($all_languages as $lang){
-            $this->validate($request,[
-               'site_jobs_category_'.$lang->slug.'_title'  => 'nullable|string'
-            ]);
-            $site_jobs_category_title = 'site_jobs_category_'.$lang->slug.'_title';
-            update_static_option('site_jobs_category_'.$lang->slug.'_title',$request->$site_jobs_category_title);
+        foreach (Language::all() as $lang){
+            $rules = ['site_jobs_category_'.$lang->slug.'_title' => 'nullable|string'];
+            // The career pages' wording, career_page_{lang}_{text}; empty shows CareerText's default.
+            foreach (array_keys(\App\Careers\CareerText::DEFAULTS) as $text) {
+                $rules['career_page_'.$lang->slug.'_'.$text] = 'nullable|string|max:2000';
+            }
+            $this->validate($request, $rules);
+            foreach (array_keys($rules) as $key) {
+                update_static_option($key, $request->$key);
+            }
+        }
+        foreach (self::SCHEMA_SETTINGS as $key) {
+            $this->validate($request, [$key => 'nullable|string|max:191']);
+            update_static_option($key, $request->$key);
         }
         update_static_option('site_job_post_items',$request->site_job_post_items);
         return redirect()->back()->with(['msg' => __('Job Page Settings Success...'),'type' => 'success']);

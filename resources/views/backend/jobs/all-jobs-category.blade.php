@@ -69,6 +69,7 @@
                                             </th>
                                             <th>{{__('ID')}}</th>
                                             <th>{{__('Name')}}</th>
+                                            <th>{{__('Page')}}</th>
                                             <th>{{__('Status')}}</th>
                                             <th>{{__('Action')}}</th>
                                             </thead>
@@ -82,6 +83,7 @@
                                                     </td>
                                                     <td>{{$data->id}}</td>
                                                     <td>{{$data->title}}</td>
+                                                    <td><a href="{{route('frontend.jobs.single', $data->urlSlug())}}" target="_blank" rel="noopener">/{{get_static_option('career_with_us_page_slug') ?: 'jobs'}}/{{$data->urlSlug()}}</a></td>
                                                     <td>
                                                         @if('publish' === $data->status)
                                                             <span class="btn btn-success btn-sm">{{ucfirst(__($data->status))}}</span>
@@ -99,6 +101,9 @@
                                                            data-name="{{$data->title}}"
                                                            data-lang="{{$data->lang}}"
                                                            data-status="{{$data->status}}"
+                                                           data-slug="{{$data->urlSlug()}}"
+                                                           data-meta-description="{{$data->meta_description}}"
+                                                           data-meta-tags="{{$data->meta_tags}}"
                                                         >
                                                             <i class="ti-pencil"></i>
                                                         </a>
@@ -134,6 +139,7 @@
                                 <label for="name">{{__('Name')}}</label>
                                 <input type="text" class="form-control"  id="name" name="title" placeholder="{{__('Name')}}">
                             </div>
+                            @include('backend.jobs.partials.category-seo-fields', ['prefix' => ''])
                             <div class="form-group">
                                 <label for="status">{{__('Status')}}</label>
                                 <select name="status" class="form-control" id="status">
@@ -171,6 +177,7 @@
                             <label for="edit_name">{{__('Name')}}</label>
                             <input type="text" class="form-control"  id="edit_name" name="title" placeholder="{{__('Name')}}">
                         </div>
+                        @include('backend.jobs.partials.category-seo-fields', ['prefix' => 'edit_'])
                         <div class="form-group">
                             <label for="edit_status">{{__('Status')}}</label>
                             <select name="status" class="form-control" id="edit_status">
@@ -241,6 +248,9 @@
                 modal.find('#category_id').val(id);
                 modal.find('#edit_status option[value="'+status+'"]').attr('selected',true);
                 modal.find('#edit_name').val(name);
+                modal.find('#edit_slug').val(el.data('slug'));
+                modal.find('#edit_meta_description').val(el.data('meta-description'));
+                modal.find('#edit_meta_tags').val(el.data('meta-tags'));
                 modal.find('#edit_language option[value="'+el.data('lang')+'"]').attr('selected',true);
             });
         });
