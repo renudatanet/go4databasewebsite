@@ -127,8 +127,10 @@
 
             @if($all_jobs->total())
                 <ul class="g4c-roles">
-                    @foreach($all_jobs as $job)
-                        @include('frontend.pages.jobs.partials.role-card', ['job' => $job])
+                    {{-- Not $job: a child view's variables reach the layout, and og-meta
+                         gives any page holding a $job that role's title. --}}
+                    @foreach($all_jobs as $listed_job)
+                        @include('frontend.pages.jobs.partials.role-card', ['job' => $listed_job])
                     @endforeach
                 </ul>
                 @if($all_jobs->hasMorePages())
