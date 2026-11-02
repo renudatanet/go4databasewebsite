@@ -417,6 +417,20 @@ loaded here, only by the single list pages.
   used instead unless it is `fa-exclamation-triangle`, the picker default
   every live industry carried.
 
+## Pages › All Pages lists every page
+
+`PagesController@index` shows, above the Pages records table, "Pages with
+their own design": every built page (Home, About, Contact, Pricing, FAQ, Blog,
+Authors, Lists, B2B, Case Studies, Career, Email Verifier, Email Finder,
+Affiliate) with its address and buttons to the admin screens that edit it,
+from `App\SitePages\BuiltPages` (each button gated by its sidebar permission).
+**When you build a new page with its own route and admin screen, add it to
+`BuiltPages::PAGES`**; `tests/Feature/SitePages` fails if a named route
+disappears. A Pages record whose slug a built route answers (live: "Email
+Verifier", id 37, hidden by `/email-verifier`) is flagged "Not shown on the
+site" in the table and on its edit screen, with links to the real editor:
+`/{slug}` is registered last, so any other route wins.
+
 ## Careers (`/career`, its categories, roles and `/apply/{id}`)
 
 Rebuilt 2026-10-30 in the blog's look (it includes `blog/partials/style`,
@@ -462,6 +476,61 @@ Live's slug is `career` (`career_with_us_page_slug`; locally `jobs` unless set).
 - No route was added: the career pages use the same five addresses as
   before; only `POST /apply` gained the Tracking identity middleware.
 - Tests: `vendor/bin/phpunit tests/Unit/Careers tests/Feature/Careers`.
+
+### Working at Go4Database (`/career/working-at-go4database`)
+
+Built 2026-11-02 after ZoomInfo's "Working at" page, in the homepage's colours
+(the hero's pink-purple-blue gradient and dot grid, home.css `.g4d-hero`)
+with original copy, and **about the company, not a list of roles** (the user
+asked for that): header (+ quotes from the team), Who we are, What we do,
+How we work, What our customers say, Where we work, Our teams, an optional
+band, Join the team. Open roles stay on /career, which every button opens.
+A version in ZoomInfo's exact section order (with the roles list and
+filters) was built and rejected by the user: keep this one.
+Route `frontend.jobs.working`, registered before `career/{slug}` so it isn't
+taken for a team or role; view `pages/jobs/working.blade.php` +
+`partials/working-style` (CSS only, inline).
+- Data: `App\Careers\WorkingPage`: the blocks by section, the newest
+  published customer `Testimonial`s (same as the homepage's), offices with
+  the count of open roles whose `job_location` contains their filter word
+  (the office link is a /career-search for it), teams with open roles
+  (`JobBoard`, so counts match /career; each links to its team page).
+- Admin: Jobs > Working at Go4Database (`JobsController::working_page`,
+  `admin.jobs.working.*`): wording per language (`working_page_{lang}_{key}`,
+  defaults in `App\Careers\WorkingPageText`; `story_text` is one paragraph
+  per line, "none" hides), team photos (`working_page_team_image_{category
+  id}`), and blocks in table `career_page_items`, sections `offering` (with
+  `link`, a /path or https URL), `value`, `quote`, `office` (with `filter`).
+  `CareerPageItem::SECTIONS` says which fields each section uses. The
+  migration seeds offerings and values worded from the site's pages and job
+  posts, and the Noida office; quotes start empty and must be real people.
+- Header (2026-11-02): built like the homepage hero banner (rounded
+  gradient panel, dots fading right, green glow orbs, dashed data lines);
+  the quote cards sit in `.g4w-people` after it and overlap its bottom
+  edge onto the white page, like the homepage search card. Decoration is
+  in the header's pink-purple (icon tiles, empty photo panels, quote marks,
+  initials); links stay the site's green, as on the homepage.
+- Photos go through the view's `$photo()`, which returns null when the
+  media file is missing (checked from the web root and under `public/`),
+  so cards show an initial or icon instead of a broken image.
+- The header's quotes are a coverflow carousel like ZoomInfo's (script in
+  `working-style` sets each card's `data-pos`, -2..2 or `far`; CSS places
+  them): the first line of a quote is its headline, the rest its body; name
+  in a serif, photo over a pink-purple circle (initial when there's no
+  photo). A quote's `cutout` flag (admin tick box) says its photo is a PNG
+  with the background removed: it then stands in front of the circle like
+  ZoomInfo's; otherwise the photo is cropped to a round portrait in it.
+  Locally, admin uploads land in the project root's `assets/` (the dev
+  server's working directory), not `public/assets/`, so they 404 there.
+  Arrows, dots, side-card click, swipe, arrow keys, 7s auto-advance that
+  pauses on hover/focus and is off for reduced motion; without script, a
+  sideways-scrolling row.
+- `CareerText` and `WorkingPageText` share `App\Careers\PageText`.
+- /career links to it from the "Why people join us" heading
+  (`career_page_{lang}_working_link`, "none" hides). It is in
+  `career_sitemap.xml` and in Pages › All Pages' built pages.
+- The media picker shows no library images locally (local media records and
+  files don't match; Site Identity behaves the same); it works on live.
 
 ## Tracking (Admin → Tracking)
 

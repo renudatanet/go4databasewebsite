@@ -7,6 +7,7 @@ use App\BlogCategory;
 use App\Language;
 use App\Page;
 use App\Services;
+use App\SitePages\BuiltPages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -18,12 +19,14 @@ class PagesController extends Controller
     {
         $this->middleware('auth:admin');
     }
-    public function index(){
+    public function index(BuiltPages $built_pages){
         $all_page = Page::all()->groupBy('lang');
         $all_language = Language::all();
         return view('backend.pages.page.index')->with([
             'all_page' => $all_page,
             'all_languages' => $all_language,
+            // The site's other pages, with their own design and admin screens.
+            'built_pages' => $built_pages->forAdmin(),
         ]);
     }
     public function new_page(){
@@ -100,12 +103,14 @@ class PagesController extends Controller
             'type' => 'success'
         ]);
     }
-    public function edit_page($id){
+    public function edit_page($id, BuiltPages $built_pages){
         $page_post = Page::find($id);
         $all_language = Language::all();
         return view('backend.pages.page.edit')->with([
             'page_post' => $page_post,
-            'all_languages' => $all_language
+            'all_languages' => $all_language,
+            // Set when a built page answers this record's address instead.
+            'hidden_by' => $page_post ? $built_pages->hiding((string) $page_post->slug) : null,
         ]);
     }
     public function update_page(Request $request,$id){
@@ -208,14 +213,23 @@ if (!empty($search)) {
         ->get();
 
     $data = [];
+    $built_pages = app(BuiltPages::class);
 
     foreach ($pages as $row) {
+        // A record whose address a built page answers is never seen: say so,
+        // and point at the screen that edits what visitors do see.
+        $hidden_by = $built_pages->hiding((string) $row->slug);
+        $title = e($row->title);
+        if ($hidden_by) {
+            $edit_real = $hidden_by['links'] ? ' <a href="'.e($hidden_by['links'][0]['url']).'">'.e(__('Edit the live page')).'</a>' : '';
+            $title .= '<br><small class="text-danger">'.e(__('Not shown on the site:')).' /'.e($row->slug).' '.e(__('is the built :page page.', ['page' => $hidden_by['title']])).'</small>'.$edit_real;
+        }
 
 
         $data[] = [
             'checkbox' => '<input type="checkbox" value="'.$row->id.'">',
             'id' => $row->id,
-            'title' => $row->title,
+            'title' => $title,
             'created_at' => date_format($row->created_at,'d M Y'),
             'status' => $row->status == 'draft'
                 ? '<span class="alert alert-warning">Draft</span>'

@@ -15,6 +15,13 @@
             width: 60px;
             display: inline-block;
         }
+        /* Pages with their own design */
+        .built-pages td { vertical-align: middle; }
+        .built-pages .page-name { font-weight: 600; color: #1d2430; }
+        .built-pages .page-note { display: block; margin-top: 2px; font-size: 12.5px; color: #7b8794; }
+        .built-pages .page-path { font-family: SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; white-space: nowrap; }
+        .built-pages .edit-links { display: flex; flex-wrap: wrap; gap: 6px; }
+        .built-pages .edit-links .btn { margin: 0; padding: 4px 10px; font-size: 13px; }
     </style>
 @endsection
 @section('content')
@@ -25,10 +32,54 @@
                 <x-error-msg/>
                 <x-flash-msg/>
             </div>
+            @if(count($built_pages))
             <div class="col-lg-12 mt-5">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="header-title">{{__('All Pages')}}</h4>
+                        <h4 class="header-title mb-1">{{__('Pages with their own design')}}</h4>
+                        <p class="text-muted mb-4">{{__('These pages are built into the site, so they are edited on their own screens rather than in the page editor below. Each button opens the screen that changes that part of the page.')}}</p>
+                        <div class="table-responsive">
+                            <table class="table built-pages mb-0">
+                                <thead>
+                                <tr>
+                                    <th style="width:24%">{{__('Page')}}</th>
+                                    <th style="width:16%">{{__('Address')}}</th>
+                                    <th>{{__('Edit it in')}}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($built_pages as $built)
+                                    <tr>
+                                        <td>
+                                            <span class="page-name">{{ $built['title'] }}</span>
+                                            @if($built['note'] !== '')<span class="page-note">{{ __($built['note']) }}</span>@endif
+                                        </td>
+                                        <td><a class="page-path" href="{{ $built['url'] }}" target="_blank" rel="noopener" title="{{__('Open the page')}}">{{ $built['path'] }} <i class="ti-new-window"></i></a></td>
+                                        <td>
+                                            @if(count($built['links']))
+                                                <div class="edit-links">
+                                                    @foreach($built['links'] as $link)
+                                                        <a class="btn btn-outline-primary btn-sm" href="{{ $link['url'] }}">{{ $link['label'] }}</a>
+                                                    @endforeach
+                                                </div>
+                                            @else
+                                                <span class="text-muted">{{__('Your role has no access to the screens for this page.')}}</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+            <div class="col-lg-12 mt-5">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="header-title mb-1">{{__('All Pages')}}</h4>
+                        <p class="text-muted">{{__('Pages written in the page editor, such as the policies. Add one with Add New Page.')}}</p>
                         <div class="bulk-delete-wrapper">
                             <div class="select-box-wrap">
                                 <select name="bulk_option" id="bulk_option">

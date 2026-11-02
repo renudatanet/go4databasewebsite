@@ -2028,6 +2028,20 @@ $all_testimonial = Testimonial::where('lang', $lang)->orderBy('id', 'desc')->tak
         ]);
     }
 
+    /** /career/working-at-go4database: about the company, quotes from the team, offices and teams. */
+    public function jobs_working()
+    {
+        $board = $this->job_board();
+        $default_lang = Language::where('default', 1)->first();
+        $lang = !empty(session()->get('lang')) ? session()->get('lang') : $default_lang->slug;
+
+        return view('frontend.pages.jobs.working')->with([
+            'working' => new \App\Careers\WorkingPage($board, $lang),
+            'working_text' => new \App\Careers\WorkingPageText($lang),
+            'job_board' => $board,
+        ]);
+    }
+
     private function job_board(): \App\Careers\JobBoard
     {
         $default_lang = Language::where('default', 1)->first();

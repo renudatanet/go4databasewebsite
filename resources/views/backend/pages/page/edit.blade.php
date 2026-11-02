@@ -23,6 +23,21 @@
                             <h4 class="header-title">{{__('Edit Page')}}</h4>
                             <a href="{{route('admin.page')}}" class="btn btn-primary">{{__('All Pages')}}</a>
                         </div>
+                        @if(!empty($hidden_by))
+                            {{-- A built page answers this record's address, so visitors never see it. --}}
+                            <div class="alert alert-warning mt-3" role="alert">
+                                <strong>{{__('This page is not shown on the site.')}}</strong>
+                                {{__('Its address,')}} <a href="{{ $hidden_by['url'] }}" target="_blank" rel="noopener">/{{ $page_post->slug }}</a>{{__(', opens the built :page page, so changes saved here are never seen.', ['page' => $hidden_by['title']])}}
+                                @if(count($hidden_by['links']))
+                                    <div class="mt-2">
+                                        {{__('Edit what visitors see in:')}}
+                                        @foreach($hidden_by['links'] as $link)
+                                            <a class="btn btn-sm btn-warning ml-1 mb-1" href="{{ $link['url'] }}">{{ $link['label'] }}</a>
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
+                        @endif
                         <form action="{{route('admin.page.update',$page_post->id)}}" method="post" enctype="multipart/form-data"  id="myForm">
                             @csrf
                             <div class="row">

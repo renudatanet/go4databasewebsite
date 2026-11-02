@@ -104,7 +104,12 @@
     <div class="g4b-wrap g4c-main">
         @if(count($perks))
             <section class="g4c-section" aria-labelledby="g4c-perks-title">
-                <div class="g4c-head"><h2 id="g4c-perks-title">{{ $career_text->get('perks_title') }}</h2></div>
+                <div class="g4c-head">
+                    <h2 id="g4c-perks-title">{{ $career_text->get('perks_title') }}</h2>
+                    @if(strcasecmp($career_text->get('working_link'), 'none') !== 0 && Route::has('frontend.jobs.working'))
+                        <a class="g4c-back" href="{{ route('frontend.jobs.working') }}">{{ $career_text->get('working_link') }} {!! Icon::svg('arrow') !!}</a>
+                    @endif
+                </div>
                 <ul class="g4c-perks">
                     @foreach($perks as $i => [$perk_title, $perk_text])
                         <li class="g4c-perk">

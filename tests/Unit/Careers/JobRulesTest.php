@@ -4,6 +4,7 @@ namespace Tests\Unit\Careers;
 
 use App\Jobs;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Tests\TestCase;
 
 /** The deadline, type and salary rules on a job, without a database. */
@@ -12,13 +13,16 @@ class JobRulesTest extends TestCase
     protected function tearDown(): void
     {
         Carbon::setTestNow();
+        CarbonImmutable::setTestNow();
         parent::tearDown();
     }
 
     public function test_a_role_is_open_through_its_whole_deadline_day(): void
     {
         config(['app.timezone' => 'UTC']);
+        // Both kinds: deadlines are worked out with immutable dates.
         Carbon::setTestNow('2026-10-30 23:30:00');
+        CarbonImmutable::setTestNow('2026-10-30 23:30:00');
 
         $this->assertTrue((new Jobs(['deadline' => '2026-10-30']))->isOpen());
         $this->assertFalse((new Jobs(['deadline' => '2026-10-29']))->isOpen());

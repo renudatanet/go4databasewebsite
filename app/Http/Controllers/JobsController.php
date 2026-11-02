@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\CareerPageItem;
+use App\Careers\WorkingPage;
+use App\Careers\WorkingPageText;
 use App\Helpers\NexelitHelpers;
 use App\JobApplicant;
 use App\Jobs;
@@ -279,6 +282,93 @@ class JobsController extends Controller
         update_static_option('job_single_page_applicant_mail',$request->job_single_page_applicant_mail);
 
         return redirect()->back()->with(['msg' => __('Job Page Settings Success...'),'type' => 'success']);
+    }
+
+    /*-----------------------------------
+       "WORKING AT GO4DATABASE" PAGE
+       (/career/working-at-go4database)
+    ------------------------------------*/
+    public function working_page(){
+        return view('backend.jobs.working-page')->with([
+            'all_languages' => Language::all(),
+            'all_items' => CareerPageItem::orderBy('sr_order')->orderBy('id')->get()->groupBy('section'),
+            'teams' => JobsCategory::where('status', 'publish')->orderBy('title')->get(),
+        ]);
+    }
+
+    /** The wording, per language, and each team's photo. */
+    public function update_working_page(Request $request){
+        foreach (Language::all() as $lang) {
+            $rules = [];
+            foreach (array_keys(WorkingPageText::DEFAULTS) as $key) {
+                $rules[WorkingPageText::optionName($lang->slug, $key)] = 'nullable|string|max:2000';
+            }
+            $this->validate($request, $rules);
+            foreach (array_keys($rules) as $name) {
+                update_static_option($name, $request->$name);
+            }
+        }
+        foreach (JobsCategory::pluck('id') as $id) {
+            $name = WorkingPage::TEAM_IMAGE_OPTION . $id;
+            if ($request->has($name)) {
+                $this->validate($request, [$name => 'nullable|integer']);
+                update_static_option($name, $request->$name);
+            }
+        }
+        return redirect()->back()->with(['msg' => __('Page Saved...'), 'type' => 'success']);
+    }
+
+    public function working_item_store(Request $request){
+        $data = $this->validate($request, $this->working_item_rules() + [
+            'section' => 'required|in:' . implode(',', array_keys(CareerPageItem::SECTIONS)),
+            'lang' => 'required|string|max:32',
+        ]);
+        CareerPageItem::create($this->working_item_values($data));
+        return redirect()->to(route('admin.jobs.working.page') . '#items-' . $data['section'])->with(['msg' => __('Item Added...'), 'type' => 'success']);
+    }
+
+    public function working_item_update(Request $request){
+        $data = $this->validate($request, $this->working_item_rules() + ['id' => 'required|integer']);
+        $item = CareerPageItem::findOrFail($data['id']);
+        unset($data['id']);
+        $item->update($this->working_item_values($data));
+        return redirect()->to(route('admin.jobs.working.page') . '#items-' . $item->section)->with(['msg' => __('Item Updated...'), 'type' => 'success']);
+    }
+
+    public function working_item_delete($id){
+        $item = CareerPageItem::findOrFail($id);
+        $item->delete();
+        return redirect()->to(route('admin.jobs.working.page') . '#items-' . $item->section)->with(['msg' => __('Item Deleted...'), 'type' => 'danger']);
+    }
+
+    /** Empty order and status boxes mean "first" and "shown". */
+    private function working_item_values(array $data): array
+    {
+        $data['sr_order'] = (int) ($data['sr_order'] ?? 0);
+        $data['status'] = ($data['status'] ?? null) ?: 'publish';
+        // An unticked box isn't sent, so its absence means "not a cut-out".
+        $data['cutout'] = !empty($data['cutout']) ? 1 : 0;
+        foreach (['subtitle', 'body', 'image', 'link', 'filter'] as $optional) {
+            $data[$optional] = $data[$optional] ?? null;
+        }
+
+        return $data;
+    }
+
+    private function working_item_rules(): array
+    {
+        return [
+            'title' => 'required|string|max:191',
+            'subtitle' => 'nullable|string|max:191',
+            'body' => 'nullable|string|max:1000',
+            'image' => 'nullable|integer',
+            'filter' => 'nullable|string|max:60',
+            'cutout' => 'nullable|boolean',
+            // A page of this site (/email-verifier) or a full address.
+            'link' => ['nullable', 'string', 'max:191', 'regex:#^(/|https?://)#'],
+            'sr_order' => 'nullable|integer|min:0|max:999',
+            'status' => 'nullable|in:publish,draft',
+        ];
     }
 
     public function all_jobs_applicant(){

@@ -50,6 +50,31 @@ final class JobSchema
         ]);
     }
 
+    /** /career/working-at-go4database: a page about the company, and its breadcrumb. */
+    public function working(string $careersName, string $title, string $description): array
+    {
+        $url = route('frontend.jobs.working');
+
+        return $this->graph([
+            array_filter([
+                '@type' => 'AboutPage',
+                '@id' => $url . '#page',
+                'url' => $url,
+                'name' => $title,
+                'description' => $description,
+                'isPartOf' => ['@id' => url('/') . '#website'],
+                'breadcrumb' => ['@id' => $url . '#breadcrumb'],
+                'about' => array_filter([
+                    '@type' => 'Organization',
+                    'name' => get_static_option('site_en_title') ?: 'Go4Database',
+                    'url' => url('/'),
+                    'logo' => $this->logo(),
+                ]),
+            ]),
+            $this->breadcrumb($url, [[__('Home'), url('/')], [$careersName, route('frontend.jobs')], [$title, $url]]),
+        ]);
+    }
+
     /** A role's page: its JobPosting while it is open, and the breadcrumb either way. */
     public function role(Jobs $job, string $pageName, array $sections): array
     {

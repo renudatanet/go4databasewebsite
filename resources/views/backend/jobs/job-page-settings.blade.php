@@ -22,6 +22,7 @@
         ],
         __('Why join us') => [
             'perks_title' => [__('Heading'), 'input', ''],
+            'working_link' => [__('Link to “Working at Go4Database”'), 'input', __('Beside the heading. Type none to hide it.')],
             'perks' => [__('Points'), 'textarea', __('One per line, as Title | text. Up to four look best. Type none to hide this section.')],
         ],
         __('Roles') => [

@@ -7,6 +7,10 @@
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
     </url>
+    <url>
+        <loc>{{ route('frontend.jobs.working') }}</loc>
+        <priority>0.9</priority>
+    </url>
     <!-- Posts -->
     @foreach ($careers as $post)
     <url>

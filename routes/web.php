@@ -370,6 +370,8 @@ Route::group(['middleware' => ['setlang:frontend', 'globalVariable', 'maintains_
 Route::group(['middleware' => ['setlang:frontend', 'globalVariable', 'maintains_mode', 'moduleCheck:job_module_status']], function () {
     $career_with_us_page_slug = !empty(get_static_option('career_with_us_page_slug')) ? get_static_option('career_with_us_page_slug') : 'jobs';
     Route::get($career_with_us_page_slug, 'FrontendController@jobs')->name('frontend.jobs');
+    // Before /{slug}, which would take it for a team or a role.
+    Route::get( $career_with_us_page_slug.'/'.\App\Careers\WorkingPageText::SLUG, 'FrontendController@jobs_working')->name('frontend.jobs.working');
     Route::get( $career_with_us_page_slug.'/{slug}', 'FrontendController@jobs_single')->name('frontend.jobs.single');
    // Route::get( $career_with_us_page_slug.'-category/{id}/{any}', 'FrontendController@jobs_category')->name('frontend.jobs.category');
    

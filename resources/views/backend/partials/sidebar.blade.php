@@ -491,6 +491,8 @@
                                                     href="{{route('admin.jobs.page.settings')}}">{{__('Job Page Settings')}}</a></li>
                                         <li class="{{active_menu('admin-home/jobs/single-page-settings')}}"><a
                                                     href="{{route('admin.jobs.single.page.settings')}}">{{__('Job Single Page Settings')}}</a></li>
+                                        <li class="{{active_menu('admin-home/jobs/working-page')}}"><a
+                                                    href="{{route('admin.jobs.working.page')}}">{{__('Working at Go4Database')}}</a></li>
                                         <li class="{{active_menu('admin-home/jobs/success-page-settings')}}">
                                             <a href="{{route('admin.jobs.success.page.settings')}}">{{__('Job Success Page Settings')}}</a>
                                         </li>

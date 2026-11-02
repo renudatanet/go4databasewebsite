@@ -250,6 +250,12 @@ Route::prefix('admin-home')->middleware(['setlang:backend'])->group(function () 
         Route::post('/page-settings', 'JobsController@update_page_settings');
         Route::get('/single-page-settings', 'JobsController@single_page_settings')->name('admin.jobs.single.page.settings');
         Route::post('/single-page-settings', 'JobsController@update_single_page_settings');
+        // The "Working at Go4Database" page: wording, team photos, quotes and offices.
+        Route::get('/working-page', 'JobsController@working_page')->name('admin.jobs.working.page');
+        Route::post('/working-page', 'JobsController@update_working_page');
+        Route::post('/working-page/item', 'JobsController@working_item_store')->name('admin.jobs.working.item.store');
+        Route::post('/working-page/item/update', 'JobsController@working_item_update')->name('admin.jobs.working.item.update');
+        Route::post('/working-page/item/delete/{id}', 'JobsController@working_item_delete')->name('admin.jobs.working.item.delete');
 
         /*-----------------------------------
            JOB MODULE : CATEGORY ROUTES

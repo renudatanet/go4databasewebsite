@@ -22,6 +22,7 @@ abstract class CareersTestCase extends TestCase
         'database/migrations/2020_04_22_065550_create_jobs_table.php',
         'database/migrations/2020_04_22_065603_create_jobs_categories_table.php',
         'database/migrations/2026_10_30_000000_add_seo_fields_to_jobs_categories_table.php',
+        'database/migrations/2026_11_02_000000_create_career_page_items_table.php',
     ];
 
     protected function setUp(): void

@@ -4,12 +4,12 @@ namespace App\Careers;
 
 /**
  * The career pages' wording in one language: what was set in Jobs > Job
- * Page Settings (career_page_{lang}_{key}), else the default here. The
- * admin screen shows these same defaults under each field, so the two can't
- * drift apart.
+ * Page Settings (career_page_{lang}_{key}), else the default here.
  */
-final class CareerText
+final class CareerText extends PageText
 {
+    protected const PREFIX = 'career_page_';
+
     public const DEFAULTS = [
         // Header of /career
         'badge' => 'We’re hiring',
@@ -22,6 +22,7 @@ final class CareerText
         'category_text' => 'Open roles in our {category} team.',
         // Why join
         'perks_title' => 'Why people join us',
+        'working_link' => 'What it’s like to work here',
         'perks' => "Grow fast | A high-growth team where results, not titles, decide how fast you move up.\n"
             . "Earn on what you close | Attractive incentives on top of salary in every sales role.\n"
             . "Low hierarchy | Work directly with the founders and see your ideas go live.\n"
@@ -67,36 +68,6 @@ final class CareerText
         'job_deadline_text' => 'Apply by',
         'job_application_fee_text' => 'Application fee',
     ];
-
-    public function __construct(private string $lang)
-    {
-    }
-
-    /** @param array<string, string|int> $fill placeholders, e.g. ['{roles}' => 9] */
-    public function get(string $key, array $fill = []): string
-    {
-        $value = trim((string) get_static_option('career_page_' . $this->lang . '_' . $key));
-
-        return strtr($value !== '' ? $value : (self::DEFAULTS[$key] ?? ''), array_map('strval', $fill));
-    }
-
-    /** A many-line field as its non-empty lines; "none" hides what it lists. */
-    public function lines(string $key): array
-    {
-        $lines = array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', $this->get($key)))));
-
-        return count($lines) === 1 && strcasecmp($lines[0], 'none') === 0 ? [] : $lines;
-    }
-
-    /** "Title | text" lines as [title, text] pairs. */
-    public function pairs(string $key): array
-    {
-        return array_map(function (string $line) {
-            [$title, $text] = array_pad(array_map('trim', explode('|', $line, 2)), 2, '');
-
-            return [$title, $text];
-        }, $this->lines($key));
-    }
 
     public function label(string $key): string
     {
