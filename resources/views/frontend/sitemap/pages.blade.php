@@ -103,6 +103,18 @@
         <priority>0.80</priority>
     </url>
 
+    {{-- The lists index. It used to head list_sitemap.xml, which is now the
+         index of the industries' list sitemaps and can hold no pages. Its
+         date is when a list it shows last changed. --}}
+@php $lists_date = (new \App\Sitemaps\ListSitemap())->lastModified(); @endphp
+    <url>
+        <loc>{{ url('/' . (get_static_option('list_page_slug') ?: 'list')) }}</loc>
+@if($lists_date)
+        <lastmod>{{ $lists_date }}</lastmod>
+@endif
+        <priority>0.80</priority>
+    </url>
+
 @foreach ($pages as $post)
     <url>
         <loc>{{ url('/'.$post->slug) }}</loc>

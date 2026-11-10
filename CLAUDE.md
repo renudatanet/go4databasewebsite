@@ -417,6 +417,31 @@ loaded here, only by the single list pages.
   used instead unless it is `fa-exclamation-triangle`, the picker default
   every live industry carried.
 
+## Sitemaps (`/sitemap.xml` and the list sitemaps)
+
+`SitemapController`, views in `resources/views/frontend/sitemap/`.
+`sitemap.xml` is an index of pages, b2b, blog, b2c, case study and career
+sitemaps **plus one list sitemap per industry**. Built 2026-11-10:
+- `/list_sitemap.xml` is an index of `/list_sitemap_{industry}.xml`, one per
+  List > Category, each holding that industry's list pages
+  (`App\Sitemaps\ListSitemap`). sitemap.xml lists the industry sitemaps
+  directly, not `list_sitemap.xml`: a sitemap index may not contain another
+  index. Submit `list_sitemap.xml` in Search Console on its own to see the
+  lists grouped by industry.
+- An industry appears once it has a list a visitor can open (an empty
+  sitemap is invalid); its sitemap is 404 until then. Lists are filtered
+  like `list_single` (everything but drafts; imported rows have status
+  "1"). Lists whose category is missing or unpublished go in
+  `list_sitemap_uncategorized.xml`, so none drop out. Categories of the
+  same slug in several languages share one sitemap.
+- Real dates only: an industry's lastmod is its newest list's
+  `updated_at`, a list's its own (the old view invented "10-15 days ago").
+  The index views print `<lastmod>` only when there is a date.
+- `/list` itself moved to `pages_sitemap.xml`.
+- **Locally `public/sitemap.xml` (an old static file, in git) shadows the
+  route** on the dev server; live serves `public_html`, which has no such
+  file. Test the real one through the kernel or `tests/Feature/Sitemaps`.
+
 ## Pages › All Pages lists every page
 
 `PagesController@index` shows, above the Pages records table, "Pages with

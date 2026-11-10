@@ -33,6 +33,7 @@ Route::get('/pages_sitemap.xml', [SitemapController::class, 'pages']);
 Route::get('/b2b_sitemap.xml', [SitemapController::class, 'b2b']);
 Route::get('/b2c_sitemap.xml', [SitemapController::class, 'b2c']);
 Route::get('/list_sitemap.xml', [SitemapController::class, 'list']);
+Route::get('/list_sitemap_{industry}.xml', [SitemapController::class, 'list_industry'])->where('industry', '[a-z0-9\-]+');
 Route::get('/blog_sitemap.xml', [SitemapController::class, 'blog']);
 Route::get('/case_study_sitemap.xml', [SitemapController::class, 'case_study']);
 Route::get('/career_sitemap.xml', [SitemapController::class, 'career']);

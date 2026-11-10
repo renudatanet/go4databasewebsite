@@ -9,8 +9,6 @@ use App\Testimonial;
 use App\Blog;
 use App\BlogCategory;
 use App\Services;
-use App\B2BList;
-use App\ListCategory;
 use App\ServiceCategory;
 use App\CaseStudy;
 use App\CaseStudyCategory;
@@ -19,6 +17,7 @@ use App\WorksCategory;
 use App\Jobs;
 use App\Page;
 use App\JobsCategory;
+use App\Sitemaps\ListSitemap;
 use App\TeamMember;
 use App\KeyFeatures;
 use Carbon\Carbon;
@@ -44,10 +43,14 @@ class SitemapController extends Controller
                 'loc' => url('/b2c_sitemap.xml'),
                 'lastmod' => $this->getB2CLastModified(),
             ],
-             [
-                'loc' => url('/list_sitemap.xml'),
-                'lastmod' => $this->getListLastModified(),
-            ],
+            // The list pages' industry sitemaps, listed here one by one: a
+            // sitemap index may not contain another index, which is what
+            // /list_sitemap.xml is (the same industries, for people and for
+            // submitting in Search Console on its own).
+            ...(new ListSitemap())->industries()->map(fn (array $industry) => [
+                'loc' => $industry['loc'],
+                'lastmod' => $industry['lastmod'],
+            ])->all(),
             [
                 'loc' => url('/case_study_sitemap.xml'),
                 'lastmod' => $this->getCaseStudyLastModified(),
@@ -78,21 +81,6 @@ class SitemapController extends Controller
      private function getB2CLastModified()
     {
         return $this->formatLastMod(Services::max('updated_at'));
-    }
-     private function getListLastModified()
-    {
-        // return $this->formatLastMod(B2BList::max('updated_at'));
-        // Grab the latest record to anchor the formula (or adjust query as needed)
-        $latestRecord = B2BList::orderBy('id', 'desc')->first();
-
-        if (!$latestRecord) {
-            return now()->toIso8601String();
-        }
-
-        // Apply the same random/deterministic days logic
-        $randomDays = 10 + ($latestRecord->id % 6);
-        
-        return now()->subDays($randomDays)->toIso8601String();
     }
          private function getCaseStudyLastModified()
     {
@@ -138,23 +126,28 @@ class SitemapController extends Controller
         return $xml;
     }
 
-        public function list()
+    /** /list_sitemap.xml: the index of the industries' list sitemaps. */
+    public function list(ListSitemap $lists)
     {
-        $service = B2BList::latest()->get();
-     
-      $serviceCategory = ListCategory::latest()->get();
-//      dd($serviceCategory);
-        $xml = response()->view('frontend.sitemap.list', [
-            'list' => $service,
-            'listCategory' => $serviceCategory
-        ]);
+        $sitemaps = $lists->industries()->map(fn (array $industry) => [
+            'loc' => $industry['loc'],
+            'lastmod' => $industry['lastmod'],
+        ])->all();
 
-        $xml->header('Content-Type', 'text/xml');
-
-        return $xml;
+        return response()->view('frontend.sitemap.sitemap', compact('sitemaps'))
+            ->header('Content-Type', 'application/xml');
     }
-       
-               
+
+    /** /list_sitemap_{industry}.xml: one industry's list pages. */
+    public function list_industry(ListSitemap $lists, string $industry)
+    {
+        $urls = $lists->urls($industry);
+        abort_if($urls === null, 404);
+
+        return response()->view('frontend.sitemap.list', compact('urls'))
+            ->header('Content-Type', 'application/xml');
+    }
+
      public function blog()
     {
         $blogs = Blog::latest()->get();

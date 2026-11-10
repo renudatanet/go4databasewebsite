@@ -6,7 +6,9 @@
     @foreach ($sitemaps as $map)
     <sitemap>
     <loc>{{ $map['loc'] }}</loc>
-    <lastmod>{{ $map['lastmod']}}</lastmod>
+@if(!empty($map['lastmod']))
+    <lastmod>{{ $map['lastmod'] }}</lastmod>
+@endif
 </sitemap>
 @endforeach
 
