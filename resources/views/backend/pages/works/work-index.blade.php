@@ -259,6 +259,29 @@ let table = $('#workTable').DataTable({
     ]
 });
 
+// 🗑 Delete one B2B item (the button is drawn by WorksController@datatable)
+$(document).on('click', '#workTable .delete-blog', function (e) {
+    e.preventDefault();
+    let button = $(this);
+    let id = button.data('id');
+    if (!id || !confirm('{{ __('Are you sure you want to delete this B2B item?') }}')) return;
+
+    button.prop('disabled', true);
+    $.ajax({
+        url: "{{ route('admin.work.delete', ['id' => '__ID__']) }}".replace('__ID__', id),
+        type: "POST",
+        dataType: "json",
+        data: { _token: "{{ csrf_token() }}" },
+        success: function () {
+            table.ajax.reload(null, false); // stay on the same page of the table
+        },
+        error: function () {
+            button.prop('disabled', false);
+            alert('{{ __('Delete failed. Please reload the page and try again.') }}');
+        }
+    });
+});
+
 // 🔍 Live filters
 let delayTimer;
 

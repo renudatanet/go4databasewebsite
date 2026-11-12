@@ -182,9 +182,13 @@ if ($request->has('faqs')) {
         return redirect()->back()->with(['msg' => __('Case Study Item Clone Success...'), 'type' => 'success']);
     }
 
-    public function delete($id)
+    public function delete(Request $request, $id)
     {
-        Works::find($id)->delete();
+        // Already gone (deleted in another tab) counts as done, not an error.
+        optional(Works::find($id))->delete();
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json(['status' => 'ok', 'msg' => __('Delete Success...')]);
+        }
         return redirect()->back()->with(['msg' => __('Delete Success...'), 'type' => 'danger']);
     }
 
@@ -254,7 +258,7 @@ if ($request->has('faqs')) {
     }
 
     public function bulk_action(Request $request){
-        Works::whereIn('id',$request->ids)->delete();
+        Works::whereIn('id',(array) $request->ids)->delete();
         return response()->json(['status' => 'ok']);
     }
 
@@ -344,7 +348,7 @@ if (!empty($row->categories_id)) {
         $img = get_attachment_image_by_id($row->image,null,true);
         
         $data[] = [
-            'checkbox' => '<input type="checkbox" value="'.$row->id.'">',
+            'checkbox' => '<input type="checkbox" class="bulk-checkbox" value="'.$row->id.'">',
             'id' => $row->id,
             'title' => $row->title,
             
