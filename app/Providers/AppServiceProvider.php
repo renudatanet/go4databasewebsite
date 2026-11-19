@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
+use App\SitePages\PageRegistry;
+use App\View\Composers\PageManageSidebarComposer;
+use App\View\Composers\PageManageTabsComposer;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -36,6 +39,9 @@ class AppServiceProvider extends ServiceProvider
             return new InstagramFeedHelper();
         });
 
+        // Page Manage's list of the site's pages, built once per request.
+        $this->app->singleton(PageRegistry::class);
+
     }
 
     /**
@@ -53,5 +59,9 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
          View::addNamespace('errors', resource_path('views/errors'));
+
+        // Page Manage: the sidebar group and the tab bar above each page's screens.
+        View::composer('backend.page-manage.partials.sidebar', PageManageSidebarComposer::class);
+        View::composer('backend.page-manage.partials.tabs', PageManageTabsComposer::class);
     }
 }

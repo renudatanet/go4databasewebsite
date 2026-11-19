@@ -445,19 +445,43 @@ two-level 2026-11-19 at the user's request ("no third layer"):
   route** on the dev server; live serves `public_html`, which has no such
   file. Test the real one through the kernel or `tests/Feature/Sitemaps`.
 
-## Pages › All Pages lists every page
+## Page Manage: every page in one place (`/admin-home/page-manage`)
 
-`PagesController@index` shows, above the Pages records table, "Pages with
-their own design": every built page (Home, About, Contact, Pricing, FAQ, Blog,
-Authors, Lists, B2B, Case Studies, Career, Email Verifier, Email Finder,
-Affiliate) with its address and buttons to the admin screens that edit it,
-from `App\SitePages\BuiltPages` (each button gated by its sidebar permission).
-**When you build a new page with its own route and admin screen, add it to
-`BuiltPages::PAGES`**; `tests/Feature/SitePages` fails if a named route
-disappears. A Pages record whose slug a built route answers (live: "Email
-Verifier", id 37, hidden by `/email-verifier`) is flagged "Not shown on the
-site" in the table and on its edit screen, with links to the real editor:
-`/{slug}` is registered last, so any other route wins.
+Built 2026-11-19 at the user's request ("one section, and inside all the
+pages; click Affiliate and every option of the affiliate is there"). Sidebar
+group **Page Manage** (right under Dashboard): All Pages (an overview card
+per page, with search), then every page.
+- **One list of pages: `App\SitePages\PageRegistry::definitions()`**: each
+  page's public route and its tabs as [label, admin route, permission].
+  **When you build a new page with its own route and admin screens, add it
+  there**; the sidebar, the overview, the tab bars and Pages > All Pages all
+  read it, and `tests/Feature/SitePages` fails if a route it names is gone.
+- Opening a page (`admin.page.manage.show`) goes to its first screen the
+  admin may open. The tabs **are the existing screens**, unchanged, saving
+  where they always did; the admin layout draws a tab bar above any screen
+  that is a page's tab (`backend/page-manage/partials/tabs`, fed by
+  `App\View\Composers\PageManageTabsComposer`). Tab links carry `?pm={page}`
+  (not `page`, list screens paginate with it) and the choice is kept in the
+  session, so screens two pages share (Roles: Career and Working at) and
+  screens that redirect after saving keep the right bar.
+- `App\SitePages\PageManager`: what the signed-in admin may see (each tab
+  keeps its screen's sidebar permission). `BuiltPages` (Pages > All Pages
+  and the "hidden record" flag) now reads the registry too.
+- **Address & SEO tab** (`admin.page.manage.seo`, Admin\PageManageController):
+  for pages whose address and SEO live in Page Settings (`seo` key in the
+  registry). `App\SitePages\PageSeo` reads/writes the same keys Page
+  Settings does (`{seo}_page_slug`, `{seo}_page_{lang}_{name,meta_tags,
+  meta_description,schema_code,meta_image}`), so the two never disagree.
+  `SlugGuard` refuses an address another page has, one another route answers,
+  or a custom page's (Pages record); an unchanged address always passes.
+  Authors is `slug_editable => false`: web.php hardcodes `/author`.
+  Changing an address does not yet redirect the old one.
+- Affiliate, Email Verifier and Email Finder keep SEO in their own content
+  screens (tab "Page content & SEO"); their seven links left General
+  Settings in the sidebar (they are under Page Manage now; URLs unchanged).
+- A Pages record whose slug a built route answers (live: "Email Verifier",
+  id 37, hidden by `/email-verifier`) is flagged "Not shown on the site" in
+  Pages > All Pages and on its edit screen: `/{slug}` is registered last.
 
 ## Careers (`/career`, its categories, roles and `/apply/{id}`)
 

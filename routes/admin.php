@@ -1738,6 +1738,17 @@ Route::prefix('admin-home')->middleware(['setlang:backend'])->group(function () 
     });
 
     /*==============================================
+      PAGE MANAGE: every page of the site in one place
+      (permissions are checked per screen, see App\SitePages)
+    ==============================================*/
+    Route::prefix('page-manage')->group(function () {
+        Route::get('/', 'Admin\PageManageController@index')->name('admin.page.manage');
+        Route::get('/{page}', 'Admin\PageManageController@show')->name('admin.page.manage.show')->where('page', '[a-z0-9\-]+');
+        Route::get('/{page}/seo', 'Admin\PageManageController@seo')->name('admin.page.manage.seo')->where('page', '[a-z0-9\-]+');
+        Route::post('/{page}/seo', 'Admin\PageManageController@update_seo')->where('page', '[a-z0-9\-]+');
+    });
+
+    /*==============================================
       PAGES ROUTES
     ==============================================*/
     Route::prefix('page')->middleware(['adminPermissionCheck:Pages Manage'])->group(function () {

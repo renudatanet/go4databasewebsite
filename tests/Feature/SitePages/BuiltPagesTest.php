@@ -3,7 +3,8 @@
 namespace Tests\Feature\SitePages;
 
 use App\SitePages\BuiltPages;
-use ReflectionClassConstant;
+use App\SitePages\PageManager;
+use App\SitePages\PageRegistry;
 use Tests\TestCase;
 
 /**
@@ -18,21 +19,16 @@ class BuiltPagesTest extends TestCase
 {
     private function pages(?callable $can = null): BuiltPages
     {
-        return new BuiltPages(app('router'), $can ?? fn () => true);
-    }
-
-    private function defined(): array
-    {
-        return (new ReflectionClassConstant(BuiltPages::class, 'PAGES'))->getValue();
+        return new BuiltPages(app('router'), new PageManager(new PageRegistry(), $can ?? fn () => true));
     }
 
     public function test_every_page_and_screen_it_names_exists(): void
     {
         $listed = collect($this->pages()->forAdmin())->keyBy('route');
 
-        foreach ($this->defined() as [$route, $title, , $links]) {
-            $this->assertTrue($listed->has($route), "$title: route $route is missing");
-            $this->assertCount(count($links), $listed[$route]['links'], "$title: an admin screen it names is missing");
+        foreach ((new PageRegistry())->all() as $page) {
+            $this->assertTrue($listed->has($page->route), "{$page->title}: route {$page->route} is missing");
+            $this->assertCount(count($page->tabs), $listed[$page->route]['links'], "{$page->title}: an admin screen it names is missing");
         }
     }
 
@@ -42,7 +38,8 @@ class BuiltPagesTest extends TestCase
 
         $this->assertSame('/email-verifier', $verifier['path']);
         $this->assertSame(url('/email-verifier'), $verifier['url']);
-        $this->assertSame(['Page content', 'Checker settings'], array_column($verifier['links'], 'label'));
+        $this->assertSame(['Page content & SEO', 'Checker settings'], array_column($verifier['links'], 'label'));
+        $this->assertSame(route('admin.email.verifier.content') . '?pm=email-verifier', $verifier['edit_url']);
     }
 
     public function test_only_screens_the_admin_may_open_are_offered(): void
@@ -60,7 +57,7 @@ class BuiltPagesTest extends TestCase
 
         $this->assertSame('Email Verifier', $hidden['title']);
         $this->assertSame(url('/email-verifier'), $hidden['url']);
-        $this->assertSame(route('admin.email.verifier.content'), $hidden['links'][0]['url']);
+        $this->assertSame(route('admin.email.verifier.content') . '?pm=email-verifier', $hidden['links'][0]['url']);
     }
 
     public function test_records_the_site_shows_are_not_flagged(): void

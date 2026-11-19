@@ -24,6 +24,7 @@
                             <span>@lang('dashboard')</span>
                         </a>
                     </li>
+                    @include('backend.page-manage.partials.sidebar')
                     @if(check_page_permission_by_string('Tracking'))
                     <li class="main_dropdown @if(request()->is('admin-home/tracking*')) active @endif">
                         <a href="javascript:void(0)" aria-expanded="true"><i class="ti-stats-up"></i>
@@ -1779,27 +1780,6 @@
                             </li>
                             <li class="{{active_menu('admin-home/general-settings/smtp-settings')}}"><a
                                         href="{{route('admin.general.smtp.settings')}}">{{__('SMTP Settings')}}</a>
-                            </li>
-                            <li class="{{active_menu('admin-home/general-settings/email-verifier-content')}}"><a
-                                        href="{{route('admin.email.verifier.content')}}">{{__('Email Verifier Page Content')}}</a>
-                            </li>
-                            <li class="{{active_menu('admin-home/general-settings/email-verifier-settings')}}"><a
-                                        href="{{route('admin.email.verifier.settings')}}">{{__('Email Verifier Settings')}}</a>
-                            </li>
-                            <li class="{{active_menu('admin-home/general-settings/email-finder-content')}}"><a
-                                        href="{{route('admin.email.finder.content')}}">{{__('Email Finder Page Content')}}</a>
-                            </li>
-                            <li class="{{active_menu('admin-home/general-settings/email-finder-settings')}}"><a
-                                        href="{{route('admin.email.finder.settings')}}">{{__('Email Finder Settings')}}</a>
-                            </li>
-                            <li class="{{active_menu('admin-home/general-settings/affiliate-content')}}"><a
-                                        href="{{route('admin.affiliate.content')}}">{{__('Affiliate Page Content')}}</a>
-                            </li>
-                            <li class="{{active_menu('admin-home/general-settings/affiliate-settings')}}"><a
-                                        href="{{route('admin.affiliate.settings')}}">{{__('Affiliate Settings')}}</a>
-                            </li>
-                            <li class="{{active_menu('admin-home/general-settings/affiliate-applications')}}"><a
-                                        href="{{route('admin.affiliate.applications')}}">{{__('Affiliate Applications')}}</a>
                             </li>
                             <li class="{{active_menu('admin-home/general-settings/chat-widget-settings')}}"><a
                                         href="{{route('admin.chat.widget.settings')}}">{{__('Chat Widget Settings')}}</a>

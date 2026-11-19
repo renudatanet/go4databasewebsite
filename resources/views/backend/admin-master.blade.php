@@ -121,6 +121,7 @@
                 </div>
             </div>
         </div>
+        @include('backend.page-manage.partials.tabs')
         @yield('content')
     </div>
 
