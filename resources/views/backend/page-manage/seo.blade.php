@@ -1,6 +1,7 @@
 @extends('backend.admin-master')
+@php $meta_only = $site_page->seoKey === null; @endphp
 @section('site-title')
-    {{ __(':page: Address & SEO', ['page' => __($site_page->title)]) }}
+    {{ $meta_only ? __(':page: Meta title & description', ['page' => __($site_page->title)]) : __(':page: Address & SEO', ['page' => __($site_page->title)]) }}
 @endsection
 @section('style')
     <link rel="stylesheet" href="{{ asset('assets/backend/css/dropzone.css') }}">
@@ -34,7 +35,7 @@
                                 <small class="text-muted">{{ __('Lower-case words joined by hyphens. Changing it moves the page: links to the old address, in menus or on Google, stop working, so update the menu and resubmit the sitemap afterwards.') }}</small>
                             @else
                                 <p class="mb-0">
-                                    <a href="{{ $public_url }}" target="_blank" rel="noopener">{{ rtrim(url('/'), '/') }}/{{ $slug }}</a>
+                                    <a href="{{ $public_url }}" target="_blank" rel="noopener">{{ $public_url }}</a>
                                     <br><small class="text-muted">{{ __('This page\'s address is fixed by the site and can\'t be changed here.') }}</small>
                                 </p>
                             @endif
@@ -43,8 +44,10 @@
 
                     <div class="card mt-4">
                         <div class="card-body">
-                            <h4 class="header-title">{{ __('Name & SEO') }}</h4>
-                            <p class="text-muted">{{ __('What the page is called, and what search engines and shared links show. A box left empty uses the page\'s own wording.') }}</p>
+                            <h4 class="header-title">{{ $meta_only ? __('Meta title & description') : __('Name & SEO') }}</h4>
+                            <p class="text-muted">{{ $meta_only
+                                ? __('What Google and the browser tab show for this page. The meta title is used exactly as you type it; leave a box empty to keep the page\'s own wording.')
+                                : __('What the page is called, and what search engines and shared links show. A box left empty uses the page\'s own wording.') }}</p>
                             @if($languages->count() > 1)
                                 <ul class="nav nav-tabs" role="tablist">
                                     @foreach($languages as $i => $lang)
@@ -56,33 +59,43 @@
                                 @foreach($languages as $i => $lang)
                                     @php $v = $values[$lang->slug] ?? []; $f = fn ($field) => "seo[{$lang->slug}][{$field}]"; @endphp
                                     <div class="tab-pane fade @if($i === 0) show active @endif" id="seo-{{ $lang->slug }}" role="tabpanel">
+                                        @if(in_array('name', $fields))
                                         <div class="form-group">
                                             <label for="name-{{ $lang->slug }}">{{ __('Page name') }}</label>
                                             <input type="text" class="form-control" id="name-{{ $lang->slug }}" name="{{ $f('name') }}" value="{{ old("seo.{$lang->slug}.name", $v['name'] ?? '') }}" maxlength="191">
                                             <small class="text-muted">{{ __('Used in the browser tab and the breadcrumb.') }}</small>
                                         </div>
+                                        @endif
+                                        @if(in_array('meta_tags', $fields))
                                         <div class="form-group">
-                                            <label for="title-{{ $lang->slug }}">{{ __('SEO title') }}</label>
+                                            <label for="title-{{ $lang->slug }}">{{ __('Meta title') }}</label>
                                             <input type="text" class="form-control" id="title-{{ $lang->slug }}" name="{{ $f('meta_tags') }}" value="{{ old("seo.{$lang->slug}.meta_tags", $v['meta_tags'] ?? '') }}" maxlength="191" data-g4pm-count="60">
                                             <span class="g4pm-count"></span>
                                         </div>
+                                        @endif
+                                        @if(in_array('meta_description', $fields))
                                         <div class="form-group">
                                             <label for="desc-{{ $lang->slug }}">{{ __('Meta description') }}</label>
                                             <textarea class="form-control" id="desc-{{ $lang->slug }}" name="{{ $f('meta_description') }}" rows="3" maxlength="500" data-g4pm-count="160">{{ old("seo.{$lang->slug}.meta_description", $v['meta_description'] ?? '') }}</textarea>
                                             <span class="g4pm-count"></span>
                                         </div>
+                                        @endif
+                                        @if(in_array('schema_code', $fields))
                                         <div class="form-group">
                                             <label for="schema-{{ $lang->slug }}">{{ __('Schema (JSON-LD)') }}</label>
                                             <textarea class="form-control" id="schema-{{ $lang->slug }}" name="{{ $f('schema_code') }}" rows="4">{{ old("seo.{$lang->slug}.schema_code", $v['schema_code'] ?? '') }}</textarea>
                                         </div>
+                                        @endif
+                                        @if(in_array('meta_image', $fields))
                                         <x-media-upload :title="__('Share image (Open Graph)')" :name="$f('meta_image')" :id="(string) ($v['meta_image'] ?? '')" :dimentions="'1200x630'"/>
+                                        @endif
                                     </div>
                                 @endforeach
                             </div>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary mt-4 pr-4 pl-4">{{ __('Save address & SEO') }}</button>
+                    <button type="submit" class="btn btn-primary mt-4 pr-4 pl-4">{{ $meta_only ? __('Save meta title & description') : __('Save address & SEO') }}</button>
                 </form>
             </div>
         </div>

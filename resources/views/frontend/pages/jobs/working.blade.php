@@ -32,6 +32,11 @@
     $role_count = fn (int $n) => $n === 1 ? $text->get('team_count_one') : $text->get('team_count', ['{count}' => $n]);
     $initial = fn ($name) => mb_strtoupper(mb_substr(trim((string) $name), 0, 1));
 @endphp
+@php $g4_meta_title = app(\App\SitePages\PageSeo::class)->valueFor('working', 'meta_tags'); @endphp
+{-- Page Manage > Working at Go4Database > Meta title & description; partials/og-meta prints it as the whole title. --}
+@if($g4_meta_title !== '')
+@section('meta-title', $g4_meta_title)
+@endif
 @section('site-title')
     {{ $text->get('title') }}
 @endsection

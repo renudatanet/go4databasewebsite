@@ -17,7 +17,8 @@ use Illuminate\Validation\ValidationException;
  * pages; opening one goes to its first admin screen, where a tab bar
  * (partials/page-manage/tabs, drawn by the admin layout) leads to the rest.
  * The screens themselves are the existing ones, saving where they always
- * have. The only screen of its own here is a page's Address & SEO tab.
+ * have. The only screen of its own here is a page's SEO tab: Address & SEO,
+ * or for pages with fixed addresses, Meta title & description.
  */
 class PageManageController extends Controller
 {
@@ -65,7 +66,7 @@ class PageManageController extends Controller
             'slug' => $seo->slug($site_page),
             'values' => $seo->values($site_page, $languages->pluck('slug')),
             'languages' => $languages,
-            'fields' => PageSeo::FIELDS,
+            'fields' => $seo->fields($site_page),
         ]);
     }
 
@@ -74,13 +75,12 @@ class PageManageController extends Controller
         $site_page = $this->seoPageOr404($page);
         $languages = Language::all()->pluck('slug');
 
+        $limits = ['name' => 'max:191', 'meta_tags' => 'max:191', 'meta_description' => 'max:500', 'schema_code' => 'max:65000', 'meta_image' => 'max:191'];
         $rules = ['slug' => $site_page->slugEditable ? 'required|string|max:191' : 'nullable'];
         foreach ($languages as $lang) {
-            $rules["seo.$lang.name"] = 'nullable|string|max:191';
-            $rules["seo.$lang.meta_tags"] = 'nullable|string|max:191';
-            $rules["seo.$lang.meta_description"] = 'nullable|string|max:500';
-            $rules["seo.$lang.schema_code"] = 'nullable|string';
-            $rules["seo.$lang.meta_image"] = 'nullable|string|max:191';
+            foreach ($seo->fields($site_page) as $field) {
+                $rules["seo.$lang.$field"] = 'nullable|string|' . $limits[$field];
+            }
         }
         $this->validate($request, $rules);
 

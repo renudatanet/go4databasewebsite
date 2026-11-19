@@ -476,8 +476,20 @@ per page, with search), then every page.
   or a custom page's (Pages record); an unchanged address always passes.
   Authors is `slug_editable => false`: web.php hardcodes `/author`.
   Changing an address does not yet redirect the old one.
-- Affiliate, Email Verifier and Email Finder keep SEO in their own content
-  screens (tab "Page content & SEO"); their seven links left General
+- **Meta title & description tab** (same route) for the pages with fixed
+  addresses: Working at, Email Verifier, Email Finder, Affiliate (2026-11-19).
+  Their keys are the registry's `meta` map (`working_page_`, `ev_`, `ef_`,
+  `af_{lang}_meta_title|meta_description`); the description keys are the
+  ones their content screens already use. Templates read them through
+  `PageSeo::valueFor($page, $field)`; a set meta title becomes the page's
+  `meta-title` section, which `partials/og-meta` prints as the whole
+  `<title>` (its two general branches check `@hasSection('meta-title')`).
+  Email Verifier's description used to be hardcoded; it is the default now.
+- og-meta's Case Studies title read `case_study_{lang}_meta_tags`, a key
+  nothing writes; it now reads `case_study_page_…` (Page Settings / Page
+  Manage) first. Note og-meta's per-page title chain only runs while About's
+  SEO title is set (an old quirk, left as is).
+- Affiliate, Email Verifier and Email Finder's seven links left General
   Settings in the sidebar (they are under Page Manage now; URLs unchanged).
 - A Pages record whose slug a built route answers (live: "Email Verifier",
   id 37, hidden by `/email-verifier`) is flagged "Not shown on the site" in

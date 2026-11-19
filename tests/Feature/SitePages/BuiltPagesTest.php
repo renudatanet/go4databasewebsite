@@ -38,7 +38,7 @@ class BuiltPagesTest extends TestCase
 
         $this->assertSame('/email-verifier', $verifier['path']);
         $this->assertSame(url('/email-verifier'), $verifier['url']);
-        $this->assertSame(['Page content & SEO', 'Checker settings'], array_column($verifier['links'], 'label'));
+        $this->assertSame(['Page content', 'Checker settings', 'Meta title & description'], array_column($verifier['links'], 'label'));
         $this->assertSame(route('admin.email.verifier.content') . '?pm=email-verifier', $verifier['edit_url']);
     }
 

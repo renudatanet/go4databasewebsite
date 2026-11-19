@@ -1,4 +1,9 @@
 @extends('frontend.frontend-page-master')
+@php $g4_meta_title = app(\App\SitePages\PageSeo::class)->valueFor('email-verifier', 'meta_tags'); @endphp
+{-- Page Manage > Email Verifier > Meta title & description; partials/og-meta prints it as the whole title. --}
+@if($g4_meta_title !== '')
+@section('meta-title', $g4_meta_title)
+@endif
 @section('site-title')
     Email Verifier
 @endsection
@@ -6,7 +11,7 @@
     Email Verifier
 @endsection
 @section('page-meta-data')
-    <meta name="description" content="Verify any email address in seconds. Check syntax, domain, and live mailbox status before you send, no test email is ever delivered.">
+    <meta name="description" content="{{ app(\App\SitePages\PageSeo::class)->valueFor('email-verifier', 'meta_description') ?: 'Verify any email address in seconds. Check syntax, domain, and live mailbox status before you send, no test email is ever delivered.' }}">
 @endsection
 @push('styles')
   <link rel="preconnect" href="https://fonts.googleapis.com">

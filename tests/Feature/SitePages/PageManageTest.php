@@ -157,7 +157,39 @@ class PageManageTest extends TestCase
     public function test_the_seo_tab_needs_its_permission_and_a_page_that_has_one(): void
     {
         $this->actingAs($this->admin(['job_post_manage']), 'admin')->get(route('admin.page.manage.seo', 'career'))->assertForbidden();
-        $this->actingAs($this->admin(), 'admin')->get(route('admin.page.manage.seo', 'affiliate'))->assertNotFound();
+        $this->actingAs($this->admin(), 'admin')->get(route('admin.page.manage.seo', 'home'))->assertNotFound();
+    }
+
+    public function test_pages_with_fixed_addresses_get_a_meta_title_and_description_tab(): void
+    {
+        $html = $this->actingAs($this->admin(), 'admin')->get(route('admin.page.manage.seo', 'affiliate'))->assertOk()->getContent();
+
+        $this->assertStringContainsString('Meta title &amp; description', $html);
+        $this->assertStringContainsString('name="seo[en_US][meta_tags]"', $html);
+        $this->assertStringContainsString('name="seo[en_US][meta_description]"', $html);
+        $this->assertStringNotContainsString('name="slug"', $html);
+        $this->assertStringNotContainsString('name="seo[en_US][schema_code]"', $html);
+
+        foreach (['working', 'email-verifier', 'email-finder', 'affiliate'] as $key) {
+            $tabs = array_map(fn ($tab) => $tab->label, (new PageRegistry())->find($key)->tabs);
+            $this->assertContains('Meta title & description', $tabs, "$key has no meta tab");
+        }
+    }
+
+    public function test_the_meta_tab_saves_where_the_page_reads_it(): void
+    {
+        $this->actingAs($this->admin(), 'admin')->post(route('admin.page.manage.seo', 'affiliate'), [
+            'seo' => ['en_US' => ['meta_tags' => 'Affiliate Program: 20% recurring commission | Go4Database', 'meta_description' => 'Earn 20% every month.']],
+        ])->assertRedirect()->assertSessionHasNoErrors();
+
+        // the keys the Affiliate page itself reads (its content screen uses af_{lang}_meta_description too)
+        $this->assertSame('Affiliate Program: 20% recurring commission | Go4Database', $this->option('af_en_US_meta_title'));
+        $this->assertSame('Earn 20% every month.', $this->option('af_en_US_meta_description'));
+        $seo = app(PageSeo::class);
+        $GLOBALS['__g4_static_options'] = [];
+        $this->assertSame('Affiliate Program: 20% recurring commission | Go4Database', $seo->valueFor('affiliate', 'meta_tags', 'en_US'));
+        $this->assertSame('', $seo->valueFor('email-verifier', 'meta_tags', 'en_US'), 'nothing set: the page keeps its own title');
+        $this->assertSame('', $seo->valueFor('home', 'meta_tags', 'en_US'));
     }
 
     private function routed(string $uri): Request

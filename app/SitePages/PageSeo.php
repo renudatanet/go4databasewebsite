@@ -13,17 +13,47 @@ use Illuminate\Support\Str;
  *   {seo}_page_{lang}_{field}             name, meta_tags (the title),
  *                                         meta_description, schema_code,
  *                                         meta_image (a media id)
+ *
+ * Pages with fixed addresses (Affiliate, Email Verifier...) have only a
+ * meta title (meta_tags) and description, under the keys SitePage::$metaKeys
+ * names, the same ones their own content screens use.
  */
 final class PageSeo
 {
     /** Per-language fields, in the order the form shows them. */
     public const FIELDS = ['name', 'meta_tags', 'meta_description', 'schema_code', 'meta_image'];
 
+    public function __construct(private PageRegistry $registry)
+    {
+    }
+
+    /**
+     * What a page's template prints: one of its SEO fields in the visitor's
+     * language, '' when none is set (the template then keeps its own wording).
+     */
+    public function valueFor(string $pageKey, string $field, ?string $lang = null): string
+    {
+        $page = $this->registry->find($pageKey);
+        if ($page === null || !$page->hasSeo() || !in_array($field, $this->fields($page), true)) {
+            return '';
+        }
+
+        return trim((string) get_static_option($this->key($page, $lang ?? get_user_lang(), $field), ''));
+    }
+
+    /** The fields this page's SEO tab edits, in form order. */
+    public function fields(SitePage $page): array
+    {
+        $this->assertSeo($page);
+
+        return $page->metaKeys !== null ? array_keys($page->metaKeys) : self::FIELDS;
+    }
+
     /** The page's current address, without slashes, e.g. "price-plan". */
     public function slug(SitePage $page): string
     {
         $this->assertSeo($page);
-        if (!$page->slugEditable) {
+        if (!$page->slugEditable || $page->seoKey === null) {
             return $page->defaultSlug;
         }
         $saved = (string) get_static_option($page->seoKey . '_page_slug', '');
@@ -46,7 +76,7 @@ final class PageSeo
         $this->assertSeo($page);
         $values = [];
         foreach ($languages as $lang) {
-            foreach (self::FIELDS as $field) {
+            foreach ($this->fields($page) as $field) {
                 $values[$lang][$field] = (string) get_static_option($this->key($page, $lang, $field), '');
             }
         }
@@ -64,11 +94,11 @@ final class PageSeo
     public function save(SitePage $page, ?string $slug, array $input, iterable $languages): void
     {
         $this->assertSeo($page);
-        if ($page->slugEditable && $slug !== null) {
+        if ($page->slugEditable && $page->seoKey !== null && $slug !== null) {
             update_static_option($page->seoKey . '_page_slug', self::normalise($slug));
         }
         foreach ($languages as $lang) {
-            foreach (self::FIELDS as $field) {
+            foreach ($this->fields($page) as $field) {
                 if (array_key_exists($field, $input[$lang] ?? [])) {
                     update_static_option($this->key($page, $lang, $field), $input[$lang][$field]);
                 }
@@ -78,6 +108,10 @@ final class PageSeo
 
     public function key(SitePage $page, string $lang, string $field): string
     {
+        if ($page->metaKeys !== null) {
+            return str_replace('{lang}', $lang, $page->metaKeys[$field]);
+        }
+
         return $page->seoKey . '_page_' . $lang . '_' . $field;
     }
 

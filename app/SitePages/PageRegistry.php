@@ -59,8 +59,11 @@ final class PageRegistry
                 $tabs[] = new PageTab($label, $route, $permission);
             }
             $seo = $page['seo'] ?? null;
+            $meta = $page['meta'] ?? null;
             if ($seo !== null) {
                 $tabs[] = new PageTab('Address & SEO', self::SEO_ROUTE, self::SEO_PERMISSION, ['page' => $key]);
+            } elseif ($meta !== null) {
+                $tabs[] = new PageTab('Meta title & description', self::SEO_ROUTE, self::SEO_PERMISSION, ['page' => $key]);
             }
             $this->pages[$key] = new SitePage(
                 $key,
@@ -70,7 +73,8 @@ final class PageRegistry
                 $tabs,
                 $seo,
                 $page['slug'] ?? '',
-                $page['slug_editable'] ?? true,
+                ($page['slug_editable'] ?? true) && $meta === null,
+                $meta,
             );
         }
 
@@ -81,7 +85,10 @@ final class PageRegistry
      * key => title, public route, a note, its tabs as [label, admin route,
      * permission], and for pages whose address and SEO live in Page Settings,
      * the key they are stored under ('seo') with the address the site falls
-     * back to ('slug').
+     * back to ('slug'). Pages with fixed addresses and wording of their own
+     * name their meta title and description keys instead ('meta'); their page
+     * templates read them (the title through the 'meta-title' section that
+     * partials/og-meta prints whole).
      */
     private static function definitions(): array
     {
@@ -193,6 +200,7 @@ final class PageRegistry
             ],
             'working' => [
                 'title' => 'Working at Go4Database', 'route' => 'frontend.jobs.working',
+                'meta' => ['meta_tags' => 'working_page_{lang}_meta_title', 'meta_description' => 'working_page_{lang}_meta_description'],
                 'note' => 'About the company: what we do, how we work, quotes from the team, offices and teams.',
                 'tabs' => [
                     ['Page content, quotes & offices', 'admin.jobs.working.page', 'Job Post Manage'],
@@ -202,22 +210,25 @@ final class PageRegistry
             ],
             'email-verifier' => [
                 'title' => 'Email Verifier', 'route' => 'frontend.email.verifier',
+                'meta' => ['meta_tags' => 'ev_{lang}_meta_title', 'meta_description' => 'ev_{lang}_meta_description'],
                 'tabs' => [
-                    ['Page content & SEO', 'admin.email.verifier.content', 'General Settings'],
+                    ['Page content', 'admin.email.verifier.content', 'General Settings'],
                     ['Checker settings', 'admin.email.verifier.settings', 'General Settings'],
                 ],
             ],
             'email-finder' => [
                 'title' => 'Email Finder', 'route' => 'frontend.email.finder',
+                'meta' => ['meta_tags' => 'ef_{lang}_meta_title', 'meta_description' => 'ef_{lang}_meta_description'],
                 'tabs' => [
-                    ['Page content & SEO', 'admin.email.finder.content', 'General Settings'],
+                    ['Page content', 'admin.email.finder.content', 'General Settings'],
                     ['Finder settings', 'admin.email.finder.settings', 'General Settings'],
                 ],
             ],
             'affiliate' => [
                 'title' => 'Affiliate Program', 'route' => 'frontend.affiliate',
+                'meta' => ['meta_tags' => 'af_{lang}_meta_title', 'meta_description' => 'af_{lang}_meta_description'],
                 'tabs' => [
-                    ['Page content & SEO', 'admin.affiliate.content', 'General Settings'],
+                    ['Page content', 'admin.affiliate.content', 'General Settings'],
                     ['Terms & sections', 'admin.affiliate.settings', 'General Settings'],
                     ['Applications', 'admin.affiliate.applications', 'General Settings'],
                 ],

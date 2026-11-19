@@ -209,8 +209,10 @@
             @elseif(Request::path()=='case-study')
             <title> 
               
-                @if(get_static_option('case_study_'.$user_select_lang_slug.'_meta_tags')!='')
-                   {{get_static_option('case_study_'.$user_select_lang_slug.'_meta_tags')}}
+                {{-- Page Settings and Page Manage save case_study_page_*; the old case_study_* name is kept as a fallback. --}}
+                @php $case_study_title = get_static_option('case_study_page_'.$user_select_lang_slug.'_meta_tags') ?: get_static_option('case_study_'.$user_select_lang_slug.'_meta_tags'); @endphp
+                @if(!empty($case_study_title))
+                   {{ $case_study_title }}
                 @else
                     @yield('site-title')
                     @hasSection('site-title') - @else @yield('page-title') -  @endif
@@ -293,7 +295,9 @@
             </title>
         @else   
             <title>
-                @if(isset($page_post->meta_tags) && $page_post->meta_tags!='')
+                @hasSection('meta-title')
+                    @yield('meta-title')
+                @elseif(isset($page_post->meta_tags) && $page_post->meta_tags!='')
                     {{$page_post->meta_tags}}
                 @else
                     @yield('site-title')
@@ -305,7 +309,10 @@
         @endif    
     @else
         <title>
-            @if(isset($page_post->meta_tags) && $page_post->meta_tags!='')
+            {{-- A page's own meta title (e.g. Page Manage > Affiliate > Meta title & description). --}}
+            @hasSection('meta-title')
+                @yield('meta-title')
+            @elseif(isset($page_post->meta_tags) && $page_post->meta_tags!='')
                 {{$page_post->meta_tags}}
             @elseif(isset($blog_post->meta_tags) && $blog_post->meta_tags!='')
                 {{$blog_post->meta_tags}}

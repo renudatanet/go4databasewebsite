@@ -1,4 +1,9 @@
 @extends('frontend.frontend-page-master')
+@php $g4_meta_title = app(\App\SitePages\PageSeo::class)->valueFor('email-finder', 'meta_tags'); @endphp
+{-- Page Manage > Email Finder > Meta title & description; partials/og-meta prints it as the whole title. --}
+@if($g4_meta_title !== '')
+@section('meta-title', $g4_meta_title)
+@endif
 @section('site-title')
     Email Finder
 @endsection

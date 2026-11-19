@@ -6,6 +6,11 @@
         : optional(\App\Language::where('default', 1)->first())->slug;
     $af_page_title = \App\Http\Controllers\AffiliateSettingsController::text_value($af_lang, 'page_title');
 @endphp
+@php $g4_meta_title = app(\App\SitePages\PageSeo::class)->valueFor('affiliate', 'meta_tags'); @endphp
+{-- Page Manage > Affiliate Program > Meta title & description; partials/og-meta prints it as the whole title. --}
+@if($g4_meta_title !== '')
+@section('meta-title', $g4_meta_title)
+@endif
 @section('site-title')
     {{ $af_page_title }}
 @endsection
