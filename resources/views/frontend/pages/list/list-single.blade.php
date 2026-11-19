@@ -20,6 +20,8 @@
     {{-- Bump ?v= on every list.css change: LiteSpeed serves it with a one-year
          immutable cache, so returning visitors keep the old file otherwise. --}}
     <link rel="stylesheet" href="{{ asset('assets/frontend/css/list.css') }}?v=60">  
+    {{-- Homepage theme on top of list.css; remove this line to go back to the green theme. --}}
+    <link rel="stylesheet" href="{{ asset('assets/frontend/css/list-theme.css') }}?v=32">
 @endpush
 @php
 use App\Services;
@@ -155,6 +157,7 @@ use App\Services;
         <input type="text" placeholder="Location" id="search-location" value="{{ $service_item->search_location ?? '' }}">
       </div>
       <a class="credits-btn credits-btn-inline" href="https://app.go4database.com/register?utm_source=ProductPage&amp;utm_medium=Internal&amp;utm_campaign=search_free_credits" target="_blank" rel="noopener">
+        <svg class="credits-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M14.6 9.4a3.4 3.4 0 1 0 0 5.2"/></svg>
         Get 1200 free credits
       </a>
       <button type="button" id="search-leads-btn">
@@ -191,18 +194,18 @@ use App\Services;
             
                                                                         <li class="page-item active" aria-current="page"><span class="page-link">1</span></li>
                                                                                 <li class="page-item">
-                            <a href="https://app.go4database.com/login" target="_blank"  class="page-link" data-page="2">2</a>
+                            <a href="https://app.go4database.com/login?utm_source=ProductPage&amp;utm_medium=Internal&amp;utm_campaign=login" target="_blank"  class="page-link" data-page="2">2</a>
                         </li>
                                                                                 <li class="page-item">
-                            <a href="https://app.go4database.com/login"  target="_blank" class="page-link" data-page="3">3</a>
+                            <a href="https://app.go4database.com/login?utm_source=ProductPage&amp;utm_medium=Internal&amp;utm_campaign=login"  target="_blank" class="page-link" data-page="3">3</a>
                         </li>
                                                                                 <li class="page-item">
-                            <a href="https://app.go4database.com/login" target="_blank" class="page-link" data-page="4">4</a>
+                            <a href="https://app.go4database.com/login?utm_source=ProductPage&amp;utm_medium=Internal&amp;utm_campaign=login" target="_blank" class="page-link" data-page="4">4</a>
                         </li>
                                          
         
                     <li class="page-item">
-                <a href="https://app.go4database.com/login"  target="_blank" class="page-link" data-page="2" aria-label="Next">
+                <a href="https://app.go4database.com/login?utm_source=ProductPage&amp;utm_medium=Internal&amp;utm_campaign=login"  target="_blank" class="page-link" data-page="2" aria-label="Next">
                     »
                 </a>
             </li>
@@ -242,7 +245,7 @@ use App\Services;
 
         <div class="table-footer-actions">
           <button class="download-btn">
-            <a href="https://app.go4database.com/login" target="_blank">
+            <a href="https://app.go4database.com/login?utm_source=ProductPage&amp;utm_medium=Internal&amp;utm_campaign=login" target="_blank">
               <svg class="download-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v11"/><path d="m7.5 10.5 4.5 4.5 4.5-4.5"/><path d="M4.5 19.5h15"/></svg>Download List</a>
           </button>
 
@@ -295,20 +298,20 @@ use App\Services;
 
       <div class="logo-slider-viewport">
         <div class="logo-slider">
-    <img src="{{asset('assets/uploads/product/Candela.png')}}" width="92">
-    <img src="{{asset('assets/uploads/product/Tecan.png')}}" width="89">
-    <img src="{{asset('assets/uploads/product/Westin.png')}}"  width="66">
-    <img src="{{asset('assets/uploads/product/CBRE.png')}}"width="66">
-    <img src="{{asset('assets/uploads/product/Shopify.png')}}" width="46">
-    <img src="{{asset('assets/uploads/product/MIQ.png')}}"   width="68">
-    <img src="{{asset('assets/uploads/product/J Pocker.png')}}"  width="68">
-    <img src="{{asset('assets/uploads/product/Candela.png')}}"  width="92">
-    <img src="{{asset('assets/uploads/product/Tecan.png')}}" width="89">
-    <img src="{{asset('assets/uploads/product/Westin.png')}}" width="66">
-    <img src="{{asset('assets/uploads/product/CBRE.png')}}" width="66">
-    <img src="{{asset('assets/uploads/product/Shopify.png')}}" width="46">
-    <img src="{{asset('assets/uploads/product/MIQ.png')}}"  width="68">
-    <img src="{{asset('assets/uploads/product/J Pocker.png')}}"  width="68">
+    <img src="{{asset('assets/frontend/images/list/logos/Candela.png')}}?v=2" width="138" height="22" alt="Candela">
+    <img src="{{asset('assets/frontend/images/list/logos/Tecan.png')}}?v=2" width="129" height="22" alt="Tecan">
+    <img src="{{asset('assets/frontend/images/list/logos/Westin.png')}}?v=2" width="108" height="22" alt="Westin">
+    <img src="{{asset('assets/frontend/images/list/logos/CBRE.png')}}?v=2" width="88" height="22" alt="CBRE">
+    <img src="{{asset('assets/frontend/images/list/logos/Shopify.png')}}?v=2" width="77" height="22" alt="Shopify">
+    <img src="{{asset('assets/frontend/images/list/logos/MIQ.png')}}?v=2" width="53" height="22" alt="MiQ">
+    <img src="{{asset('assets/frontend/images/list/logos/J-Pocker.png')}}?v=2" width="109" height="22" alt="J.Pocker">
+    <img src="{{asset('assets/frontend/images/list/logos/Candela.png')}}?v=2" width="138" height="22" alt="Candela">
+    <img src="{{asset('assets/frontend/images/list/logos/Tecan.png')}}?v=2" width="129" height="22" alt="Tecan">
+    <img src="{{asset('assets/frontend/images/list/logos/Westin.png')}}?v=2" width="108" height="22" alt="Westin">
+    <img src="{{asset('assets/frontend/images/list/logos/CBRE.png')}}?v=2" width="88" height="22" alt="CBRE">
+    <img src="{{asset('assets/frontend/images/list/logos/Shopify.png')}}?v=2" width="77" height="22" alt="Shopify">
+    <img src="{{asset('assets/frontend/images/list/logos/MIQ.png')}}?v=2" width="53" height="22" alt="MiQ">
+    <img src="{{asset('assets/frontend/images/list/logos/J-Pocker.png')}}?v=2" width="109" height="22" alt="J.Pocker">
         </div>
       </div>
 
@@ -321,21 +324,18 @@ use App\Services;
   <div class="description-block">
 
     <div class="description-main">
-      <span class="section-eyebrow">The data</span>
       <h2 class="description-title">What is in this list</h2>
       <div class="section-rule"><span></span></div>
       <p class="description"> {{ strip_tags($service_item->description) }}
       </p>
     </div>
 
-        <div class="tags">
-
-          <div class="tag"><img src="{{asset('assets/uploads/product/Verified Contacts.png')}}" width="46">Verified Contacts</div>
-          <div class="tag"><img src="{{asset('assets/uploads/product/Decision Makers.png')}}"  width="46">Decision Makers</div>
-          <div class="tag"><img src="{{asset('assets/uploads/product/GEO Targeting.png')}}"  width="46">GEO Targeting</div>
-          <div class="tag"><img src="{{asset('assets/uploads/product/High ROI Driven.png')}}"  width="46">High ROI Driven</div>
-
-        </div>
+        {{-- AI illustration of the four qualifiers (verified contacts, decision
+             makers, geo targeting, high ROI); replaced the four-row icon card. --}}
+        <figure class="ai-visual">
+          <img src="{{ asset('assets/frontend/images/list/list-ai-features.svg') }}?v=3" width="400" height="360" loading="lazy" decoding="async"
+               alt="AI-powered data: verified contacts, decision makers, geo targeting and high ROI">
+        </figure>
 
   </div>
 
@@ -356,7 +356,7 @@ use App\Services;
 <div class="green-banner green-banner--cta">
 
    
-       <img src="{{asset('assets/uploads/icon.webp')}}"  width="60">
+       <img src="{{asset('assets/frontend/images/list/icons/check-icon.png')}}?v=1"  width="60">
 
     <div class="banner-text">
         Get Instant Access to {{$service_item->data_counts}} Verified {{ $emailTitle }}
@@ -579,19 +579,19 @@ Key Decision Makers in the {{ $emailTitle }}
 
 <div class="ase-grid">
 
-<div class="ase-item">
-<div class="ase-box">a</div>
-<p>Active</p>
+<div class="ase-item ase-item--active">
+<div class="ase-box"><span class="ase-dot" aria-hidden="true"></span><span class="ase-letter">a</span></div>
+<div class="ase-text"><span class="ase-label">Active Email List</span><p>Active</p></div>
 </div>
 
-<div class="ase-item">
-<div class="ase-box">s</div>
-<p>Specific</p>
+<div class="ase-item ase-item--specific">
+<div class="ase-box"><span class="ase-dot" aria-hidden="true"></span><span class="ase-letter">s</span></div>
+<div class="ase-text"><span class="ase-label">Specific Email List</span><p>Specific</p></div>
 </div>
 
-<div class="ase-item">
-<div class="ase-box">e</div>
-<p>Effortless</p>
+<div class="ase-item ase-item--effortless">
+<div class="ase-box"><span class="ase-dot" aria-hidden="true"></span><span class="ase-letter">e</span></div>
+<div class="ase-text"><span class="ase-label">Effortless Email List</span><p>Effortless</p></div>
 </div>
 
 </div>
@@ -691,27 +691,27 @@ Choose data as per your specific criteria
 <div class="icon-grid">
 
 <div class="icon-item">
-<div class="icon"><img src="{{asset('assets/uploads/product/Industry - Green.png')}}"></div>
+<div class="icon"><img src="{{asset('assets/frontend/images/list/icons/industry.png')}}?v=1"></div>
 <p>Industry</p>
 </div>
 
 <div class="icon-item">
-<div class="icon"><img src="{{asset('assets/uploads/product/Job Titile - Green.png')}}"></div>
+<div class="icon"><img src="{{asset('assets/frontend/images/list/icons/job-title.png')}}?v=1"></div>
 <p>Job Title</p>
 </div>
 
 <div class="icon-item">
-<div class="icon"><img src="{{asset('assets/uploads/product/Location - White.png')}}"></div>
+<div class="icon"><img src="{{asset('assets/frontend/images/list/icons/location.png')}}?v=1"></div>
 <p>Location</p>
 </div>
 
 <div class="icon-item">
-<div class="icon"><img src="{{asset('assets/uploads/product/Employee Size - Green.png')}}"></div>
+<div class="icon"><img src="{{asset('assets/frontend/images/list/icons/employee-size.png')}}?v=1"></div>
 <p>Employee Size</p>
 </div>
 
 <div class="icon-item">
-<div class="icon"><img src="{{asset('assets/uploads/product/Reveue Size - Green.png')}}"></div>
+<div class="icon"><img src="{{asset('assets/frontend/images/list/icons/revenue-size.png')}}?v=1"></div>
 <p>Revenue Size</p>
 </div>
 
@@ -735,27 +735,27 @@ Get 1200 free credits
     <div class="trust">
 
       <div class="trust-item">
-        <img src="{{asset('assets/uploads/product/Trustpilot.webp')}}">
+        <img src="{{asset('assets/frontend/images/list/icons/trustpilot.png')}}?v=1">
         <div class="rating-box">
         <div class="rating-text"> 4.5 </div><div class="stars">★★★★★</div>
       </div>
       </div>
       <div class="trust-item">
-       <img src="{{asset('assets/uploads/product/G2.webp')}}" alt="G2">
+       <img src="{{asset('assets/frontend/images/list/icons/g2.png')}}?v=1" alt="G2">
       <div class="rating-box">
-        <div class="rating-text"> 4.8 </div><div class="stars">★★★★★</div>
+        <div class="rating-text"> 4.5 </div><div class="stars">★★★★★</div>
       </div>
      </div>
 
       <div class="trust-item">
-        <img src="{{asset('assets/uploads/product/datarade.webp')}}">
+        <img src="{{asset('assets/frontend/images/list/icons/datarade.png')}}?v=1">
    <div class="rating-box">
         <div class="rating-text"> 4.5 </div><div class="stars">★★★★★</div>
       </div>
   </div>
 
       <div class="trust-item">
-        <img src="{{asset('assets/uploads/product/BBB.webp')}}">
+        <img src="{{asset('assets/frontend/images/list/icons/bbb.png')}}?v=1">
      <div class="rating-box">
         <div class="rating-text"> 4.5 </div><div class="stars">★★★★★</div>
       </div>
@@ -778,7 +778,6 @@ Get 1200 free credits
   @endif
     <form action="{{ route('service-lead.submit') }}" method="POST">
           @csrf
-          @include('frontend.pages.list.partials.form-guard')
 
           <input type="text" name="name" placeholder="Name" aria-label="Your name" autocomplete="name" required>
 
@@ -813,7 +812,7 @@ Get 1200 free credits
         </p>
 
         <p class="faq-help">
-            Can&rsquo;t find what you&rsquo;re looking for? <a href="{{ route('frontend.contact') }}" data-g4chat-open>Talk to our data team</a> and we&rsquo;ll answer it.
+            Can&rsquo;t find what you&rsquo;re looking for? <a href="{{ route('frontend.contact') }}">Talk to our data team</a> and we&rsquo;ll answer it.
         </p>
 
     </div>
@@ -891,6 +890,12 @@ Get 1200 free credits
         <!-- RIGHT CONTENT -->
 
         <div class="industry-content">
+
+            {{-- Names the selected category above its lists, so the panel reads as
+                 that category's lists; filled in by the tab script below. --}}
+            <div class="industry-panel-head" aria-live="polite">
+                <strong class="industry-panel-name">{{ optional($all_serviceCat->first())->name }}</strong>
+            </div>
 
             <!-- TAB 1 -->
             <div class="industry-tab-content active"
@@ -1795,7 +1800,7 @@ $titles = [
 <!-- TAB SCRIPT -->
 <div class="green-banner">
 
-    <img src="{{asset('assets/uploads/icon.webp')}}"  width="60">
+    <img src="{{asset('assets/frontend/images/list/icons/check-icon.png')}}?v=1"  width="60">
 
     <div class="banner-text">
         Unlock {{$service_item->data_counts}} Verified {{ $contactListTitle }} Today
@@ -1819,9 +1824,10 @@ Discover the power of 95% accurate, laser targeted data on your terms.
 </p>
 
 <div class="cta-form">
-<form action="{{ route('list-signup.submit') }}" method="POST">
-@csrf
-@include('frontend.pages.list.partials.form-guard')
+<form action="https://app.go4database.com/login" method="get">
+<input type="hidden" name="utm_source" value="ProductPage">
+<input type="hidden" name="utm_medium" value="Internal">
+<input type="hidden" name="utm_campaign" value="login">
 <input name="email" type="text" placeholder="Enter your work email">
 
 <button class="orange-btn">
@@ -1839,17 +1845,17 @@ Book a Demo
 <div class="cta-features">
 
 <div class="cta-feature">
-<div class="check"><img src="{{asset('assets/uploads/icon.webp')}}"  width="30"></div>
+<div class="check"><img src="{{asset('assets/frontend/images/list/icons/check-icon.png')}}?v=1"  width="30"></div>
 Real time email verification
 </div>
 
 <div class="cta-feature">
-<div class="check"><img src="{{asset('assets/uploads/icon.webp')}}"  width="30"></div>
+<div class="check"><img src="{{asset('assets/frontend/images/list/icons/check-icon.png')}}?v=1"  width="30"></div>
 95% data accuracy guarantee
 </div>
 
 <div class="cta-feature">
-<div class="check"><img src="{{asset('assets/uploads/icon.webp')}}"  width="30"></div>
+<div class="check"><img src="{{asset('assets/frontend/images/list/icons/check-icon.png')}}?v=1"  width="30"></div>
 GDPR & CCPA compliant
 </div>
 
@@ -1890,7 +1896,6 @@ GDPR & CCPA compliant
 @endif
               <form action="{{ route('sample-lead.submit') }}" method="POST">
     @csrf
-    @include('frontend.pages.list.partials.form-guard')
 
     <div class="sample-form-grid">
 
@@ -2034,6 +2039,17 @@ document.querySelectorAll('.industry-tab-btn');
 const industryContents =
 document.querySelectorAll('.industry-tab-content');
 
+const industryHeadName = document.querySelector('.industry-panel-name');
+
+function updateIndustryHead(tab) {
+    const panel = document.getElementById(tab.dataset.tab);
+    if (!panel || !industryHeadName) { return; }
+    industryHeadName.textContent = tab.textContent.trim();
+}
+
+const firstIndustryTab = document.querySelector('.industry-tab-btn.active');
+if (firstIndustryTab) { updateIndustryHead(firstIndustryTab); }
+
 industryTabs.forEach(tab => {
 
     tab.addEventListener('click', () => {
@@ -2051,6 +2067,8 @@ industryTabs.forEach(tab => {
         document.getElementById(
             tab.dataset.tab
         ).classList.add('active');
+
+        updateIndustryHead(tab);
 
     });
 
@@ -2102,7 +2120,7 @@ faqItems.forEach(item => {
   // only has_email / has_phone flags and a 30 minute contact_token per lead.
   var API_BASE = window.G4D_LEADS_API || 'https://app.go4database.com/api/website/leads';
   var CONTACT_API = window.G4D_LEADS_CONTACT_API || 'https://app.go4database.com/api/website/leads/contact';
-  var REGISTER_URL = 'https://app.go4database.com/register?utm_source=ListPage&utm_medium=Internal&utm_campaign=';
+  var SIGNUP_URL = 'https://app.go4database.com/login?utm_source=ProductPage&utm_medium=Internal&utm_campaign=login';
 
   var STATUS_ICON = {
     yes: '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
@@ -2276,7 +2294,7 @@ faqItems.forEach(item => {
           show((type === 'contact' ? result.body.phone : result.body.email) || unavailable);
         } else if (result.status === 429) {
           var link = document.createElement('a');
-          link.href = REGISTER_URL + action + '_limit';
+          link.href = SIGNUP_URL;
           link.textContent = 'Sign up free to see more';
           link.className = 'g4d-lead-limit';
           btn.replaceWith(link);

@@ -1,0 +1,622 @@
+/* ==========================================================================
+   List page theme: the homepage's look (home-01 / home.css) on the list page.
+   Loaded after list.css and only re-skins it -- no class, layout or content
+   changes. Remove the <link> to this file to get the previous green theme back.
+   Values are the homepage's own: hero gradient, navy #0f172a headings,
+   slate #64748b body text in Inter, #e8f7ea pill labels, white cards with
+   soft shadows, and the pastel pink / lavender / sky / mint card tints.
+   ========================================================================== */
+
+:root {
+  --list-green-dark: #15803d;
+  --list-green-deep: #14532d;
+  --list-ink: #0f172a;
+  --list-ink-soft: #64748b;
+  --list-border: #e2e8f0;
+  --list-card-bg: #ffffff;
+  --list-tint: #f0fdf4;
+  --list-radius: 16px;
+  --list-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+  --list-shadow-md: 0 20px 50px -16px rgba(15, 23, 42, 0.16);
+  --home-hero-gradient: linear-gradient(to right, #ff5858 0%, #ec4899 25%, #a855f7 50%, #6366f1 75%, #5468ff 100%);
+}
+
+/* Body copy in Inter like the homepage; headings keep Nunito (--heading-font). */
+.hero-section, .hero-section ~ .container, .related-blogs {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* --------------------------------------------------------------------------
+   Hero: the homepage gradient panel with its dot pattern, white headline and
+   a white search card resting on its lower edge.
+   -------------------------------------------------------------------------- */
+.hero-section {
+  background: #fff;
+  /* Clips the gradient at the top of the section (it is drawn upward from the
+     heading) without clipping anything that drops below it. */
+  clip-path: inset(0 0 -100vh 0);
+}
+.hero-section > nav { z-index: 2; }
+.hero-intro { position: relative; }
+.hero-intro::before,
+.hero-intro::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -200px;
+  bottom: -64px;
+  left: calc(-1 * clamp(20px, 8vw, 100px));
+  right: calc(-1 * clamp(20px, 8vw, 100px));
+  border-radius: 0 0 22px 22px;
+  pointer-events: none;
+}
+.hero-intro::before {
+  background:
+    radial-gradient(circle at 85% 20%, rgba(84, 104, 255, 0.4) 0%, transparent 65%),
+    radial-gradient(circle at 15% 85%, rgba(255, 88, 88, 0.35) 0%, transparent 65%),
+    var(--home-hero-gradient);
+  box-shadow: 0 20px 50px -16px rgba(168, 85, 247, 0.3);
+}
+.hero-intro::after {
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.35) 1.5px, transparent 1.5px);
+  background-size: 26px 26px;
+  opacity: 0.85;
+  -webkit-mask-image: linear-gradient(to right, black 0%, black 45%, rgba(0, 0, 0, 0.2) 65%, transparent 85%);
+  mask-image: linear-gradient(to right, black 0%, black 45%, rgba(0, 0, 0, 0.2) 65%, transparent 85%);
+}
+
+/* Breadcrumb on the gradient */
+.hero-section .breadcrumb,
+.hero-section .breadcrumb-home,
+.hero-section .breadcrumb-item a { color: rgba(255, 255, 255, 0.86); }
+.hero-section .breadcrumb-item a:hover { color: #fff; }
+.hero-section .breadcrumb-item.active { color: #fff; }
+.hero-section .breadcrumb-home-rule { background: rgba(255, 255, 255, 0.4); }
+.hero-section .breadcrumb-item + .breadcrumb-item::before { border-color: rgba(255, 255, 255, 0.7); }
+
+/* "Last updated": a small glass tag tucked above the end of the headline
+   (over "List"). The heading block becomes a one-column grid as wide as the
+   title, so the tag can right-align to the title's last word. */
+.hero-intro-main { display: grid; justify-content: center; }
+.hero-chips { justify-self: end; margin-bottom: 8px; margin-right: 0; }
+/* On phones the title wraps across the full width, so "the end of the title"
+   is no longer a fixed spot -- centre the tag over it instead. */
+@media (max-width: 900px) { .hero-chips { justify-self: center; margin-right: 0; } }
+.hero-badge-muted {
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  padding: 3px 10px;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+/* Headline: white with the homepage's soft shadow; the "Email List" half in
+   navy with the white glow the homepage uses on its rotating word. */
+.hero-title {
+  color: #fff;
+  letter-spacing: -1.2px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+.hero-title-accent {
+  background: none;
+  -webkit-text-fill-color: #0b132a;
+  color: #0b132a;
+  font-weight: 900;
+  animation: none;
+  text-shadow: 0 0 2px #fff, 0 0 10px #fff, 0 0 24px #fff, 0 0 40px rgba(255, 255, 255, 0.9);
+}
+
+/* Search + results card on the gradient's edge, like the homepage search box */
+.hero .table-wrapper {
+  background: #fff;
+  border: 1px solid #eef2f6;
+  border-radius: 20px;
+  padding: 26px 26px 22px;
+  box-shadow: 0 20px 50px -16px rgba(168, 85, 247, 0.22), 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+.filters { border-bottom-color: #eef2f6; }
+/* All three fields keep the green glow at rest, not only while focused;
+   the focused one gets a slightly stronger ring so it still stands out. */
+.field-group { border-color: #16a34a; border-radius: 10px; box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12); }
+.field-group:focus-within { border-color: #16a34a; box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.2); }
+.field-icon { color: #16a34a; }
+.filters input::placeholder { color: #94a3b8; }
+
+.g4d-leads-head {
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  color: #334155;
+}
+.g4d-lead { border-top-color: #f1f5f9; color: #334155; }
+.g4d-lead-company, .g4d-lead-person { color: #0f172a; }
+.g4d-lead-btn { border-color: #e2e8f0; border-radius: 10px; color: #0f172a; }
+.g4d-lead-btn:hover { border-color: #16a34a; background: #f0fdf4; }
+
+.page-link { border-color: #e2e8f0; color: #0f172a; border-radius: 10px; }
+.page-link:hover { border-color: #16a34a; color: #15803d; }
+.pagination .page-item.active .page-link,
+.pagination .page-item.active span.page-link { background: #15803d; border-color: #15803d; color: #fff; }
+.download-btn { color: #15803d; border-color: #16a34a; }
+.download-btn:hover { background: #15803d; border-color: #15803d; color: #fff; }
+
+/* Desktop: tighter spacing above the fold so the compliance + logo strip
+   below the results card shows in the first screen on a laptop window. */
+@media (min-width: 901px) {
+  .hero-section { padding-top: 16px; padding-bottom: 12px; }
+  .hero-section .breadcrumb { margin-bottom: 14px; }
+  .hero-title { font-size: clamp(28px, 3.6vw, 40px); margin: 4px 0 14px; }
+  .hero-intro { margin-bottom: 26px; }
+  .hero-intro::before, .hero-intro::after { bottom: -110px; }
+  .hero .table-wrapper { padding: 18px 22px 14px; }
+  .filters { margin-bottom: 14px; padding-bottom: 14px; }
+  .g4d-leads-head { padding-top: 9px; padding-bottom: 9px; }
+  .g4d-lead { padding-top: 5px; padding-bottom: 5px; }
+  .g4d-lead-btn { min-height: 30px; }
+  .table-footer { margin-top: 12px; }
+  .stats-grid { margin-top: 18px; }
+  /* "What is in this list" follows the trust strip closely enough to show
+     in the first screen too. */
+  .description-block { margin-top: 18px; }
+  .description-title { margin-top: 0; }
+  /* The four-attribute card stopped short of the content's right edge; pin
+     it there at the related-lists card's width so the two columns line up. */
+  .description-block .tags { margin-left: auto; flex: 0 1 396px; }
+}
+
+/* Accuracy ring: the 14px / 800-weight figure crowded the 54px ring; a
+   lighter, smaller figure sits clear of the stroke. CSS overrides the SVG's
+   presentation attributes. */
+.stats-band-ring text {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14.5px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  fill: #0f172a;
+}
+/* The footer drew the ring at 42px, leaving the figure at ~11px on screen;
+   a 60px ring shows it at ~16px. */
+.stats-band-ring { width: 64px; height: 64px; }
+.table-footer .stats-band-ring { width: 60px; height: 60px; }
+.table-footer .stats-band-cap { font-size: 12.5px; }
+/* thinner ring: 5 → 3 (CSS overrides the SVG's stroke-width attribute) */
+.stats-band-ring circle { stroke-width: 3; }
+
+/* Trust strip: a white card like the homepage stat cards */
+.trust-row {
+  background: #fff;
+  border-color: #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+}
+.stat-comp p { color: #475569; }
+
+/* --------------------------------------------------------------------------
+   Section headings and labels
+   -------------------------------------------------------------------------- */
+.section-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #e8f7ea;
+  color: #1f7a2e;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  border-radius: 999px;
+}
+.description-title, .faq-title, .industry-title, .section-title, h2.title, .roi-section h2 {
+  color: #0f172a;
+  letter-spacing: -0.03em;
+}
+.section-rule span { background: var(--home-hero-gradient); }
+.section-rule::after { background: #eef2f6; }
+.description { color: #64748b; }
+
+/* --------------------------------------------------------------------------
+   Cards: white with a soft shadow, and the homepage's pastel tints where a
+   card leads its group.
+   -------------------------------------------------------------------------- */
+.related-box, .slider-container, .small-card, .benefit-card, .trust-item, .side-card {
+  background: #fff;
+  border-color: #e2e8f0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+}
+.description-block .tags { box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03); }
+.testimonial { background: #f8fafc; color: #334155; }
+.table-label { background: #f8fafc; color: #1f7a2e; }
+
+/* "Why" cards: pink lead card, then lavender / sky / mint */
+.why-card {
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+  border: 1.5px solid rgba(168, 85, 247, 0.22);
+}
+.why-card:first-child {
+  background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 50%, #fecdd3 100%);
+  border: 1.5px solid rgba(244, 63, 94, 0.25);
+}
+.why-card:first-child::after { background: radial-gradient(circle, rgba(255, 255, 255, 0.55), transparent 70%); }
+.why-card:nth-child(3) {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-color: rgba(14, 165, 233, 0.25);
+}
+.why-card:nth-child(4) {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-color: rgba(34, 197, 94, 0.25);
+}
+
+/* a / s / e: compact versions of the homepage's Active / Specific /
+   Effortless cards (home.css .ai-lead-card) -- pastel row, white icon box
+   with a navy outline and dot, big green letter, coloured label + navy title. */
+.small-card .ase-grid { flex-direction: column; gap: 12px; }
+.small-card .logo { text-align: center; }
+.small-card .logo img { display: inline-block; }
+.ase-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  text-align: left;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1.5px solid transparent;
+  transition: transform .25s cubic-bezier(.16, 1, .3, 1), box-shadow .25s cubic-bezier(.16, 1, .3, 1);
+}
+.ase-item:hover { transform: translateY(-2px); box-shadow: 0 12px 28px -8px rgba(15, 23, 42, 0.14); }
+.ase-item--active     { background: #fce7f3; border-color: rgba(236, 72, 153, 0.25); box-shadow: 0 6px 20px rgba(236, 72, 153, 0.08); }
+.ase-item--specific   { background: #ede9fe; border-color: rgba(139, 92, 246, 0.25); box-shadow: 0 6px 20px rgba(139, 92, 246, 0.08); }
+.ase-item--effortless { background: #e0f2fe; border-color: rgba(14, 165, 233, 0.25); box-shadow: 0 6px 20px rgba(14, 165, 233, 0.08); }
+.ase-item .ase-box {
+  width: 56px; height: 56px; margin: 0; flex: 0 0 auto;
+  background: #fff;
+  border: 2px solid #0f172a;
+  border-radius: 15px;
+  flex-direction: column;
+  gap: 0;
+}
+.ase-dot { width: 12px; height: 12px; background: #0f172a; border-radius: 4px; }
+.ase-letter {
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: 34px;
+  line-height: .8;
+  color: #6fd943;
+  margin-top: -1px;
+}
+.ase-text { min-width: 0; }
+.ase-label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 2px; }
+.ase-item--active .ase-label     { color: #db2777; }
+.ase-item--specific .ase-label   { color: #7c3aed; }
+.ase-item--effortless .ase-label { color: #0284c7; }
+.ase-item .ase-text p {
+  margin: 0;
+  font-family: var(--heading-font);
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  line-height: 1.1;
+  color: #0f172a;
+}
+
+/* Banners and the ROI panel in the homepage's soft green CTA wash */
+.green-banner { border-color: #e2e8f0; border-left-color: var(--list-green); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03); }
+.section-flex .left > .green-banner--cta { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 60%, #e6f7e9 100%); }
+.roi-section {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 60%, #e6f7e9 100%);
+  border-color: rgba(34, 197, 94, 0.22);
+}
+.roi-section span { color: #1f7a2e; }
+
+/* Active tabs in the homepage's dark green */
+.related-header .nav-link.active,
+.industry-tab-btn.active,
+.nav-buttons button:hover { background: #15803d; border-color: #15803d; }
+
+/* Related / Industry tabs: an industry without its own page is plain text,
+   but it sits in the same row as a linked one -- same spacing, size and ink,
+   just no hover -- so the two tabs read as one list style. */
+.related-box li .industry-link-plain {
+  display: block; padding: 10px 12px; border-radius: 8px;
+  font-size: 14.5px; line-height: 1.5; color: var(--list-ink); cursor: default;
+}
+.related-box li a { line-height: 1.5; }
+
+/* FAQ and the industry directory sit on the homepage's light grey band */
+.faq-section, .industry-section {
+  background: #f8faf9;
+  box-shadow: 0 0 0 100vmax #f8faf9;
+  clip-path: inset(-40px -100vmax);
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+/* Directory cells fill their grid row, so a cell beside a two-line one
+   doesn't show the grid's border colour underneath it. */
+.industry-list li { background: #fff; display: flex; }
+.industry-list li > a, .industry-list li > .industry-link-plain { flex: 1 1 auto; }
+
+/* FAQ accordion: the homepage's card style (home.css .faq-item) --
+   separate white cards with inner padding, a green outline and green
+   question on the open one, and the chevron in a round button. */
+.faq-wrapper { display: flex; flex-direction: column; gap: 14px; }
+.faq-item,
+.faq-item:first-child {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  transition: border-color .25s cubic-bezier(.16, 1, .3, 1), box-shadow .25s cubic-bezier(.16, 1, .3, 1);
+}
+.faq-item:hover { border-color: rgba(31, 122, 46, 0.3); box-shadow: 0 6px 18px rgba(31, 122, 46, 0.06); }
+.faq-item.active { border-color: #1f7a2e; box-shadow: 0 8px 24px rgba(31, 122, 46, 0.12); }
+.faq-question { padding: 20px 24px; }
+.faq-question h3 { font-size: 16.5px; font-weight: 700; color: #1e293b; }
+.faq-item.active .faq-question h3 { color: #1f7a2e; }
+.faq-icon {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #64748b;
+  align-items: center; justify-content: center;
+  transition: transform .25s, background .25s, color .25s;
+}
+.faq-icon svg { width: 18px; height: 18px; }
+.faq-item.active .faq-icon { background: #e8f7ea; color: #1f7a2e; }
+.faq-answer-content {
+  margin: 0 24px;
+  padding: 16px 0 22px;
+  border-top: 1px solid rgba(31, 122, 46, 0.1);
+  font-size: 15px;
+  line-height: 1.7;
+  color: #475569;
+}
+
+/* CTA email form: the input and its button sit in an unstyled <form>, so they
+   touched and the input's flex sizing never applied. Lay the form out as its
+   own row with a gap, and give the email field more room. */
+.cta-form form { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; flex: 0 1 auto; }
+.cta-form form input { flex: 1 1 380px; width: 380px; max-width: 100%; }
+@media (max-width: 600px) {
+  .cta-form form { width: 100%; }
+  .cta-form form input, .cta-form form .orange-btn { flex: 1 1 100%; width: 100%; }
+}
+
+/* "What is in this list": an AI illustration of the four qualifiers in place
+   of the four-row icon card, at that card's width beside the copy. */
+.description-block .ai-visual {
+  flex: 0 1 396px;
+  min-width: 260px;
+  margin: 0 0 0 auto;
+  align-self: center;
+}
+.description-block .ai-visual img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+  border: 1px solid #ede9fe;
+  box-shadow: 0 16px 40px -18px rgba(168, 85, 247, 0.22), 0 4px 14px rgba(0, 0, 0, 0.03);
+}
+@media (max-width: 900px) {
+  .description-block .ai-visual { flex: 0 0 auto; width: 100%; max-width: 440px; margin: 0 auto; }
+}
+
+/* Industry directory: the lists on the right read as the selected category's.
+   The active tab points into one green-edged panel, which names the category
+   in a tinted header and fades in on every switch. */
+.industry-flex { gap: 16px; }
+@media (max-width: 900px) { .industry-flex { gap: 20px; } }
+.industry-tab-btn.active { position: relative; box-shadow: 0 8px 20px -10px rgba(21, 128, 61, 0.55); }
+.industry-tab-btn.active::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -13px;
+  transform: translateY(-50%);
+  border: 13px solid transparent;
+  border-right: 0;
+  border-left-color: #15803d;
+}
+.industry-content {
+  background: #fff;
+  border: 1.5px solid #86efac;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px -22px rgba(21, 128, 61, 0.35);
+}
+.industry-panel-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  padding: 14px 18px;
+  background: linear-gradient(90deg, #dcfce7 0%, #f0fdf4 100%);
+  border-bottom: 1px solid #bbf7d0;
+}
+.industry-panel-name { font-size: 17px; font-weight: 800; color: #14532d; }
+/* The panel draws the outer edge now; the grid keeps only its cell lines. */
+.industry-list { border: 0; border-radius: 0; background: #ecfdf3; }
+.industry-list li a::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background: #4ade80;
+}
+.industry-list li .industry-link-plain::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background: #cbd5e1;
+}
+.industry-tab-content.active { animation: industryIn 0.28s ease-out; }
+@keyframes industryIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .industry-tab-content.active { animation: none; } }
+@media (max-width: 900px) {
+  .industry-tab-btn.active::after { display: none; }
+}
+
+/* Related blogs: blog thumbnails are wide banners (350px wide, ~2.7:1), so the
+   16:10 box with object-fit:cover cut off both sides. Show the whole image. */
+.blog-img { aspect-ratio: 35/13; background: #f4f6f5; }
+.blog-img img { object-fit: contain; }
+/* Top-left of the banner is where the Go4database logo sits; keep it visible. */
+.blog-date { top: auto; bottom: 10px; left: 10px; padding: 4px 9px; font-size: 11.5px; }
+
+/* First screen on every computer (2026-11-10): the heading, the search, the
+   five sample contacts, the pagination / Download row and the compliance +
+   logo strip all show without scrolling - on a 1280x720 laptop as on a
+   large monitor. The spacing above follows the window's height: today's
+   values from about 900px tall, compact near 600px. Phones (<= 900px wide)
+   keep their own layout. */
+@media (min-width: 901px) {
+  .hero-section { padding-top: clamp(6px, 1.8vh, 16px); padding-bottom: clamp(6px, 1.4vh, 12px); }
+  .hero-section .breadcrumb { margin-bottom: clamp(4px, 1.5vh, 14px); }
+  .hero-chips { margin-bottom: clamp(2px, 0.9vh, 8px); }
+  .hero-title { font-size: clamp(26px, min(3.6vw, 4.6vh), 40px); margin: clamp(0px, 0.45vh, 4px) 0 clamp(4px, 1.5vh, 14px); }
+  .hero-intro { margin-bottom: clamp(10px, 2.9vh, 26px); }
+  .hero .table-wrapper { padding: clamp(10px, 2vh, 18px) 22px clamp(8px, 1.5vh, 14px); }
+  .filters { margin-bottom: clamp(6px, 1.5vh, 14px); padding-bottom: clamp(6px, 1.5vh, 14px); }
+  .field-group, .filters button, .filters .credits-btn { height: clamp(36px, 4.9vh, 44px); min-height: 0; }
+  .g4d-leads-head { padding-top: clamp(5px, 1vh, 9px); padding-bottom: clamp(5px, 1vh, 9px); }
+  .g4d-lead { padding-top: clamp(1px, 0.55vh, 5px); padding-bottom: clamp(1px, 0.55vh, 5px); }
+  .g4d-lead-btn { min-height: clamp(26px, 3.3vh, 30px); }
+  .table-footer { margin-top: clamp(6px, 1.3vh, 12px); }
+  .table-footer .stats-band-ring { width: clamp(42px, 6.6vh, 60px); height: clamp(42px, 6.6vh, 60px); }
+  .page-link { min-width: clamp(32px, 4.2vh, 38px); height: clamp(32px, 4.2vh, 38px); }
+  .download-btn { min-height: clamp(36px, 4.7vh, 42px); }
+  .stats-grid { margin-top: clamp(8px, 2vh, 18px); }
+  .trust-row { padding-top: clamp(8px, 1.8vh, 16px); padding-bottom: clamp(8px, 1.8vh, 16px); }
+}
+
+/* Short laptop windows (e.g. a Dell at 125% scaling): "Last updated" stays
+   above the heading but lifts into the breadcrumb's row (the breadcrumb is
+   on the left, the tag over the title's end), and the next section starts
+   a little sooner, so "What is in this list" shows on the first screen. */
+@media (min-width: 901px) and (max-height: 820px) {
+  .hero-chips { margin-top: -24px; margin-bottom: 4px; }
+  .hero-title { margin-top: 0; }
+  .trust-row { padding-top: 9px; padding-bottom: 9px; }
+  .description-block { margin-top: 0; }
+}
+
+/* The shortest laptop windows (a 1280x720 screen leaves about 600px): a
+   little tighter still, so the logo strip makes it into the first screen. */
+@media (min-width: 901px) and (max-height: 660px) {
+  .hero-section { padding-top: 4px; }
+  .hero-section .breadcrumb { margin-bottom: 2px; }
+  .hero-intro { margin-bottom: 4px; }
+  .hero .table-wrapper { padding-top: 10px; padding-bottom: 8px; }
+  .filters { margin-bottom: 6px; padding-bottom: 8px; }
+  .g4d-leads-head { padding-top: 5px; padding-bottom: 5px; }
+  .g4d-lead { padding-top: 2px; padding-bottom: 2px; }
+  .g4d-lead-btn { min-height: 26px; }
+  .table-footer { margin-top: 6px; }
+  .stats-grid { margin-top: 8px; }
+  .trust-row { padding-top: 8px; padding-bottom: 8px; }
+}
+
+/* Narrower computer windows (901-1199px, e.g. a 1024px laptop or a tablet
+   on its side): pagination, the two figures and Download List stay on one
+   line instead of stacking into three. */
+@media (min-width: 901px) and (max-width: 1199px) {
+  .table-footer { flex-wrap: nowrap; gap: 8px; }
+  .table-footer .pagination-wrapper { flex: 0 0 auto; }
+  .table-footer .pagination { gap: 5px; flex-wrap: nowrap !important; }
+  .page-link { min-width: 32px; height: 32px; padding: 0 6px; }
+  .table-footer .stats-band-cell { padding: 0 10px; gap: 8px; }
+  .table-footer .stats-band-num { font-size: 18px; }
+  .table-footer .download-btn { padding: 0 14px; white-space: nowrap; }
+}
+
+/* ===================== Phones and small tablets (2026-11-10) =====================
+   Everything one thumb can reach, nothing wider than the screen, and the five
+   sample contacts as compact cards instead of tall ones. */
+@media (max-width: 900px) {
+  /* Breadcrumb on one line: it scrolls sideways rather than wrapping. */
+  .hero-section .breadcrumb { flex-wrap: nowrap; overflow-x: auto; white-space: nowrap; scrollbar-width: none; font-size: 13px; margin-bottom: 10px; }
+  .hero-section .breadcrumb::-webkit-scrollbar { display: none; }
+  .hero-section { padding-top: 12px; }
+  .hero-chips { margin-bottom: 6px; }
+  .hero-title { margin: 2px 0 10px; line-height: 1.15; }
+  .hero-intro { margin-bottom: 16px; }
+
+  /* Sample contacts: name, person and title, then the two buttons side by side. */
+  .g4d-lead.g4d-leads-grid { padding: 12px 14px; row-gap: 1px; }
+  .g4d-lead-person { margin-top: 6px; }
+  .g4d-lead-title { -webkit-line-clamp: 2; }
+  .g4d-lead-email, .g4d-lead-phone { margin-top: 8px; }
+  .g4d-lead-btn { min-height: 40px; padding-left: 8px; padding-right: 8px; font-size: 13px; gap: 6px; }
+
+  /* Trust strip: the three badges share a row, the logos run underneath. */
+  .trust-row { padding: 12px 14px; gap: 10px; }
+  .stats-cmp-main { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .stat-comp { gap: 6px; min-width: 0; }
+  .stat-comp-shield { width: 18px; height: 18px; }
+  .stat-comp p { font-size: 12px; white-space: normal; line-height: 1.25; }
+  .trust-rule { display: none; }
+
+  /* Long paragraphs: whole words, no "facili-ty" breaks. */
+  .description-block p, .description-block, .hero-section p { -webkit-hyphens: manual; hyphens: manual; }
+
+  /* The back-to-top button sat on top of the contact buttons. */
+  #scroll-top-btn { width: 44px !important; height: 44px !important; right: 12px !important; bottom: 14px !important; }
+}
+
+/* Phones: the two search buttons share a row under the three fields. */
+@media (max-width: 640px) {
+  .filters form { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; }
+  .filters form > .field-group { grid-column: 1 / -1; }
+  .filters .credits-btn-inline, .filters button { width: 100%; min-width: 0; height: 46px; padding: 0 14px; font-size: 14px; white-space: nowrap; justify-content: center; gap: 8px; }
+  .filters button { padding: 0 18px; }
+  .table-footer { gap: 10px; }
+}
+
+/* Up to 420px wide "Get 1200 free credits" does not fit half a row: the two
+   search buttons go one per row. */
+@media (max-width: 420px) {
+  .filters form { grid-template-columns: 1fr; }
+}
+
+/* The narrowest phones (320-359px): a little smaller so nothing crowds. */
+@media (max-width: 359px) {
+  .hero-title { font-size: 25px; }
+
+  .g4d-lead-btn { font-size: 12px; gap: 4px; padding-left: 4px; padding-right: 4px; }
+  .stat-comp p { font-size: 11px; }
+}
+
+/* Tablets (641-900px): each contact is one row - who they are on the left,
+   the two buttons on the right - and the search buttons fill their row. */
+@media (min-width: 641px) and (max-width: 900px) {
+  .g4d-lead.g4d-leads-grid { grid-template-columns: minmax(0, 1fr) 150px 150px; column-gap: 12px; align-items: center; }
+  .g4d-lead-company-cell, .g4d-lead-person, .g4d-lead-title { grid-column: 1; }
+  .g4d-lead-email { grid-column: 2; grid-row: 1 / span 3; margin-top: 0; }
+  .g4d-lead-phone { grid-column: 3; grid-row: 1 / span 3; margin-top: 0; }
+  .filters form { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+  .filters form > .field-group { grid-column: span 2; }
+  .filters .credits-btn-inline, .filters button { grid-column: span 3; width: 100%; justify-content: center; }
+}
+
+/* Phones: "Other Targeted Industry Mailing List" was six screens long (every
+   industry button stacked, then every link). The industries become one row
+   of chips to swipe; the links sit in a box that scrolls. */
+@media (max-width: 900px) {
+  .industry-tabs { flex-wrap: nowrap; overflow-x: auto; gap: 8px; padding-bottom: 4px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .industry-tabs::-webkit-scrollbar { display: none; }
+  .industry-tab-btn { width: auto; flex: 0 0 auto; min-height: 40px; padding: 8px 14px; white-space: nowrap; border-radius: 999px; font-size: 13.5px; }
+  .industry-list { max-height: 420px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .industry-flex { gap: 14px; }
+  .industry-title { margin-bottom: 16px; }
+  /* No word broken by a hyphen anywhere on the page on a phone. */
+  body, body * { -webkit-hyphens: manual !important; hyphens: manual !important; }
+}
