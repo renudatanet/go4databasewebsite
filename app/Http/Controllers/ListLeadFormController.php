@@ -11,15 +11,18 @@ use Illuminate\Http\Request;
  * The list pages' three forms. Each submission is saved as a form lead
  * (Admin > List > Form Leads) before anything else happens, then:
  * - talk to an expert and sample request send the email they always sent;
- * - the free-credits form goes on to the app's sign-up, email filled in,
- *   exactly where it used to go straight to.
+ * - the free-credits form goes on to the app's login with the form's UTM
+ *   tags and the email filled in, exactly where it used to go straight to.
  *
  * Each form carries a hidden "website_url" box people never see; a bot that
  * fills it in is answered as if all went well, and nothing is kept.
  */
 class ListLeadFormController extends Controller
 {
-    public const SIGNUP_URL = 'https://app.go4database.com/register';
+    public const SIGNUP_URL = 'https://app.go4database.com/login';
+
+    /** The UTM tags the free-credits form carries on to the app, and their defaults. */
+    private const UTM = ['utm_source' => 'ProductPage', 'utm_medium' => 'Internal', 'utm_campaign' => 'login'];
 
     private const TRAP = 'website_url';
 
@@ -72,7 +75,7 @@ class ListLeadFormController extends Controller
         return $this->backTo('sample-data-section')->with('sample-success', 'Thank you! Your request has been submitted.');
     }
 
-    /** Keep a valid email, then continue to the app's sign-up as the form always did. */
+    /** Keep a valid email, then continue to the app as the form always did. */
     public function signup(Request $request)
     {
         $email = trim((string) $request->input('email', ''));
@@ -81,7 +84,16 @@ class ListLeadFormController extends Controller
             $this->recorder->record(FormKind::Signup, ['email' => $email], $request);
         }
 
-        return redirect()->away(self::SIGNUP_URL . ($email !== '' ? '?' . http_build_query(['email' => $email]) : ''));
+        $query = [];
+        foreach (self::UTM as $key => $default) {
+            $value = (string) $request->input($key, $default);
+            $query[$key] = preg_match('/^[A-Za-z0-9_.-]{1,60}$/', $value) ? $value : $default;
+        }
+        if ($email !== '') {
+            $query['email'] = $email;
+        }
+
+        return redirect()->away(self::SIGNUP_URL . '?' . http_build_query($query));
     }
 
     /** Back to the page, at the form, so its thank-you message is in view. */

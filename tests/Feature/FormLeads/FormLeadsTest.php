@@ -101,8 +101,10 @@ class FormLeadsTest extends TestCase
 
     public function test_the_free_credits_form_keeps_the_email_and_goes_on_to_the_app(): void
     {
-        $this->post(route('list-signup.submit'), ['email' => 'buyer@company.example', 'list_id' => $this->listId])
-            ->assertRedirect('https://app.go4database.com/register?email=buyer%40company.example');
+        $this->post(route('list-signup.submit'), [
+            'utm_source' => 'ProductPage', 'utm_medium' => 'Internal', 'utm_campaign' => 'login',
+            'email' => 'buyer@company.example', 'list_id' => $this->listId,
+        ])->assertRedirect('https://app.go4database.com/login?utm_source=ProductPage&utm_medium=Internal&utm_campaign=login&email=buyer%40company.example');
 
         $lead = FormLead::sole();
         $this->assertSame(['list_signup', 'buyer@company.example', null], [$lead->form, $lead->email, $lead->emailed]);
@@ -110,8 +112,11 @@ class FormLeadsTest extends TestCase
 
     public function test_an_empty_or_invalid_signup_email_still_goes_on_but_is_not_kept(): void
     {
-        $this->post(route('list-signup.submit'), ['email' => ''])->assertRedirect('https://app.go4database.com/register');
-        $this->post(route('list-signup.submit'), ['email' => 'not an email'])->assertRedirect('https://app.go4database.com/register?email=not+an+email');
+        $app = 'https://app.go4database.com/login?utm_source=ProductPage&utm_medium=Internal&utm_campaign=login';
+        $this->post(route('list-signup.submit'), ['email' => ''])->assertRedirect($app);
+        $this->post(route('list-signup.submit'), ['email' => 'not an email'])->assertRedirect($app . '&email=not+an+email');
+        // a tampered tag falls back to the page's own
+        $this->post(route('list-signup.submit'), ['utm_source' => '<script>', 'email' => ''])->assertRedirect($app);
 
         $this->assertSame(0, FormLead::count());
     }

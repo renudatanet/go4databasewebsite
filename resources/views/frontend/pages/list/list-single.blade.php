@@ -157,7 +157,6 @@ use App\Services;
         <input type="text" placeholder="Location" id="search-location" value="{{ $service_item->search_location ?? '' }}">
       </div>
       <a class="credits-btn credits-btn-inline" href="https://app.go4database.com/register?utm_source=ProductPage&amp;utm_medium=Internal&amp;utm_campaign=search_free_credits" target="_blank" rel="noopener">
-        <svg class="credits-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M14.6 9.4a3.4 3.4 0 1 0 0 5.2"/></svg>
         Get 1200 free credits
       </a>
       <button type="button" id="search-leads-btn">
@@ -743,7 +742,7 @@ Get 1200 free credits
       <div class="trust-item">
        <img src="{{asset('assets/frontend/images/list/icons/g2.png')}}?v=1" alt="G2">
       <div class="rating-box">
-        <div class="rating-text"> 4.5 </div><div class="stars">★★★★★</div>
+        <div class="rating-text"> 4.8 </div><div class="stars">★★★★★</div>
       </div>
      </div>
 
@@ -778,6 +777,7 @@ Get 1200 free credits
   @endif
     <form action="{{ route('service-lead.submit') }}" method="POST">
           @csrf
+          @include('frontend.pages.list.partials.form-guard')
 
           <input type="text" name="name" placeholder="Name" aria-label="Your name" autocomplete="name" required>
 
@@ -812,7 +812,7 @@ Get 1200 free credits
         </p>
 
         <p class="faq-help">
-            Can&rsquo;t find what you&rsquo;re looking for? <a href="{{ route('frontend.contact') }}">Talk to our data team</a> and we&rsquo;ll answer it.
+            Can&rsquo;t find what you&rsquo;re looking for? <a href="{{ route('frontend.contact') }}" data-g4chat-open>Talk to our data team</a> and we&rsquo;ll answer it.
         </p>
 
     </div>
@@ -1824,7 +1824,9 @@ Discover the power of 95% accurate, laser targeted data on your terms.
 </p>
 
 <div class="cta-form">
-<form action="https://app.go4database.com/login" method="get">
+<form action="{{ route('list-signup.submit') }}" method="POST">
+@csrf
+@include('frontend.pages.list.partials.form-guard')
 <input type="hidden" name="utm_source" value="ProductPage">
 <input type="hidden" name="utm_medium" value="Internal">
 <input type="hidden" name="utm_campaign" value="login">
@@ -1896,6 +1898,7 @@ GDPR & CCPA compliant
 @endif
               <form action="{{ route('sample-lead.submit') }}" method="POST">
     @csrf
+    @include('frontend.pages.list.partials.form-guard')
 
     <div class="sample-form-grid">
 

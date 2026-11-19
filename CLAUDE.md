@@ -495,8 +495,11 @@ three forms; every submission is now kept in table `form_leads`
   visitor sees no error. They answer back at the form (`#lead-form`,
   `#sample-data-section`) so the thank-you message is in view.
 - "Get 1200 Free Leads" posts to `list-signup.submit` (`/list-signup`),
-  which keeps a valid email and redirects to the app's register page with
-  `?email=`, where the form used to go directly.
+  which keeps a valid email and redirects to the app's login page with the
+  form's UTM tags and `email=`, where the form used to go directly.
+- The list page's redesign (homepage theme `list-theme.css`, images under
+  `assets/frontend/images/list/`, login links with UTM tags) was made on
+  live on 2026-11-10 and brought into git on 2026-11-19 (commit fcd8a81).
 - All three are `ListLeadFormController` (the old
   `FrontendController@submit/submitSample` methods are no longer routed;
   left in place because live's FrontendController may differ from git).
