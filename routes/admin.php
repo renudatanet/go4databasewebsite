@@ -316,6 +316,16 @@ Route::prefix('admin-home')->middleware(['setlang:backend'])->group(function () 
         Route::post('/replace-preview', 'ListController@replacePreview')->name('admin.list.replace.preview');
         Route::post('/replace-url', 'ListController@replaceUrl')->name('admin.list.replace.url');
  });
+
+        /*-----------------------------------------
+        List Module : Form Leads (the list pages' forms, App\FormLeads)
+        ------------------------------------*/
+        Route::prefix('list/form-leads')->middleware(['adminPermissionCheck:Services'])->group(function () {
+            Route::get('/', 'Admin\FormLeadController@index')->name('admin.form.leads');
+            Route::get('/export', 'Admin\FormLeadController@export')->name('admin.form.leads.export');
+            Route::post('/{id}/status', 'Admin\FormLeadController@update_status')->whereNumber('id')->name('admin.form.leads.status');
+            Route::post('/{id}/delete', 'Admin\FormLeadController@destroy')->whereNumber('id')->name('admin.form.leads.delete');
+        });
  
  
   /*-----------------------------------

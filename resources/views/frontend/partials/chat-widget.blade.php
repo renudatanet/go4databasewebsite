@@ -574,6 +574,16 @@
         if (e.key === 'Escape' && root.classList.contains('is-open')) { close(); launcher.focus(); }
     });
 
+    // Any link marked data-g4chat-open (the list page's "Talk to our data team")
+    // opens this chat instead of following its href. The href stays as the
+    // fallback: with the chat switched off this script isn't on the page.
+    document.addEventListener('click', function (e) {
+        var trigger = e.target.closest && e.target.closest('[data-g4chat-open]');
+        if (!trigger) { return; }
+        e.preventDefault();
+        open();
+    });
+
     /* --- composing ------------------------------------------------------- */
     function autoGrow() {
         input.style.height = 'auto';

@@ -14,6 +14,10 @@ class Identity extends Model
     public const JOB_APPLICATION = 'job_application';
     public const APP_SIGNUP = 'app_signup';
     public const APP_LOGIN = 'app_login';
+    // The list pages' forms (App\FormLeads\FormKind values).
+    public const LIST_EXPERT = 'list_expert';
+    public const LIST_SAMPLE = 'list_sample';
+    public const LIST_SIGNUP = 'list_signup';
 
     public const LABELS = [
         self::CONTACT_FORM => 'Contact form',
@@ -22,6 +26,9 @@ class Identity extends Model
         self::JOB_APPLICATION => 'Job application',
         self::APP_SIGNUP => 'Signed up in the app',
         self::APP_LOGIN => 'Logged in to the app',
+        self::LIST_EXPERT => 'List page: talk to an expert',
+        self::LIST_SAMPLE => 'List page: sample request',
+        self::LIST_SIGNUP => 'List page: free credits sign-up',
     ];
 
     protected $table = 'tracking_identities';

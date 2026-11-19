@@ -507,8 +507,10 @@ Route::group(['middleware' => ['setlang:frontend', 'globalVariable', 'maintains_
   Route::get('list/{service_slug}', 'FrontendController@list_single')->where('service_slug', '.*')
     ->name('frontend.list.single');
        
-      Route::post('/lead-submit',  'FrontendController@submit')->name('service-lead.submit');
-      Route::post('/sample-submit',  'FrontendController@submitSample')->name('sample-lead.submit');
+      // The list pages' forms: each submission is kept as a form lead (App\FormLeads).
+      Route::post('/lead-submit', 'ListLeadFormController@expert')->name('service-lead.submit')->middleware(['throttle:10,1', 'tracking.identify:list_expert']);
+      Route::post('/sample-submit', 'ListLeadFormController@sample')->name('sample-lead.submit')->middleware(['throttle:10,1', 'tracking.identify:list_sample']);
+      Route::post('/list-signup', 'ListLeadFormController@signup')->name('list-signup.submit')->middleware(['throttle:20,1', 'tracking.identify:list_signup']);
     /*--------------------------------------
          FRONTEND: OTHERS ROUTES
      ---------------------------------------*/

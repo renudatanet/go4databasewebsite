@@ -152,6 +152,7 @@ final class PageRegistry
                     ['Lists', 'admin.list', 'Services'],
                     ['Page wording', 'admin.list.page.settings', 'Services'],
                     ['Industries', 'admin.list.category', 'Services'],
+                    ['Form leads', 'admin.form.leads', 'Services'],
                 ],
             ],
             'b2b' => [

@@ -483,6 +483,35 @@ per page, with search), then every page.
   id 37, hidden by `/email-verifier`) is flagged "Not shown on the site" in
   Pages > All Pages and on its edit screen: `/{slug}` is registered last.
 
+## Form leads (the list pages' forms, Admin > List > Form Leads)
+
+Built 2026-11-19. The single list page (`list/list-single.blade.php`) has
+three forms; every submission is now kept in table `form_leads`
+(`App\FormLeads`), before anything else happens:
+- "Talk to marketing expert" (`service-lead.submit`, `/lead-submit`) and the
+  sample request (`sample-lead.submit`, `/sample-submit`) still send the
+  email they always sent to `success@go4database.com` (`LeadMailer`); a
+  failed send only marks the lead `emailed = false` and is logged, the
+  visitor sees no error. They answer back at the form (`#lead-form`,
+  `#sample-data-section`) so the thank-you message is in view.
+- "Get 1200 Free Leads" posts to `list-signup.submit` (`/list-signup`),
+  which keeps a valid email and redirects to the app's register page with
+  `?email=`, where the form used to go directly.
+- All three are `ListLeadFormController` (the old
+  `FrontendController@submit/submitSample` methods are no longer routed;
+  left in place because live's FrontendController may differ from git).
+  Each form includes `list/partials/form-guard` (hidden `list_id`, saved
+  with the list title, and a `website_url` spam trap); routes are
+  throttled and carry `tracking.identify:list_expert|list_sample|list_signup`
+  (labels in `App\Tracking\Models\Identity::LABELS`).
+- Admin: `Admin\FormLeadController`, `admin.form.leads*` under
+  `/admin-home/list/form-leads` (permission Services, like the List menu):
+  filter by form/status, search, status new/contacted/done, delete, CSV
+  (spreadsheet formulas neutralised, phone numbers kept). Also a tab on the
+  Lists page in Page Manage. Migration
+  `2026_11_19_100000_create_form_leads_table`.
+- Tests: `vendor/bin/phpunit tests/Feature/FormLeads`.
+
 ## Careers (`/career`, its categories, roles and `/apply/{id}`)
 
 Rebuilt 2026-10-30 in the blog's look (it includes `blog/partials/style`,
