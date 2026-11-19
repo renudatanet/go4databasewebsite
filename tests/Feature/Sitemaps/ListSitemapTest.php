@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
 
 /**
- * The list pages' sitemaps: /list_sitemap.xml indexes one sitemap per
- * industry (List > Category), and sitemap.xml lists those directly.
+ * The list pages' sitemaps: sitemap.xml lists one sitemap per industry
+ * (List > Category) straight away, each holding that industry's pages.
  */
 class ListSitemapTest extends TestCase
 {
@@ -58,27 +58,51 @@ class ListSitemapTest extends TestCase
         ]);
     }
 
-    public function test_the_index_has_one_sitemap_per_industry_with_lists(): void
+    public function test_sitemap_xml_lists_one_sitemap_per_industry_with_pages(): void
     {
         $health = $this->industry('Healthcare', 'healthcare');
         $estate = $this->industry('Real Estate', 'real-estate');
-        $this->industry('Aviation', 'aviation');                     // no lists yet
-        $hidden = $this->industry('Legal', 'legal', 'draft');        // not published
+        $this->industry('Aviation', 'aviation');                     // no pages yet
         $this->list('/healthcare/staffing-agencies', $health, 'Publish', '2026-10-01 09:00:00');
         $this->list('/healthcare/lab-network-ceo', $health, 'Publish', '2026-11-05 12:30:00');
         $this->list('/real-estate/brokers', $estate);
-        $this->list('/legal/law-firms', $hidden);
 
-        $xml = $this->get('/list_sitemap.xml')->assertOk()->assertHeader('Content-Type', 'application/xml')->getContent();
+        $xml = $this->get('/sitemap.xml')->assertOk()->getContent();
 
         $this->assertStringContainsString('<sitemapindex', $xml);
-        $this->assertSame([
-            url('/list_sitemap_healthcare.xml'),
-            url('/list_sitemap_real-estate.xml'),
-            url('/list_sitemap_uncategorized.xml'),
-        ], $this->locs($xml));
-        // An industry's date is when its newest list changed.
+        $lists = array_values(array_filter($this->locs($xml), fn ($loc) => str_contains($loc, 'list_sitemap')));
+        $this->assertSame([url('/list_sitemap_healthcare.xml'), url('/list_sitemap_real-estate.xml')], $lists);
+        // An industry's date is when its newest page changed.
         $this->assertStringContainsString('<lastmod>2026-11-05T12:30:00+00:00</lastmod>', $xml);
+    }
+
+    public function test_the_old_list_index_now_sends_crawlers_to_sitemap_xml(): void
+    {
+        $this->get('/list_sitemap.xml')->assertStatus(301)->assertRedirect('/sitemap.xml');
+    }
+
+    public function test_a_draft_category_keeps_its_pages_in_its_own_sitemap(): void
+    {
+        $health = $this->industry('Healthcare', 'healthcare', 'draft');
+        $this->list('/healthcare/japan', $health);
+
+        $this->assertSame(['healthcare'], (new ListSitemap())->industries()->pluck('key')->all());
+    }
+
+    public function test_pages_whose_category_is_gone_go_by_their_address(): void
+    {
+        $this->industry('Healthcare', 'healthcare');
+        $this->list('/healthcare/japan', 999);                       // category deleted
+        $this->list('/hospitality/hotels', null);                    // no category at all
+        $this->list('/healthcare', null);                            // the industry's own page
+        $this->list('/loose-page', null);                            // names no industry
+
+        $sitemaps = (new ListSitemap())->industries();
+
+        $this->assertSame(['healthcare', 'hospitality', ListSitemap::OTHER], $sitemaps->pluck('key')->all());
+        $this->assertSame('Hospitality', $sitemaps[1]['name']);
+        $this->assertSame([url('/list/healthcare/japan'), url('/list/healthcare')], (new ListSitemap())->urls('healthcare')->pluck('loc')->all());
+        $this->assertSame([url('/list/loose-page')], (new ListSitemap())->urls(ListSitemap::OTHER)->pluck('loc')->all());
     }
 
     public function test_an_industry_sitemap_holds_the_lists_a_visitor_can_open(): void

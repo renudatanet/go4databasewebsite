@@ -43,10 +43,8 @@ class SitemapController extends Controller
                 'loc' => url('/b2c_sitemap.xml'),
                 'lastmod' => $this->getB2CLastModified(),
             ],
-            // The list pages' industry sitemaps, listed here one by one: a
-            // sitemap index may not contain another index, which is what
-            // /list_sitemap.xml is (the same industries, for people and for
-            // submitting in Search Console on its own).
+            // The list pages: one sitemap per industry, listed here directly
+            // (sitemap.xml > industry > its pages, no index in between).
             ...(new ListSitemap())->industries()->map(fn (array $industry) => [
                 'loc' => $industry['loc'],
                 'lastmod' => $industry['lastmod'],
@@ -124,18 +122,6 @@ class SitemapController extends Controller
         $xml->header('Content-Type', 'text/xml');
 
         return $xml;
-    }
-
-    /** /list_sitemap.xml: the index of the industries' list sitemaps. */
-    public function list(ListSitemap $lists)
-    {
-        $sitemaps = $lists->industries()->map(fn (array $industry) => [
-            'loc' => $industry['loc'],
-            'lastmod' => $industry['lastmod'],
-        ])->all();
-
-        return response()->view('frontend.sitemap.sitemap', compact('sitemaps'))
-            ->header('Content-Type', 'application/xml');
     }
 
     /** /list_sitemap_{industry}.xml: one industry's list pages. */

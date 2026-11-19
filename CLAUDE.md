@@ -421,19 +421,22 @@ loaded here, only by the single list pages.
 
 `SitemapController`, views in `resources/views/frontend/sitemap/`.
 `sitemap.xml` is an index of pages, b2b, blog, b2c, case study and career
-sitemaps **plus one list sitemap per industry**. Built 2026-11-10:
-- `/list_sitemap.xml` is an index of `/list_sitemap_{industry}.xml`, one per
-  List > Category, each holding that industry's list pages
-  (`App\Sitemaps\ListSitemap`). sitemap.xml lists the industry sitemaps
-  directly, not `list_sitemap.xml`: a sitemap index may not contain another
-  index. Submit `list_sitemap.xml` in Search Console on its own to see the
-  lists grouped by industry.
+sitemaps **plus one list sitemap per industry**. Built 2026-11-10, made
+two-level 2026-11-19 at the user's request ("no third layer"):
+- `sitemap.xml` > `/list_sitemap_{industry}.xml` (one per List > Category,
+  `App\Sitemaps\ListSitemap`) > that industry's list pages. Nothing in
+  between: `/list_sitemap.xml` is a 301 to `/sitemap.xml` (it was an index
+  of the industries; a sitemap index may not hold another index anyway).
 - An industry appears once it has a list a visitor can open (an empty
   sitemap is invalid); its sitemap is 404 until then. Lists are filtered
   like `list_single` (everything but drafts; imported rows have status
-  "1"). Lists whose category is missing or unpublished go in
-  `list_sitemap_uncategorized.xml`, so none drop out. Categories of the
-  same slug in several languages share one sitemap.
+  "1"). A list goes in its category's sitemap whatever the category's
+  status; if its category is gone it goes by its address (`/healthcare/x`
+  > Healthcare's, or a new "Hospitality" one from `/hospitality/x`). Only
+  lists matching no industry (a one-part address with no category) go in
+  `list_sitemap_uncategorized.xml`. Why: on 2026-11-19 live's Healthcare
+  lists had lost their category link and all 445 fell into uncategorized.
+  Categories of the same slug in several languages share one sitemap.
 - Real dates only: an industry's lastmod is its newest list's
   `updated_at`, a list's its own (the old view invented "10-15 days ago").
   The index views print `<lastmod>` only when there is a date.

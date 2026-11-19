@@ -9,14 +9,17 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 /**
- * The list pages' sitemaps, one per industry (List > Category):
- * /list_sitemap.xml is the index of them and each industry has its own,
- * /list_sitemap_{industry}.xml, holding that industry's list pages.
+ * The list pages' sitemaps, one per industry (List > Category), listed
+ * straight in sitemap.xml: sitemap.xml > /list_sitemap_{industry}.xml >
+ * that industry's list pages. Two levels, no index in between.
  *
  * An industry appears once it has a list a visitor can open; an empty
  * sitemap is not valid, so empty industries are left out until their
- * first list is published. Lists whose industry is gone or unpublished go
- * in a sitemap of their own, so no list page drops out of the sitemaps.
+ * first list is added. A list goes in its category's sitemap (whatever the
+ * category's status: the list page itself is public). A list whose
+ * category is gone goes by its address instead, /healthcare/japan in
+ * Healthcare's, so a category slip in the admin can't move its pages out.
+ * Only lists that match no industry at all go in the uncategorized one.
  */
 final class ListSitemap
 {
@@ -82,36 +85,60 @@ final class ListSitemap
             ->orderBy('id')
             ->get();
 
-        // Categories of the same name in several languages share a sitemap.
-        $keys = ListCategory::query()
-            ->whereRaw("LOWER(status) = 'publish'")
-            ->orderBy('name')
-            ->get(['id', 'name', 'slug'])
-            ->mapWithKeys(fn (ListCategory $category) => [$category->id => [
-                'key' => Str::slug($category->slug ?: $category->name) ?: 'industry-' . $category->id,
-                'name' => $category->name,
-            ]]);
-
+        // Category id => sitemap key. Categories of the same name in several
+        // languages share a key, so they share a sitemap.
         $groups = collect();
-        foreach ($keys as $category) {
-            if (!$groups->has($category['key']) && $category['key'] !== self::OTHER) {
-                $groups->put($category['key'], ['key' => $category['key'], 'name' => $category['name'], 'lists' => collect()]);
+        $keyOf = [];
+        $categories = ListCategory::query()->orderBy('name')->get(['id', 'name', 'slug']);
+        foreach ($categories as $category) {
+            $key = Str::slug($category->slug ?: $category->name) ?: 'industry-' . $category->id;
+            if ($key === self::OTHER) {
+                continue;
+            }
+            $keyOf[$category->id] = $key;
+            if (!$groups->has($key)) {
+                $groups->put($key, ['key' => $key, 'name' => $category->name, 'lists' => collect()]);
             }
         }
+
         $other = ['key' => self::OTHER, 'name' => 'Other lists', 'lists' => collect()];
         foreach ($lists as $list) {
-            $key = $keys[$list->categories_id]['key'] ?? null;
-            if ($key !== null && $groups->has($key)) {
-                $groups[$key]['lists']->push($list);
-            } else {
+            $key = $keyOf[$list->categories_id] ?? $this->keyFromAddress((string) $list->slug, $groups);
+            if ($key === null) {
                 $other['lists']->push($list);
+                continue;
             }
-        }
-        if ($other['lists']->isNotEmpty()) {
-            $groups->put(self::OTHER, $other);
+            if (!$groups->has($key)) {
+                $groups->put($key, ['key' => $key, 'name' => Str::headline($key), 'lists' => collect()]);
+            }
+            $groups[$key]['lists']->push($list);
         }
 
-        return $this->groups = $groups->filter(fn (array $group) => $group['lists']->isNotEmpty())->values();
+        $groups = $groups->filter(fn (array $group) => $group['lists']->isNotEmpty())
+            ->sortBy(fn (array $group) => Str::lower($group['name']))
+            ->values();
+        if ($other['lists']->isNotEmpty()) {
+            $groups->push($other);
+        }
+
+        return $this->groups = $groups;
+    }
+
+    /**
+     * The industry a list's address names, for a list whose category is
+     * gone: its first part, when that is a known industry or the address
+     * has more parts (/healthcare/japan). A one-part address that names no
+     * industry (/some-list) is left uncategorized.
+     */
+    private function keyFromAddress(string $slug, Collection $groups): ?string
+    {
+        $parts = array_values(array_filter(explode('/', $slug), 'strlen'));
+        $key = Str::slug($parts[0] ?? '');
+        if ($key === '' || $key === self::OTHER) {
+            return null;
+        }
+
+        return $groups->has($key) || count($parts) > 1 ? $key : null;
     }
 
     private static function atom($date): ?string

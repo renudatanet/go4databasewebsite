@@ -32,7 +32,8 @@ Route::get('/sitemap.xml', [SitemapController::class, 'index']);
 Route::get('/pages_sitemap.xml', [SitemapController::class, 'pages']);
 Route::get('/b2b_sitemap.xml', [SitemapController::class, 'b2b']);
 Route::get('/b2c_sitemap.xml', [SitemapController::class, 'b2c']);
-Route::get('/list_sitemap.xml', [SitemapController::class, 'list']);
+// The industry sitemaps are listed straight in sitemap.xml (no index in between).
+Route::permanentRedirect('/list_sitemap.xml', '/sitemap.xml');
 Route::get('/list_sitemap_{industry}.xml', [SitemapController::class, 'list_industry'])->where('industry', '[a-z0-9\-]+');
 Route::get('/blog_sitemap.xml', [SitemapController::class, 'blog']);
 Route::get('/case_study_sitemap.xml', [SitemapController::class, 'case_study']);
