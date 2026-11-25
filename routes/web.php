@@ -556,7 +556,10 @@ Route::group(['middleware' => ['setlang:frontend', 'globalVariable', 'maintains_
         Route::get($blog_page_slug, 'FrontendController@blog_page')->name('frontend.blog');
         // Route::get($blog_page_slug.'/author', 'FrontendController@author_list')->name('blog.author');
         Route::get($blog_page_slug.'/author/{author}', 'FrontendController@author_single_page')->name('blog.author');
-        Route::get( $blog_page_slug.'-search', 'FrontendController@blog_search_page')->name('frontend.blog.search');
+        // Blog search: /blog/search?s=lead+generation. Before blog/{slug}, which would take "search" for a post.
+        Route::get( $blog_page_slug.'/search', 'FrontendController@blog_search_page')->name('frontend.blog.search');
+        // The old address (/blog-search?search=...) moves there for good, for old links and search engines.
+        Route::get( $blog_page_slug.'-search', 'BlogSearchRedirectController')->name('frontend.blog.search.legacy');
         Route::get( $blog_page_slug.'/{slug}', 'FrontendController@blog_single_page')->name('frontend.blog.single');
        // Route::get($blog_page_slug.'/author/{author}', 'FrontendController@blog_single_page')->name('blog.author');
          

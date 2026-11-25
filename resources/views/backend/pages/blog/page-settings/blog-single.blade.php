@@ -42,7 +42,7 @@
                                     <div class="form-group">
                                         <label for="blog_single_page_{{$lang->slug}}_toc_title">{{__('"On This Page" Heading')}}</label>
                                         <input type="text" class="form-control" id="blog_single_page_{{$lang->slug}}_toc_title" name="blog_single_page_{{$lang->slug}}_toc_title" value="{{get_static_option('blog_single_page_'.$lang->slug.'_toc_title')}}">
-                                        <small class="text-muted">{{__('Default: On this page')}}</small>
+                                        <small class="text-muted">{{__('Default: Table of Contents')}}</small>
                                     </div>
                                     <div class="form-group">
                                         <label for="blog_single_page_{{$lang->slug}}_cta_title">{{__('Sign-up Card Heading')}}</label>

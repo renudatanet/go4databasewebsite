@@ -108,7 +108,9 @@
       <div class="g4f-brand">
         <a class="g4f-logo" href="{{ url('/') }}">
           @if(!empty(get_static_option('site_logo')))
-            {!! render_image_markup_by_attachment_id(get_static_option('site_logo'), '', 'full', 'loading="lazy" decoding="async"') !!}
+            {{-- The 68px-high WebP copy (5 KB; shown 190px wide, as sharp as the
+                 full upload), the same file sharp screens load for the header logo. --}}
+            {!! render_image_markup_by_attachment_id(get_static_option('site_logo'), '', 'logo2x', 'loading="lazy" decoding="async"') !!}
           @else
             <span>{{ get_static_option('site_' . $user_select_lang_slug . '_title') }}</span>
           @endif

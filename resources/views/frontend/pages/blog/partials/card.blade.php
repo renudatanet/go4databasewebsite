@@ -3,15 +3,16 @@
 @php
     $variant = $variant ?? 'card';
     $url = route('frontend.blog.single', $post->slug);
-    // The 740px copy (Regenerate Media Image makes it); the helper falls back
-    // to the original when it is missing. 350px grid- copies blur on 2x screens.
-    $img = get_attachment_image_by_id($post->image, 'large');
+    // The 740px WebP banner and 64px WebP author photo (App\Actions\LightCopies,
+    // made hourly); until they exist the helper gives the large- and thumb-
+    // copies, then the original. 350px grid- copies blur on 2x screens.
+    $img = get_attachment_image_by_id($post->image, 'banner');
     $topic = $post->category;
     $author = $post->authorData;
-    $avatar = $author ? get_attachment_image_by_id($author->image, 'thumb') : [];
+    $avatar = $author ? get_attachment_image_by_id($author->image, 'icon') : [];
     // A media record can outlive its file; then the initial shows, not a
-    // broken picture. Same relative path the image helper itself checks.
-    if (!empty($avatar['img_url']) && !file_exists('assets/uploads/media-uploader/' . basename(parse_url($avatar['img_url'], PHP_URL_PATH)))) {
+    // broken picture. Relative to the web root, as the image helper checks.
+    if (!empty($avatar['img_url']) && !file_exists(ltrim(rawurldecode((string) parse_url($avatar['img_url'], PHP_URL_PATH)), '/'))) {
         $avatar = [];
     }
     $minutes = max(1, (int) ceil(str_word_count(strip_tags((string) $post->content)) / 225));

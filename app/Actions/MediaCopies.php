@@ -22,6 +22,21 @@ class MediaCopies
     public const SIZES = ['large-' => 740, 'grid-' => 350, 'thumb-' => 150];
 
     /**
+     * The web root holding the media library: $root when given, else on live
+     * public_html, the folder above @core (whose own public/ is a separate,
+     * unserved copy), else public/. Null when that folder has no library.
+     */
+    public static function webRoot(?string $root = null): ?string
+    {
+        if (!$root) {
+            $above = dirname(base_path());
+            $root = is_dir($above . '/' . self::FOLDER) ? $above : public_path();
+        }
+        $root = rtrim($root, '/');
+        return is_dir($root . '/' . self::FOLDER) ? $root : null;
+    }
+
+    /**
      * The copies one image lacks, as prefix => width; empty when it needs
      * none, including images too small for copies and files GD can't read (an SVG).
      */

@@ -22,13 +22,9 @@ class MakeMediaCopies extends Command
 
     public function handle()
     {
-        $root = $this->option('root');
-        if (!$root) {
-            $above = dirname(base_path());
-            $root = is_dir($above . '/' . MediaCopies::FOLDER) ? $above : public_path();
-        }
-        if (!is_dir(rtrim($root, '/') . '/' . MediaCopies::FOLDER)) {
-            $this->error('No media library at ' . rtrim($root, '/') . '/' . MediaCopies::FOLDER);
+        $root = MediaCopies::webRoot($this->option('root'));
+        if ($root === null) {
+            $this->error('No media library found.');
             return 1;
         }
         chdir($root);

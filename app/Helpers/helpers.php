@@ -574,7 +574,16 @@ function get_attachment_image_by_id($id, $size = null, $default = false)
 
     if (!empty($id) && !empty($image_details)) {
         $image_url = asset('assets/uploads/media-uploader/' . $image_details->path);
+        // icon, banner, logo, logo2x: the small WebP copy (App\Actions\LightCopies)
+        // once made, else the size it stands in for.
+        if (isset(\App\Actions\LightCopies::KINDS[$size])) {
+            $light_copy = \App\Actions\LightCopies::file($image_details->path, $size);
+            $size = is_file($light_copy) ? 'light' : \App\Actions\LightCopies::KINDS[$size]['fallback'];
+        }
         switch ($size) {
+            case 'light':
+                $image_url = asset($light_copy);
+                break;
             case "large":
                 if (file_exists('assets/uploads/media-uploader/large-' . $image_details->path)) {
                     $image_url = asset('assets/uploads/media-uploader/large-' . $image_details->path);
@@ -757,7 +766,17 @@ function render_logo_image_markup_by_attachment_id($id, $class = null, $size = '
     $image_details = get_attachment_image_by_id($id, $size);
     if (!empty($image_details)) {
         $class_list = !empty($class) ? 'class="' . $class . '"' : '';
-        $output = '<img src="' . $image_details['img_url'] . '" ' . $class_list . ' alt="'.$image_details['img_alt'].'" width="auto" height="34" loading="eager"/>';
+        // The 34px-high WebP copies (App\Actions\LightCopies), 2 KB and 5 KB for
+        // sharp screens, in place of the full upload once both are made.
+        $src = $image_details['img_url'];
+        $small = $size === 'full' ? \App\Actions\LightCopies::url($image_details['path'] ?? null, 'logo') : null;
+        $sharp = $small ? \App\Actions\LightCopies::url($image_details['path'] ?? null, 'logo2x') : null;
+        $srcset = '';
+        if ($small && $sharp) {
+            $src = $small;
+            $srcset = ' srcset="' . $small . ' 1x, ' . $sharp . ' 2x"';
+        }
+        $output = '<img src="' . $src . '"' . $srcset . ' ' . $class_list . ' alt="'.$image_details['img_alt'].'" width="auto" height="34" loading="eager"/>';
     }
     return $output;
 }

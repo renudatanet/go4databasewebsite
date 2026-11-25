@@ -955,7 +955,8 @@ private function blog_listing_data($lang, $all_blogs, $with_most_read = false)
         $lang = !empty(session()->get('lang')) ? session()->get('lang') : $default_lang->slug;
         $all_recent_blogs = Blog::where(['lang' => $lang,'status' => 'publish'])->orderBy('id', 'desc')->take(get_static_option('blog_page_recent_post_widget_item'))->get();
         $all_category = BlogCategory::where(['status' => 'publish', 'lang' => $lang])->orderBy('id', 'desc')->get();
-        $term = trim((string) $request->search);
+        // ?s= (the address /blog/search?s=lead+generation); ?search= is the old form's name.
+        $term = trim((string) ($request->query('s') ?? $request->query('search')));
         // % and _ are LIKE wildcards; searching "50%" would match everything.
         $like = '%' . addcslashes($term, '%_\\') . '%';
         $matches = Blog::where(['lang' => $lang, 'status' => 'publish'])
@@ -978,7 +979,7 @@ private function blog_listing_data($lang, $all_blogs, $with_most_read = false)
                 'query' => $term,
                 'popular' => $popular,
                 'total' => $popular ? $found->count() : (clone $matches)->count(),
-                'all_url' => route('frontend.blog.search', ['search' => $term]),
+                'all_url' => route('frontend.blog.search', ['s' => $term]),
                 'results' => $found->map(function ($post) {
                     return [
                         'title' => $post->title,
@@ -992,12 +993,12 @@ private function blog_listing_data($lang, $all_blogs, $with_most_read = false)
         }
 
         $all_blogs = $matches->paginate(get_static_option('blog_page_item'));
-        $all_blogs->appends(['search' => $request->search]);
+        $all_blogs->appends(['s' => $term]);
 
         return view('frontend.pages.blog.blog-search')->with(array_merge([
             'all_blogs' => $all_blogs,
             'all_categories' => $all_category,
-            'search_term' => $request->search,
+            'search_term' => $term,
             'all_recent_blogs' => $all_recent_blogs,
         ], $this->blog_listing_data($lang, $all_blogs)));
     }

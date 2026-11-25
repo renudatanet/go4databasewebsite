@@ -62,7 +62,7 @@ class BlogSearchWidget extends WidgetBase
         $output .='<div class="widget_search">
                         <form action="'.route('frontend.blog.search').'" method="get" class="search-form">
                             <div class="form-group">
-                                <input type="text" class="form-control" name="search" placeholder="'.__('Search...').'">
+                                <input type="text" class="form-control" name="s" placeholder="'.__('Search...').'">
                             </div>
                             <button class="submit-btn" type="submit"><i class="fa fa-search"></i></button>
                         </form>

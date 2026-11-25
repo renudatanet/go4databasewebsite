@@ -24,7 +24,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        // Small WebP copies for new posts, authors and a new logo (App\Actions\LightCopies).
+        $schedule->command('media:light')->hourly()->withoutOverlapping()->runInBackground();
     }
 
     /**

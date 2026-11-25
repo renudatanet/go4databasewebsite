@@ -34,7 +34,7 @@
     $updated = $blog_post->updated_at ?? $blog_post->created_at;
     $url = route('frontend.blog.single', $blog_post->slug);
     $toc_items = $toc['toc'] ?? [];
-    $toc_title = $text('toc_title', 'On this page');
+    $toc_title = $text('toc_title', 'Table of Contents');
     // Images in the article load as they come into view; the lead image
     // above them is the one the page waits for. Empty paragraphs the editor
     // leaves between real ones are dropped, they doubled the spacing.

@@ -58,7 +58,7 @@
             var searchType = $('#search_popup_search_type').val();
             if (searchType == 'blog') {
                 el.attr('action', "{{route('frontend.blog.search')}}");
-                el.find('.search-field').attr('name', 'search');
+                el.find('.search-field').attr('name', 's');
             } else if (searchType == 'event') {
                 el.attr('action', "{{route('frontend.events.search')}}");
                 el.find('.search-field').attr('name', 'search');

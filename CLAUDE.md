@@ -222,6 +222,12 @@ queries. The homepage article pop-up fetches its text from
 `php artisan media:copies --root=<web root>` (`App\Actions\MediaCopies`, also
 behind General Settings → Regenerate Media Image and called by the blog agent)
 makes the missing `large-`/`grid-`/`thumb-` copies.
+`php artisan media:light` (`App\Actions\LightCopies`, hourly in the scheduler)
+makes small WebP copies in `media-uploader/small/` of what the blog shows small:
+`icon-` 64px square (author photos, "Most read" thumbnails, ~1 KB), `banner-`
+740px (blog cards) and `logo-`/`logo2x-` 34/68px high (header logo with srcset,
+footer logo). Pages ask for them as sizes of `get_attachment_image_by_id()`
+(`icon`, `banner`, `logo2x`) and get `thumb`/`large`/the original until made.
 
 Front end: PageSpeed's score turned on one thing, whether Lighthouse's Chrome
 showed the first frame at ~0.5s or dropped it and waited 1-2s more (score ~95
@@ -292,7 +298,7 @@ The breadcrumb banner is suppressed for this page in
 `frontend-page-master.blade.php` by **route name** (`frontend.faq`) rather than
 path, because the slug is admin-configurable and differs between environments.
 
-## Blog listings (`/blog`, `/blog/{category}`, `/blog-search`)
+## Blog listings (`/blog`, `/blog/{category}`, `/blog/search`)
 
 All three render one shared view, `pages/blog/partials/listing.blade.php`
 (with `card`, `pagination` and `style` partials beside it; CSS and the
@@ -331,11 +337,17 @@ the index's first page a lead story beside a "Most read" list, then a grid.
   with a clean canonical through `partials/header.blade.php`, which does
   that for every URL with a query string. The old AJAX
   `javascript:void(0)` pagination is gone.
+- Search lives at `/blog/search?s=…` (2026-11-25, Saleshandy-style, from a
+  QC sheet); the old `/blog-search?search=…` is a 301 to it
+  (`BlogSearchRedirectController`, keeps the words and page). The route is
+  registered before `blog/{slug}`. Forms send `s` (listing box with
+  `data-param="s"`, header search pop-up, sidebar widget); the controller
+  still reads `search` too.
 - Search matches title **or** excerpt (title matches first, `%`/`_`
   escaped). Asked for JSON (`Accept: application/json`), the same
   `blog_search_page` route returns the search box's instant results (top 6,
   or the most-read posts when the box is empty).
-- Images: cards and the lead story use the `large-` copy (740px), with the
+- Images: cards and the lead story use the `banner` WebP copy (740px, else `large-`), with the
   media library's alt text and width/height; the lead image is
   `fetchpriority="high"`. Post images added without the media uploader
   (e.g. by the blog agent) have no copies, so pages fell back to originals
@@ -383,6 +395,8 @@ dropped from it on purpose.
 - `publish_date` is free text in the admin (only `required`); it is parsed
   in a try/catch, falling back to `created_at`, in both `blog-single` and
   `og-meta`. Keep it that way, a bad date must not 500 the post.
+- The contents box is headed "Table of Contents" by default (was "On this
+  page", changed 2026-11-25 from a QC sheet); `toc_title` overrides it.
 - Wording: Blog → Blog Single Page Settings, "Post page wording" fields,
   keys `blog_single_page_{lang}_{toc_title,cta_*,faq_title,author_title,
   lists_*,about_*,partners_title,case_title}`; empty = the default shown in

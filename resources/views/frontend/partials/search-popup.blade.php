@@ -4,7 +4,7 @@
         <form action="{{route('frontend.blog.search')}}" method="get" class="search-form-warp">
             <span class="search-popup-close-btn">×</span>
             <div class="form-group">
-                <input type="text" class="form-control search-field" name="search" placeholder="{{__('Search...')}}">
+                <input type="text" class="form-control search-field" name="s" placeholder="{{__('Search...')}}">
             </div>
             <div class="form-group">
                 <select name="search_type" id="search_popup_search_type" class="form-control">

@@ -122,10 +122,10 @@
             </div>
 
             <div class="g4b-search-wrap">
-                <form class="g4b-search" action="{{ route('frontend.blog.search') }}" method="get" role="search" data-suggest-url="{{ route('frontend.blog.search') }}" data-popular-label="{{ $text('most_read_title', 'Most read') }}">
+                <form class="g4b-search" action="{{ route('frontend.blog.search') }}" method="get" role="search" data-suggest-url="{{ route('frontend.blog.search') }}" data-param="s" data-popular-label="{{ $text('most_read_title', 'Most read') }}">
                     <label class="g4b-sr" for="g4b-search-input">Search articles</label>
                     <svg class="g4b-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
-                    <input id="g4b-search-input" type="search" name="search" value="{{ $search_term ?? '' }}"
+                    <input id="g4b-search-input" type="search" name="s" value="{{ $search_term ?? '' }}"
                            placeholder="{{ $text('search_placeholder', 'Search articles and guides') }}" autocomplete="off" required
                            role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="g4b-suggest">
                     <button type="button" class="g4b-search-clear" aria-label="Clear search" hidden>
@@ -177,7 +177,7 @@
                                 <p class="g4b-popular-head" id="g4b-popular-title">{{ $text('most_read_title', 'Most read') }}</p>
                                 <ol>
                                     @foreach($blog_most_read as $popular)
-                                        @php $thumb = get_attachment_image_by_id($popular->image, 'thumb'); @endphp
+                                        @php $thumb = get_attachment_image_by_id($popular->image, 'icon'); @endphp
                                         <li>
                                             <a href="{{ route('frontend.blog.single', $popular->slug) }}">
                                                 <span class="g4b-rank" aria-hidden="true">{{ $loop->iteration }}</span>
