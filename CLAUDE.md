@@ -100,13 +100,13 @@ anything visible**. Section order and data source, top to bottom:
 |---|---|---|---|
 | 1 | Top support bar | `frontend.partials.homesupportbar` → `supportbar` partial, gated on `navbar_variant` being empty + `home_page_support_bar_section_status` | Yes — Topbar Settings |
 | 2 | Main nav | `frontend.partials.navbar-new` | Menu items **yes** — Menus Manage (same menu as inner pages); logo and Log in / Sign up buttons hardcoded. See "Navbar" below |
-| 3 | Hero, search/demo card, stats strip, trust logos, credits promo, AI-verified tabs, feature grid, comparison table, integration screenshots | plain HTML | **No — hardcoded**, edit the blade file directly |
-| 4 | Testimonials (`#case-studies`) | Eloquent `$all_testimonial` | Content via Testimonial CRUD (not this page's admin section); heading text is hardcoded |
-| 5 | "Most Active Users" mailing list (`#favorite-lists`) | Eloquent `$all_work_category` / `$all_work` (Works model) | Content via Works CRUD; heading text hardcoded |
+| 3 | Hero, search/demo card, stats strip, trust logos, credits promo, AI-verified tabs, feature grid, comparison table, integration screenshots | `$home` (`App\HomePage\HomePageText`) | **Yes** — Page Manage > Home > Homepage content (since 2026-11-25; see below) |
+| 4 | Testimonials (`#case-studies`) | Eloquent `$all_testimonial` | Quotes via Testimonial CRUD; heading, text and on/off in Homepage content |
+| 5 | "Most Active Users" mailing list (`#favorite-lists`) | Eloquent `$all_work_category` / `$all_work` (Works model) | Cards via Works CRUD; heading, text, first tab, button and on/off in Homepage content |
 | 6 | Blog/News grid (`#blog`) | `$static_field_data` gated on `home_page_latest_news_section_status`; title/desc from `home_page_01_{lang}_latest_news_*`; cards from `$all_blog` | **Yes** — admin `/admin-home/home-page-01/latest-news` + Blog CRUD |
-| 7 | FAQ accordion | plain HTML | **No — hardcoded**, no CMS backing at all |
-| 8 | CTA banner | plain HTML | No |
-| 9 | Decorative "Get Custom Prospecting" contact form (`#contact`) | plain `<form>`, no server wiring visible | No — pure HTML/CSS edit |
+| 7 | FAQ accordion | `$home` | **Yes** — Homepage content (questions are "Question \| Answer" lines) |
+| 8 | CTA banner | `$home` | **Yes** — Homepage content |
+| 9 | "Get Custom Prospecting" contact form (`#contact`) | `$home`; posts to `home-contact.submit` (`HomeLeadFormController`) | **Yes** — wording in Homepage content; sent forms are Form Leads ("Homepage: talk to an expert"). It used to send nothing at all |
 | 10 | `frontend.partials.contact-section` (stacked right after #9) | **Real, working** contact form: gated on `home_page_contact_section_status`, map from `home_page_01_contact_area_map_location`, fields from `get_in_touch_form_fields`, posts to `route('frontend.get.touch')` | **Yes** — admin `/admin-home/home-page-01/contact-area` |
 | 11 | Floating chat bubble, `frontend.partials.chat-widget` (last include in the file) | `chat_widget_*` static options, gated on `chat_widget_status` | **Yes** — admin `/admin-home/general-settings/chat-widget-settings`, see "Chat widget" below |
 
@@ -120,6 +120,33 @@ cta-area, brand-logo-area, testimonial-title, service-area), only
 Latest News, Section Manage (the `*_section_status` toggles), and Contact
 Area still have a live effect** — the rest write to `static_options` but
 nothing on the page reads them anymore.
+
+### Homepage content (Page Manage > Home > Homepage content)
+
+Built 2026-11-25 at the user's request ("the home page edit section same as
+the pages, all thing edit option"). `App\HomePage\HomePageText` (extends
+`App\Careers\PageText`, keys `home_page_text_{lang}_{key}`) holds every text,
+link, list and image of home-01, its DEFAULTS being the page exactly as
+built; `HomePageFields` maps them to the admin screen (one card per section,
+types input/textarea/lines/url/image/switch) and to validation.
+`Admin\HomeContentController`, route `admin.home.content`
+(`/admin-home/home-content`, permission Home Page Manage), first tab of Home
+in Page Manage. The screen pre-fills each field with what the page shows.
+- home-01 reads them through `$home` (set at the top of the blade). Lists are
+  "a | b" lines (`pairs`/`lines`); `marked()` turns *stars* into the green
+  highlight span (escaped); `url()` refuses anything but http(s), /, #,
+  mailto:, tel:; `show_*` switches hide whole sections.
+- Logo strip and partner logos: empty list = the built-in, hand-styled
+  wordmarks (kept in the blade as the @else); a list replaces them. Promo and
+  the three capability screenshots: empty = built-in image, else the media
+  library pick.
+- home-01.js (`?v=10`): rotating words come from `#hero-rotating-word`'s
+  `data-words`, search tabs from each tab's `data-titles` (the old presets are
+  the fallback), and the contact form really posts (JSON) and shows the
+  answer in `.g4d-contact-note`. Deploy the JS to `public_html/assets` too.
+- If a section is added or much changed in height, update its
+  `content-visibility` height at the end of home.css (see Page speed).
+- Tests: `vendor/bin/phpunit tests/Feature/HomePage`.
 
 **When the user asks to change a home-01 section**: check the table above
 first. If it's marked "hardcoded", the fix is a direct edit to

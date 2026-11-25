@@ -18,6 +18,7 @@ class Identity extends Model
     public const LIST_EXPERT = 'list_expert';
     public const LIST_SAMPLE = 'list_sample';
     public const LIST_SIGNUP = 'list_signup';
+    public const HOME_EXPERT = 'home_expert';
 
     public const LABELS = [
         self::CONTACT_FORM => 'Contact form',
@@ -29,6 +30,7 @@ class Identity extends Model
         self::LIST_EXPERT => 'List page: talk to an expert',
         self::LIST_SAMPLE => 'List page: sample request',
         self::LIST_SIGNUP => 'List page: free credits sign-up',
+        self::HOME_EXPERT => 'Homepage: talk to an expert',
     ];
 
     protected $table = 'tracking_identities';

@@ -1748,6 +1748,15 @@ Route::prefix('admin-home')->middleware(['setlang:backend'])->group(function () 
     });
 
     /*==============================================
+      HOMEPAGE CONTENT: every text, link, list and image of the homepage
+      (App\HomePage; Page Manage > Home > Homepage content)
+    ==============================================*/
+    Route::prefix('home-content')->middleware(['adminPermissionCheck:Home Page Manage'])->group(function () {
+        Route::get('/', 'Admin\HomeContentController@index')->name('admin.home.content');
+        Route::post('/', 'Admin\HomeContentController@update');
+    });
+
+    /*==============================================
       PAGE MANAGE: every page of the site in one place
       (permissions are checked per screen, see App\SitePages)
     ==============================================*/

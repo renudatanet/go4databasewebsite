@@ -20,6 +20,7 @@
     .g4fl-form{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;background:#eef2ff;color:#3730a3;white-space:nowrap}
     .g4fl-form--list_sample{background:#ecfdf5;color:#065f46}
     .g4fl-form--list_signup{background:#fff7ed;color:#9a3412}
+    .g4fl-form--home_expert{background:#f0f9ff;color:#075985}
     .g4fl-text{max-width:360px;white-space:pre-line;color:#374151}
     .g4fl-text details summary{cursor:pointer;color:#2563eb}
     .g4fl-muted{color:#9ca3af;font-size:12px}

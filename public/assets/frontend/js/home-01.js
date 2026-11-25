@@ -115,18 +115,38 @@
         }
     
         // Contact Form
+        // Sends the form to the site (saved under Admin > List > Form Leads) and
+        // says so in the form; without script it posts and reloads at #contact.
         function setupContactForm() {
           const form = document.getElementById('contact-form');
           const btn = document.getElementById('contact-submit-btn');
+          // No address to send to (an older page): leave the form alone.
+          if (!form || !btn || !form.getAttribute('action')) return;
+          const label = btn.textContent;
+          const note = form.querySelector('.g4d-contact-note');
+          const say = (text, ok) => {
+            if (!note) return;
+            note.textContent = text;
+            note.style.color = ok ? '#15803d' : '#dc2626';
+            note.hidden = false;
+          };
           form.addEventListener('submit', (e) => {
             e.preventDefault();
-            btn.textContent = "Trial Activated! Redirecting...";
-            btn.style.background = "#14501e";
-            setTimeout(() => {
-              btn.textContent = "Talk to an Expert \u2192";
-              btn.style.background = "#6fd943";
-              form.reset();
-            }, 2500);
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+            fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
+              .then((res) => res.json().then((body) => ({ ok: res.ok, body })))
+              .then(({ ok, body }) => {
+                if (!ok) {
+                  const errors = body && body.errors ? Object.values(body.errors).flat() : [];
+                  say(errors[0] || (body && body.message) || 'Something went wrong, please try again.', false);
+                  return;
+                }
+                say((body && body.message) || form.dataset.success || 'Thank you!', true);
+                form.reset();
+              })
+              .catch(() => say('Something went wrong, please try again.', false))
+              .finally(() => { btn.disabled = false; btn.textContent = label; });
           });
         }
     
@@ -245,22 +265,28 @@
         }
     
         function setupHeroWordRotation() {
-          const words = [
+          const target = document.getElementById('hero-rotating-word');
+          if (!target) return;
+          // The words come from the admin (data-words); these are the built-in ones.
+          let words = [
             "AI Lead Generation",
             "High-Intent B2B Sales Leads",
             "Real-Time Verified B2B Emails",
             "Executive Decision Makers",
             "AI-Powered B2B Prospecting"
           ];
+          try {
+            const fromPage = JSON.parse(target.dataset.words || '[]');
+            if (Array.isArray(fromPage) && fromPage.length) words = fromPage.map(String);
+          } catch (e) { /* keep the built-in words */ }
           // The page ships with the longest phrase already in the span and the
           // animation starts by deleting it. Painting the longest string first means
           // no later word is a bigger paint, so Largest Contentful Paint is the
           // first render of the hero rather than whichever word types out last.
-          let wordIndex = 2;                       // "Real-Time Verified B2B Emails"
+          let wordIndex = Math.max(0, words.indexOf(target.textContent.trim()));
           let charIndex = words[wordIndex].length;
           let isDeleting = true;
-          const target = document.getElementById('hero-rotating-word');
-          if (!target) return;
+          if (words.length < 2) return;            // one word: nothing to rotate
     
           function type() {
             const currentWord = words[wordIndex];
@@ -480,7 +506,10 @@ function buildParamsAndFetch() {
           if (titleInput) {
             // Comma separated, matching the API. The CEO tab must search "CEO"
             // because an empty search returns nothing.
-            if (presetKey === 'CEO') titleInput.value = 'CEO';
+            // A tab names its own job titles (data-titles, from the admin); the
+            // preset keys below are the built-in tabs'.
+            if (element.dataset && element.dataset.titles) titleInput.value = element.dataset.titles;
+            else if (presetKey === 'CEO') titleInput.value = 'CEO';
             else if (presetKey === 'VP') titleInput.value = 'VP, Director';
             else if (presetKey === 'TECH') titleInput.value = 'CTO, IT Head';
             else if (presetKey === 'HEALTH') titleInput.value = 'Healthcare Executive';

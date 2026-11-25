@@ -511,6 +511,8 @@ Route::group(['middleware' => ['setlang:frontend', 'globalVariable', 'maintains_
       Route::post('/lead-submit', 'ListLeadFormController@expert')->name('service-lead.submit')->middleware(['throttle:10,1', 'tracking.identify:list_expert']);
       Route::post('/sample-submit', 'ListLeadFormController@sample')->name('sample-lead.submit')->middleware(['throttle:10,1', 'tracking.identify:list_sample']);
       Route::post('/list-signup', 'ListLeadFormController@signup')->name('list-signup.submit')->middleware(['throttle:20,1', 'tracking.identify:list_signup']);
+      // The homepage's "Talk to an Expert" form, kept as a form lead too.
+      Route::post('/home-contact', 'HomeLeadFormController@store')->name('home-contact.submit')->middleware(['throttle:10,1', 'tracking.identify:home_expert']);
     /*--------------------------------------
          FRONTEND: OTHERS ROUTES
      ---------------------------------------*/

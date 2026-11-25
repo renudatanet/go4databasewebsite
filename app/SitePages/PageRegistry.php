@@ -95,8 +95,9 @@ final class PageRegistry
         return [
             'home' => [
                 'title' => 'Home', 'route' => 'homepage',
-                'note' => 'Most of the homepage is fixed design; these parts come from the admin.',
+                'note' => 'Every text, link, list and image of the homepage, plus its latest news and contact area.',
                 'tabs' => [
+                    ['Homepage content', 'admin.home.content', 'Home Page Manage'],
                     ['Sections on or off', 'admin.homeone.section.manage', 'Home Page Manage'],
                     ['Latest news', 'admin.homeone.latest.news', 'Home Page Manage'],
                     ['Contact area', 'admin.homeone.contact.area', 'Home Page Manage'],
